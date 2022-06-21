@@ -75,7 +75,7 @@ See [technical notes](notes.md) for technical details.
 
    ![Select Joint](Readme/HowToUse_5SelectJoint_Label.png)
 
-6. Rotate joints to deform mesh.
+6. Press R mode to rotate the joints to deform mesh. Press E move to translate the joints.
 
    ![Deform Mesh](Readme/HowToUse_6Deform_Label.png)
 
