@@ -1,21 +1,5 @@
 # Real-Time Mesh Skinning with Direct Delta Mush (Unity)
 
-**University of Pennsylvania, CIS 565: GPU Programming and Architecture, Final Project**
-
-- Xuntong Liang
-  - xuntong@seas.upenn.edu
-  - [LinkedIn](https://www.linkedin.com/in/xuntong-liang-406429181/)
-  - [GitHub](https://github.com/PacosLelouch)
-  - [twitter](https://twitter.com/XTL90234545)
-- Bowen Deng
-  - dengbw@seas.upenn.edu
-  - [LinkedIn](www.linkedin.com/in/bowen-deng-7dbw13)
-- Beini Gu
-  - gubeini@seas.upenn.edu
-  - [LinkedIn](www.linkedin.com/in/bowen-deng-7dbw13)
-  - [personal website](https://www.seas.upenn.edu/~gubeini/)
-  - [twitter](https://twitter.com/scoutydren)
-
 ## Project Description
 
 This is a Unity project implementing real-time mesh skinning using GPU-based Direct Delta Mush algorithm. This algorithm and its variants enable us to compute mesh skinning and animations with efficiency and quality, even with simply authored skinned meshes.
@@ -154,6 +138,19 @@ The presented results may include significant overhead that would need to be inv
 
 ## Credit & Reference
 
+1. Xuntong Liang
+  - xuntong@seas.upenn.edu
+  - [LinkedIn](https://www.linkedin.com/in/xuntong-liang-406429181/)
+  - [GitHub](https://github.com/PacosLelouch)
+  - [twitter](https://twitter.com/XTL90234545)
+2. Bowen Deng
+  - dengbw@seas.upenn.edu
+  - [LinkedIn](www.linkedin.com/in/bowen-deng-7dbw13)
+3. Beini Gu
+  - gubeini@seas.upenn.edu
+  - [LinkedIn](www.linkedin.com/in/bowen-deng-7dbw13)
+  - [personal website](https://www.seas.upenn.edu/~gubeini/)
+  - [twitter](https://twitter.com/scoutydren)
 1. [Unity](https://unity.com/)
 1. [Math.NET Numerics](https://github.com/mathnet/mathnet-numerics)
 1. [Delta Mush: smoothing deformations while preserving detail](https://dl.acm.org/doi/10.1145/2633374.2633376)
