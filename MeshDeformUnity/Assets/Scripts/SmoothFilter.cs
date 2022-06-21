@@ -169,7 +169,6 @@ public class SmoothFilter// : MonoBehaviour
 			float dy = 0.0f;
 			float dz = 0.0f;
 
-			//Debug.Log("Vertex Index Length = "+vertexIndexes.Length);
 			// Add the vertices and divide by the number of vertices
 			int count = 0;
 			for (int k=0; k<maxNeighbors; k++)

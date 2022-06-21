@@ -36,13 +36,9 @@ public class DDMUtils
         {
 			for(int bi = 0; bi < num_transforms; ++bi)
 			{
-				//psis[vi, bi] = (new DenseMatrix(4));
 				psisValid[vi, bi] = false;
-
-				//wps[vi, bi] = 0.0f;
 				wpsValid[vi, bi] = false;
 			}
-			//ps[vi] = (new DenseVector(3));
 			psValid[vi] = false;
 		}
 	}
@@ -67,13 +63,6 @@ public class DDMUtils
 				rw.OuterProduct(rw, hh);
 				hh *= (b * w);
 				res += hh;
-				//for (int x = 0; x < 4; x++)
-				//{
-				//	for (int y = 0; y < 4; y++)
-				//	{
-				//		res[x, y] += hh[x, y];
-				//	}
-				//}
 			}
 		}
 
@@ -96,15 +85,7 @@ public class DDMUtils
 			sum[0] += psi[0, 3];
 			sum[1] += psi[1, 3];
 			sum[2] += psi[2, 3];
-			//Matrix4x4 psi = compute_psi(i, k);
-			//for (int t = 0; t < 16; t++)
-			//{
-			//	sum[t] += psi[t];
-			//}
 		}
-
-		//Vector3 res = new Vector3(sum[0, 3], sum[1, 3], sum[2, 3]);
-
 		ps[i] = sum;
 		psValid[i] = true;
 		return sum;
@@ -135,28 +116,9 @@ public class DDMUtils
 		DenseVector p_i = compute_pi(i);
 		DenseMatrix p_i_mat = new DenseMatrix(3);
 		p_i.OuterProduct(p_i, p_i_mat);
-		//for (int x = 0; x < 3; x++)
-		//{
-		//	for (int y = 0; y < 3; y++)
-		//	{
-		//		p_i_mat[x, y] = p_i[x] * p_i[y];
-		//	}
-		//}
-		//p_i_mat.SetColumn(3, new Vector4(p_i.x, p_i.y, p_i.z, 1));
-		//p_i_mat.SetRow(3, new Vector4(p_i.x, p_i.y, p_i.z, 1));
 		DenseMatrix p_i_mat_4 = new DenseMatrix(4);
 		p_i_mat_4.SetSubMatrix(0, 0, p_i_mat);
-
 		DenseMatrix psi_ij = compute_psi(i, j);
-
 		return (1.0f - dm_blend) * psi_ij + (dm_blend * compute_w_prime(i, j)) * p_i_mat_4;
-
-		//Matrix4x4 res = new Matrix4x4();
-		//for (int k = 0; k < 16; k++)
-		//{
-		//	res[k] = (1.0f - dm_blend) * psi_ij[k] + dm_blend * compute_w_prime(i, j) * p_i_mat[k];
-		//}
-
-		//return res;
 	}
 }

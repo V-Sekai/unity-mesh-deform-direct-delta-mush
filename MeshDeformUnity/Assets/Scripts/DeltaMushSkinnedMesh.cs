@@ -219,38 +219,6 @@ public class DeltaMushSkinnedMesh : MonoBehaviour
 			}
 		}
 	}
-
-	//static private int[,] GetCachedAdjacencyMatrix(Mesh mesh, float adjacencyMatchingVertexTolerance)
-	//{
-	//	int [,] adjacencyMatrix;
-	//	//#if UNITY_EDITOR
-	//	////var path = Path.Combine(Application.persistentDataPath, AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(mesh)) + ".adj");
-	//	//var path = Path.Combine("", AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(mesh)) + "_" + adjacencyMatchingVertexTolerance.ToString() + ".adj");
-	//	//Debug.Log(path);
-	//	//if (File.Exists(path))
-	//	//{
-	//	//	string json = File.ReadAllText(path);
-	//	//	adjacencyMatrix = JsonUtility.FromJson<AdjacencyMatrix>(json).data;
-	//	//}
-	//	//else
-	//	//{
-	//	//#endif
-	//		adjacencyMatrix = MeshUtils.BuildAdjacencyMatrix(mesh.vertices, mesh.triangles, 16, adjacencyMatchingVertexTolerance*adjacencyMatchingVertexTolerance);
-	//	//#if UNITY_EDITOR
-	//	//	var json = JsonUtility.ToJson(new AdjacencyMatrix(adjacencyMatrix));
-	//	//	Debug.Log(json);
-
-	//	//	using (FileStream fs = new FileStream(path, FileMode.Create))
-	//	//	{
-	//	//		using (StreamWriter writer = new StreamWriter(fs))
-	//	//		{
-	//	//			writer.Write(json);
-	//	//		}
-	//	//	}
-	//	//}
-	//	//#endif
-	//	return adjacencyMatrix;
-	//}
 	#endregion
 
 	private int GetSmoothKernel()
@@ -344,7 +312,6 @@ public class DeltaMushSkinnedMesh : MonoBehaviour
 				for (int i = 0; i < deformedMesh.vertexCount; i++)
 				{
 					deformedMesh.normals[i] = deformedMesh.normals[i] + deformedMesh.deltaN[i];
-					//deformedMesh.normals[i].Normalize();
 				}
 		
 			meshForCPUOutput.vertices = deformedMesh.vertices;
@@ -410,7 +377,6 @@ public class DeltaMushSkinnedMesh : MonoBehaviour
 			for (int i = 0; i < deformedMesh.vertexCount; i++)
 			{
 				deformedMesh.normals[i] = deformedMesh.normals[i] + deformedMesh.deltaN[i];
-				//deformedMesh.normals[i].Normalize();
 			}
 
 		Bounds bounds = new Bounds();
@@ -457,7 +423,6 @@ public class DeltaMushSkinnedMesh : MonoBehaviour
 				computeShader.SetBuffer(laplacianKernel, "Delta", outputCB[2]);
 				ductTapedMaterial.SetBuffer("Vertices", outputCB[(i+1)%2]);
 			}
-			//computeShader.SetBuffer(laplacianKernel, "Delta", outputCB[2]);
 
 			computeShader.SetBool("DeltaPass", lastIteration && !disableDeltaPass);
 			computeShader.SetBuffer(laplacianKernel, "Input", outputCB[i%2]);
@@ -475,11 +440,9 @@ public class DeltaMushSkinnedMesh : MonoBehaviour
 		{
 			mesh.bounds = skin.bounds; // skin is actually disabled, so it only remembers the last animation frame
 			Graphics.DrawMesh(mesh, Matrix4x4.identity, ductTapedMaterial, 0);
-			//Graphics.DrawMesh(mesh, skin.transform.parent.worldToLocalMatrix * skin.transform.localToWorldMatrix, ductTapedMaterial, 0);
 		}
 		else
 			Graphics.DrawMesh(meshForCPUOutput, Matrix4x4.identity, skin.sharedMaterial, 0);
-			//Graphics.DrawMesh(meshForCPUOutput, skin.transform.parent.worldToLocalMatrix * skin.transform.localToWorldMatrix, skin.sharedMaterial, 0);
 	}
 
 	void DrawDeltas()
@@ -498,14 +461,6 @@ public class DeltaMushSkinnedMesh : MonoBehaviour
 
 	void DrawVerticesVsSkin()
 	{
-		//for (int i = 0; i < deformedMesh.vertexCount; i++)
-		//{
-		//	Vector3 position = deformedMesh.vertices[i];
-		//	Vector3 normal = deformedMesh.normals[i];
-
-		//	Color color = Color.green;
-		//	Debug.DrawRay(position, normal*0.01f, color);
-		//}
 	}
 	#endregion
 }

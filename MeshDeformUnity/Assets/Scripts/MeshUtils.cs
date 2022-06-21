@@ -7,7 +7,7 @@ using MathNet.Numerics.LinearAlgebra.Single;
 using MathNet.Numerics.LinearAlgebra.Single.Solvers;
 
 /*
-	Vertecx adjacency functions
+	Vertex adjacency functions
 */
 public class MeshUtils// : MonoBehaviour 
 {
@@ -70,8 +70,6 @@ public class MeshUtils// : MonoBehaviour
 					var dx = v[u].x - v[j].x;
 					var dy = v[u].y - v[j].y;
 					var dz = v[u].z - v[j].z;
-					//if (Vector3.Distance(v[i], v[j]) < minDistance) // 2794ms
-					//if ((v[j] - v[i]).sqrMagnitude < minSqrDistance) // 2796ms
 					if (dx*dx+dy*dy+dz*dz <= minSqrDistance) // 687ms
 					{
 						if (mapToUnique[i] == -1)
@@ -89,7 +87,6 @@ public class MeshUtils// : MonoBehaviour
 
 	private static void AddVertexToAdjacencyMatrix(ref int[,] adjacencyMatrix, int from, int to)
 	{
-		//Profiler.BeginSample("AddVertexToAdjacencyMatrix");
 		var maxNeighbors = adjacencyMatrix.GetLength(1);
 		for (int i = 0; i < maxNeighbors; i++)
 		{
@@ -102,7 +99,6 @@ public class MeshUtils// : MonoBehaviour
 				break;
 			}
 		}
-		//Profiler.EndSample();
 	}
 
 	private static void AddEdgeToAdjacencyMatrixDirect(ref int[,] adjacencyMatrix, int v0, int v1)
@@ -205,19 +201,6 @@ public class MeshUtils// : MonoBehaviour
 		Profiler.BeginSample("BuildSmoothMatrixFromLaplacian");
 		int vCount = lapl.ColumnCount;
 		SparseMatrix identity = SparseMatrix.CreateIdentity(vCount);
-		//SparseMatrix b = (identity + (smoothLambda / iteration) * lapl);
-		//SparseMatrix bt = new SparseMatrix(vCount);
-		//b.Transpose(bt);
-
-		//SparseMatrix smooth = SparseMatrix.CreateIdentity(vCount);
-		//SparseMatrix smoothNext = new SparseMatrix(vCount); 
-		//GpBiCg gpBiCg = new GpBiCg();
-		//for (int i = 0; i < iteration; ++i)
-		//      {
-		//	bt.TrySolveIterative(smooth, smoothNext, gpBiCg);
-		//	smooth = smoothNext;
-		//      }
-
 		SparseMatrix a = iteration == 0 ? identity : (identity - (smoothLambda / iteration) * lapl);
 
 		SparseMatrix smooth = SparseMatrix.CreateIdentity(vCount);
@@ -227,9 +210,6 @@ public class MeshUtils// : MonoBehaviour
             smooth.Multiply(a, smoothNext);
             smooth = smoothNext;
         }
-        //a.Power(iteration, smooth);
-
-
         Profiler.EndSample();
 		return smooth;
 	}

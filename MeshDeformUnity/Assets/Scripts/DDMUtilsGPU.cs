@@ -66,7 +66,6 @@ public class DDMUtilsGPU
         int aCount = adjacencyMatrix.GetLength(1);
 
         Debug.Assert(laplacianCB.count == vCount * omegaCount && laplacianCB.stride == sizeof(int) + sizeof(float));
-        //laplacianCB = new ComputeBuffer(vCount * omegaCount, (sizeof(int) + sizeof(float)));
 
         IndexWeightPair[,] indexWeightPairsCPU = ComputeLaplacianWithIndexFromAdjacency(adjacencyMatrix);
         laplacianCB.SetData(indexWeightPairsCPU);
