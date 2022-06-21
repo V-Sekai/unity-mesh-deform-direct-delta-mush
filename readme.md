@@ -49,13 +49,9 @@ The [paper](https://www.ea.com/seed/news/siggraph2019-direct-delta-mush) also sh
 
 Keep in mind that using less precomputation data doesn't mean the performance would be improved. The visual effect of different variants are shown below. For DDM v0 and DDM v2, there are less collapsing artifact, and v0 keeps the shape mostly, thus performs the best.
 
-| LBS                                 | v0                                 | v1                                 |
-| ----------------------------------- | ---------------------------------- | ---------------------------------- |
-| ![img](Readme/VisualEffect_LBS.png) | ![img](Readme/VisualEffect_v0.png) | ![img](Readme/VisualEffect_v1.png) |
-
-| v2                                 | v3                                 | v4                                 |
-| ---------------------------------- | ---------------------------------- | ---------------------------------- |
-| ![img](Readme/VisualEffect_v2.png) | ![img](Readme/VisualEffect_v3.png) | ![img](Readme/VisualEffect_v4.png) |
+| LBS                                 | v0                                
+| ----------------------------------- | ---------------------------------- 
+| ![img](Readme/VisualEffect_LBS.png) | ![img](Readme/VisualEffect_v0.png) 
 
 See [technical notes](notes.md) for technical details.
 
