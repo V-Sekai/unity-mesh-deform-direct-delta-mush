@@ -6,7 +6,7 @@ This is a Unity project implementing real-time mesh skinning using GPU-based Dir
 
 [![Overview1](Readme/Overview1.gif)](https://vimeo.com/655985843)
 
-<center>With Direct Delta Mush (left), we get less bulging effect than what we get with built-in skinning (right).</center>
+With Direct Delta Mush (left), we get less bulging effect than what we get with built-in skinning (right).
 
 ## How to Build
 
@@ -22,12 +22,12 @@ Add `MeshDeformUnity` to Unity Hub and select unity version. Then you can open t
 ## Features Overview
 
 - Delta Mush with CPU or GPU.
-- Direct Delta Mush with GPU (from variant 0 to variant 4).
+- Direct Delta Mush with GPU variant 0.
 - Precomputation of Direct Delta Mush with GPU.
 
-| 0 iter (LBS)                          | 2 iters                               | 4 iters                               | 8 iters                               | 16 iters                               |
-| ------------------------------------- | ------------------------------------- | ------------------------------------- | ------------------------------------- | -------------------------------------- |
-| ![img](Readme/VisualEffect_Iter0.png) | ![img](Readme/VisualEffect_Iter2.png) | ![img](Readme/VisualEffect_Iter4.png) | ![img](Readme/VisualEffect_Iter8.png) | ![img](Readme/VisualEffect_Iter16.png) |
+| 0 iter (LBS)                          | 2 iters                               | 16 iters                               |
+| ------------------------------------- | ------------------------------------- | -------------------------------------- |
+| ![img](Readme/VisualEffect_Iter0.png) | ![img](Readme/VisualEffect_Iter2.png) | ![img](Readme/VisualEffect_Iter16.png) |
 
 The table above shows how the number of iterations affect the visual effect of skinning. With more and more iterations, the elbow shows smoother, and less bulging effect.
 
@@ -87,35 +87,7 @@ See [technical notes](notes.md) for technical details.
 
    After you play, you can see the animation. Some of the models can be found at [mixamo](https://www.mixamo.com/).
 
-## Performance Analysis
-
-> Tested on: Windows 10, i7-10750H @ 2.60GHz 16GB, RTX 2070 Super with Max-Q 8192MB
-
-### Precomputation
-
-We implemented precomputation of DDM in both CPU and GPU, and compare their performances on Wahoo model with 3809 vertices and 35 bones. Since building the adjacency matrix should be done in CPU, we don't compare this process.
-
-![Performance Analysis Precomputation CPU](Readme/PA_Precomp_CPU.png)
-
-It can be clearly seen that the GPU implementation significantly improves the performance. The runtime of it grows almost linearly as the number of iterations.
-
-On the other hand, we test the GPU based precomputation on different models, with a larger range of iterations.
-
-![Performance Analysis Animation](Readme/PA_Precomp_Model.png)
-
-The figure above shows a nearly linear relation between iterations and the precomputation time, even on models of different sizes and within a larger iteration range. Also, as the number of vertices in the model becomes larger, the performance drops dramatically.
-
-### Animation
-
-We test the runtime performance of different variants of DDM, as well as the original DM and the built-in linear blend skinning. These are tested with two models: Wahoo with 66654 vertices and 45 bones, and Ninja with 13560 vertices and 52 bones.
-
-![Performance Analysis Animation](Readme/PA_Animation.png)
-
-It is clear that even though we only set 10 iterations, the Delta Mush is much costlier than any variants of the Direct Delta Mush. The variants of the DDM performs different, with v0, v1, and v4 faster than v2 and v3. The built-in linear blend skinning is the fastest, which is very straightforward and reasonable.
-
-The presented results may include significant overhead that would need to be investigated with low-level programming, as the [paper](https://www.ea.com/seed/news/siggraph2019-direct-delta-mush) says in section 4, so they might be much faster if we carefully optimize v2, v3, and v4.
-
-## Future Works
+## Future Work
 
 - Implement different Laplacian matrix.
 - Refer to [the next paper in SIGGRAPH 2021](<(https://www.ea.com/seed/news/ddm-compression-with-continuous-examples)>).
