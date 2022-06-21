@@ -26,8 +26,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
-using System;
 
+using System;
 using Complex = System.Numerics.Complex;
 
 namespace MathNet.Numerics
@@ -102,14 +102,16 @@ namespace MathNet.Numerics
             return radian / Constants.Grad;
         }
 
+
         /// <summary>
         /// Normalized Sinc function. sinc(x) = sin(pi*x)/(pi*x).
         /// </summary>
         public static double Sinc(double x)
         {
-            double z = Math.PI * x;
-            return z.AlmostEqual(0.0, 15) ? 1.0 : Math.Sin(z) / z;
+            double z = Math.PI*x;
+            return z.AlmostEqual(0.0, 15) ? 1.0 : Math.Sin(z)/z;
         }
+
 
         /// <summary>
         /// Trigonometric Sine of an angle in radian, or opposite / hypotenuse.
@@ -133,7 +135,8 @@ namespace MathNet.Numerics
                 return new Complex(Sin(value.Real), 0.0);
             }
 
-            return new Complex(Sin(value.Real) * Cosh(value.Imaginary),
+            return new Complex(
+                Sin(value.Real) * Cosh(value.Imaginary),
                 Cos(value.Real) * Sinh(value.Imaginary));
         }
 
@@ -159,7 +162,8 @@ namespace MathNet.Numerics
                 return new Complex(Cos(value.Real), 0.0);
             }
 
-            return new Complex(Cos(value.Real) * Cosh(value.Imaginary),
+            return new Complex(
+                Cos(value.Real) * Cosh(value.Imaginary),
                 -Sin(value.Real) * Sinh(value.Imaginary));
         }
 
@@ -186,6 +190,7 @@ namespace MathNet.Numerics
             }
 
             // tan(z) = - j*tanh(j*z)
+
             Complex z = Tanh(new Complex(-value.Imaginary, value.Real));
             return new Complex(z.Imaginary, -z.Real);
         }
@@ -213,6 +218,7 @@ namespace MathNet.Numerics
             }
 
             // cot(z) = - j*coth(-j*z)
+
             Complex z = Coth(new Complex(value.Imaginary, -value.Real));
             return new Complex(z.Imaginary, -z.Real);
         }
@@ -243,8 +249,7 @@ namespace MathNet.Numerics
             var sinhi = Sinh(value.Imaginary);
             var denom = (cosr * cosr) + (sinhi * sinhi);
 
-            return new Complex(cosr * Cosh(value.Imaginary) / denom,
-                Sin(value.Real) * sinhi / denom);
+            return new Complex(cosr * Cosh(value.Imaginary) / denom, Sin(value.Real) * sinhi / denom);
         }
 
         /// <summary>
@@ -273,9 +278,9 @@ namespace MathNet.Numerics
             var sinhi = Sinh(value.Imaginary);
             var denom = (sinr * sinr) + (sinhi * sinhi);
 
-            return new Complex(sinr * Cosh(value.Imaginary) / denom,
-                -Cos(value.Real) * sinhi / denom);
+            return new Complex(sinr * Cosh(value.Imaginary) / denom, -Cos(value.Real) * sinhi / denom);
         }
+
 
         /// <summary>
         /// Trigonometric principal Arc Sine in radian
@@ -299,9 +304,7 @@ namespace MathNet.Numerics
                 return -Asin(-value);
             }
 
-            return -Complex.ImaginaryOne *
-            ((1 - value.Square()).SquareRoot() + (Complex.ImaginaryOne * value))
-                .Ln();
+            return -Complex.ImaginaryOne * ((1 - value.Square()).SquareRoot() + (Complex.ImaginaryOne * value)).Ln();
         }
 
         /// <summary>
@@ -326,9 +329,7 @@ namespace MathNet.Numerics
                 return Constants.Pi - Acos(-value);
             }
 
-            return -Complex.ImaginaryOne *
-            (value + (Complex.ImaginaryOne * (1 - value.Square()).SquareRoot()))
-                .Ln();
+            return -Complex.ImaginaryOne * (value + (Complex.ImaginaryOne * (1 - value.Square()).SquareRoot())).Ln();
         }
 
         /// <summary>
@@ -375,8 +376,7 @@ namespace MathNet.Numerics
             }
 
             var inv = Complex.ImaginaryOne / value;
-            return (Complex.ImaginaryOne * 0.5) *
-            ((1.0 - inv).Ln() - (1.0 + inv).Ln());
+            return (Complex.ImaginaryOne * 0.5) * ((1.0 - inv).Ln() - (1.0 + inv).Ln());
         }
 
         /// <summary>
@@ -397,9 +397,7 @@ namespace MathNet.Numerics
         public static Complex Asec(this Complex value)
         {
             var inv = 1 / value;
-            return -Complex.ImaginaryOne *
-            (inv + (Complex.ImaginaryOne * (1 - inv.Square()).SquareRoot()))
-                .Ln();
+            return -Complex.ImaginaryOne * (inv + (Complex.ImaginaryOne * (1 - inv.Square()).SquareRoot())).Ln();
         }
 
         /// <summary>
@@ -420,10 +418,9 @@ namespace MathNet.Numerics
         public static Complex Acsc(this Complex value)
         {
             var inv = 1 / value;
-            return -Complex.ImaginaryOne *
-            ((Complex.ImaginaryOne * inv) + (1 - inv.Square()).SquareRoot())
-                .Ln();
+            return -Complex.ImaginaryOne * ((Complex.ImaginaryOne * inv) + (1 - inv.Square()).SquareRoot()).Ln();
         }
+
 
         /// <summary>
         /// Hyperbolic Sine
@@ -449,18 +446,17 @@ namespace MathNet.Numerics
 
             // sinh(x + j y) = sinh(x)*cos(y) + j*cosh(x)*sin(y)
             // if x > huge, sinh(x + jy) = sign(x)*exp(|x|)/2*cos(y) + j*exp(|x|)/2*sin(y)
-            if (
-                Math.Abs(value.Real) >= 22.0 // Taken from the msun library in FreeBSD
-            )
+
+            if (Math.Abs(value.Real) >= 22.0) // Taken from the msun library in FreeBSD
             {
                 double h = Math.Exp(Math.Abs(value.Real)) * 0.5;
-                return new Complex(Math.Sign(value.Real) *
-                    h *
-                    Cos(value.Imaginary),
-                    h * Sin(value.Imaginary));
+                return new Complex(
+                    Math.Sign(value.Real)*h*Cos(value.Imaginary),
+                    h*Sin(value.Imaginary));
             }
 
-            return new Complex(Sinh(value.Real) * Cos(value.Imaginary),
+            return new Complex(
+                Sinh(value.Real) * Cos(value.Imaginary),
                 Cosh(value.Real) * Sin(value.Imaginary));
         }
 
@@ -488,16 +484,17 @@ namespace MathNet.Numerics
 
             // cosh(x + j*y) = cosh(x)*cos(y) + j*sinh(x)*sin(y)
             // if x > huge, cosh(x + j*y) = exp(|x|)/2*cos(y) + j*sign(x)*exp(|x|)/2*sin(y)
-            if (
-                Math.Abs(value.Real) >= 22.0 // Taken from the msun library in FreeBSD
-            )
+
+            if (Math.Abs(value.Real) >= 22.0) // Taken from the msun library in FreeBSD
             {
                 double h = Math.Exp(Math.Abs(value.Real)) * 0.5;
-                return new Complex(h * Cos(value.Imaginary),
+                return new Complex(
+                    h * Cos(value.Imaginary),
                     Math.Sign(value.Real) * h * Sin(value.Imaginary));
             }
 
-            return new Complex(Cosh(value.Real) * Cos(value.Imaginary),
+            return new Complex(
+                Cosh(value.Real) * Cos(value.Imaginary),
                 Sinh(value.Real) * Sin(value.Imaginary));
         }
 
@@ -541,19 +538,13 @@ namespace MathNet.Numerics
             // if tan(y) = +/- oo or 1/cos^2(y) = 1 + tan^2(y) = oo, tanh(z) = cosh(x)/sinh(x)
             //
             // The algorithm is based on Kahan.
-            if (
-                Math.Abs(value.Real) >= 22.0 // Taken from the msun library in FreeBSD
-            )
+
+            if (Math.Abs(value.Real) >= 22.0) // Taken from the msun library in FreeBSD
             {
                 double e = Math.Exp(-Math.Abs(value.Real));
                 return e == 0.0
                     ? new Complex(Math.Sign(value.Real), 0.0)
-                    : new Complex(Math.Sign(value.Real),
-                        4.0 *
-                        Math.Cos(value.Imaginary) *
-                        Math.Sin(value.Imaginary) *
-                        e *
-                        e);
+                    : new Complex(Math.Sign(value.Real), 4.0 * Math.Cos(value.Imaginary) * Math.Sin(value.Imaginary) * e * e);
             }
 
             double tani = Tan(value.Imaginary);
@@ -561,7 +552,8 @@ namespace MathNet.Numerics
             double sinhr = Sinh(value.Real);
             double coshr = Cosh(value.Real);
 
-            if (double.IsInfinity(tani)) return new Complex(coshr / sinhr, 0.0);
+            if (double.IsInfinity(tani))
+                return new Complex(coshr / sinhr, 0.0);
 
             double denom = 1.0 + beta * sinhr * sinhr;
             return new Complex(beta * coshr * sinhr / denom, tani / denom);
@@ -602,6 +594,7 @@ namespace MathNet.Numerics
             }
 
             // Coth(z) = 1/tanh(z)
+
             return Complex.One / Tanh(value);
         }
 
@@ -633,21 +626,19 @@ namespace MathNet.Numerics
             // if tan(y) = +/- oo or 1/cos^2(y) = 1 + tan^2(y) = oo, sech(z) = -j*sign(tan(y))/sinh(x)
             //
             // The algorithm is based on Kahan.
+
             double tani = Tan(value.Imaginary);
             double cosi = Cos(value.Imaginary);
             double beta = 1.0 + tani * tani;
             double sinhr = Math.Sinh(value.Real);
             double coshr = Math.Cosh(value.Real);
 
-            if (
-                Math.Abs(value.Real) >= 22.0 // Taken from the msun library in FreeBSD
-            )
+            if (Math.Abs(value.Real) >= 22.0) // Taken from the msun library in FreeBSD
             {
                 double e = Math.Exp(-Math.Abs(value.Real));
                 return e == 0.0
                     ? new Complex(0, 0)
-                    : new Complex(4.0 * coshr * cosi * e * e,
-                        -4.0 * sinhr * tani * cosi * e * e);
+                    : new Complex(4.0 * coshr * cosi * e * e, -4.0 * sinhr * tani * cosi * e * e);
             }
 
             if (double.IsInfinity(tani))
@@ -656,8 +647,7 @@ namespace MathNet.Numerics
             }
 
             double denom = 1.0 + beta * sinhr * sinhr;
-            return new Complex(coshr / cosi / denom,
-                -sinhr * tani / cosi / denom);
+            return new Complex(coshr / cosi / denom, -sinhr * tani / cosi / denom);
         }
 
         /// <summary>
@@ -688,21 +678,19 @@ namespace MathNet.Numerics
             // if cot(y) = +/- oo or 1/sin^2(x) = 1 + cot^2(x) = oo, csch(z) = sign(cot(y))/sinh(x)
             //
             // The algorithm is based on Kahan.
+
             double coti = Cot(value.Imaginary);
             double sini = Sin(value.Imaginary);
             double beta = 1 + coti * coti;
             double sinhr = Sinh(value.Real);
             double coshr = Cosh(value.Real);
 
-            if (
-                Math.Abs(value.Real) >= 22.0 // Taken from the msun library in FreeBSD
-            )
+            if (Math.Abs(value.Real) >= 22.0) // Taken from the msun library in FreeBSD
             {
                 double e = Math.Exp(-Math.Abs(value.Real));
                 return e == 0.0
                     ? new Complex(0, 0)
-                    : new Complex(4.0 * sinhr * coti * sini * e * e,
-                        -4.0 * coshr * sini * e * e);
+                    : new Complex(4.0 * sinhr * coti * sini * e * e, -4.0 * coshr * sini * e * e);
             }
 
             if (double.IsInfinity(coti))
@@ -711,9 +699,9 @@ namespace MathNet.Numerics
             }
 
             double denom = 1.0 + beta * sinhr * sinhr;
-            return new Complex(sinhr * coti / sini / denom,
-                -coshr / sini / denom);
+            return new Complex(sinhr * coti / sini / denom, -coshr / sini / denom);
         }
+
 
         /// <summary>
         /// Hyperbolic Area Sine
@@ -724,14 +712,11 @@ namespace MathNet.Numerics
         {
             // asinh(x) = Sign(x) * ln(|x| + sqrt(x*x + 1))
             // if |x| > huge, asinh(x) ~= Sign(x) * ln(2|x|)
-            if (
-                Math.Abs(value) >= 268435456.0 // 2^28, taken from freeBSD
-            )
-                return Math.Sign(value) *
-                (Math.Log(Math.Abs(value)) + Math.Log(2.0));
 
-            return Math.Sign(value) *
-            Math.Log(Math.Abs(value) + Math.Sqrt((value * value) + 1));
+            if (Math.Abs(value) >= 268435456.0) // 2^28, taken from freeBSD
+                return Math.Sign(value) * (Math.Log(Math.Abs(value)) + Math.Log(2.0));
+
+            return Math.Sign(value) * Math.Log(Math.Abs(value) + Math.Sqrt((value * value) + 1));
         }
 
         /// <summary>
@@ -753,13 +738,11 @@ namespace MathNet.Numerics
         {
             // acosh(x) = ln(x + sqrt(x*x - 1))
             // if |x| >= 2^28, acosh(x) ~ ln(x) + ln(2)
-            if (
-                Math.Abs(value) >= 268435456.0 // 2^28, taken from freeBSD
-            ) return Math.Log(value) + Math.Log(2.0);
 
-            return Math
-                .Log(value + (Math.Sqrt(value - 1) * Math.Sqrt(value + 1)),
-                Math.E);
+            if (Math.Abs(value) >= 268435456.0) // 2^28, taken from freeBSD
+                return Math.Log(value) + Math.Log(2.0);
+
+            return Math.Log(value + (Math.Sqrt(value - 1) * Math.Sqrt(value + 1)), Math.E);
         }
 
         /// <summary>
@@ -769,9 +752,7 @@ namespace MathNet.Numerics
         /// <returns>The hyperbolic arc cosine of a complex number.</returns>
         public static Complex Acosh(this Complex value)
         {
-            return (
-            value + ((value - 1).SquareRoot() * (value + 1).SquareRoot())
-            ).Ln();
+            return (value + ((value - 1).SquareRoot() * (value + 1).SquareRoot())).Ln();
         }
 
         /// <summary>
@@ -833,8 +814,7 @@ namespace MathNet.Numerics
         public static Complex Asech(this Complex value)
         {
             var inv = 1 / value;
-            return (inv + ((inv - 1).SquareRoot() * (inv + 1).SquareRoot()))
-                .Ln();
+            return (inv + ((inv - 1).SquareRoot() * (inv + 1).SquareRoot())).Ln();
         }
 
         /// <summary>

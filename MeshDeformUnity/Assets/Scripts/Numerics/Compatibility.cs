@@ -5,8 +5,7 @@ namespace System.Runtime.CompilerServices
 {
     internal class FormattableStringFactory
     {
-        public static FormattableString
-        Create(string format, params object[] args)
+        public static FormattableString Create(string format, params object[] args)
         {
             return new FormattableString(format, args);
         }
@@ -18,7 +17,6 @@ namespace System
     internal class FormattableString
     {
         readonly string _format;
-
         readonly object[] _args;
 
         public FormattableString(string format, object[] args)

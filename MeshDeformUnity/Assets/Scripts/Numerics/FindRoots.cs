@@ -26,9 +26,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
+
 using System;
 using MathNet.Numerics.RootFinding;
-
 using Complex = System.Numerics.Complex;
 
 namespace MathNet.Numerics
@@ -41,50 +41,19 @@ namespace MathNet.Numerics
         /// <param name="upperBound">The high value of the range where the root is supposed to be.</param>
         /// <param name="accuracy">Desired accuracy. The root will be refined until the accuracy or the maximum number of iterations is reached. Example: 1e-14.</param>
         /// <param name="maxIterations">Maximum number of iterations. Example: 100.</param>
-        public static double
-        OfFunction(
-            Func<double, double> f,
-            double lowerBound,
-            double upperBound,
-            double accuracy = 1e-8,
-            int maxIterations = 100
-        )
+        public static double OfFunction(Func<double, double> f, double lowerBound, double upperBound, double accuracy = 1e-8, int maxIterations = 100)
         {
-            if (
-                !ZeroCrossingBracketing
-                    .ExpandReduce(f,
-                    ref lowerBound,
-                    ref upperBound,
-                    1.6,
-                    maxIterations,
-                    maxIterations * 10)
-            )
+            if (!ZeroCrossingBracketing.ExpandReduce(f, ref lowerBound, ref upperBound, 1.6, maxIterations, maxIterations*10))
             {
                 throw new NonConvergenceException("The algorithm has failed, exceeded the number of iterations allowed or there is no root within the provided bounds.");
             }
 
-            if (
-                Brent
-                    .TryFindRoot(f,
-                    lowerBound,
-                    upperBound,
-                    accuracy,
-                    maxIterations,
-                    out var root)
-            )
+            if (Brent.TryFindRoot(f, lowerBound, upperBound, accuracy, maxIterations, out var root))
             {
                 return root;
             }
 
-            if (
-                Bisection
-                    .TryFindRoot(f,
-                    lowerBound,
-                    upperBound,
-                    accuracy,
-                    maxIterations,
-                    out root)
-            )
+            if (Bisection.TryFindRoot(f, lowerBound, upperBound, accuracy, maxIterations, out root))
             {
                 return root;
             }
@@ -99,38 +68,16 @@ namespace MathNet.Numerics
         /// <param name="upperBound">The high value of the range where the root is supposed to be.</param>
         /// <param name="accuracy">Desired accuracy. The root will be refined until the accuracy or the maximum number of iterations is reached. Example: 1e-14.</param>
         /// <param name="maxIterations">Maximum number of iterations. Example: 100.</param>
-        public static double
-        OfFunctionDerivative(
-            Func<double, double> f,
-            Func<double, double> df,
-            double lowerBound,
-            double upperBound,
-            double accuracy = 1e-8,
-            int maxIterations = 100
-        )
+        public static double OfFunctionDerivative(Func<double, double> f, Func<double, double> df, double lowerBound, double upperBound, double accuracy = 1e-8, int maxIterations = 100)
         {
             double root;
 
-            if (
-                RobustNewtonRaphson
-                    .TryFindRoot(f,
-                    df,
-                    lowerBound,
-                    upperBound,
-                    accuracy,
-                    maxIterations,
-                    20,
-                    out root)
-            )
+            if (RobustNewtonRaphson.TryFindRoot(f, df, lowerBound, upperBound, accuracy, maxIterations, 20, out root))
             {
                 return root;
             }
 
-            return OfFunction(f,
-            lowerBound,
-            upperBound,
-            accuracy,
-            maxIterations);
+            return OfFunction(f, lowerBound, upperBound, accuracy, maxIterations);
         }
 
         /// <summary>
@@ -141,26 +88,22 @@ namespace MathNet.Numerics
         {
             if (b == 0d)
             {
-                var t = new Complex(-c / a, 0d).SquareRoot();
+                var t = new Complex(-c/a, 0d).SquareRoot();
                 return (t, -t);
             }
 
-            var q =
-                b > 0d
-                    ? -0.5 *
-                    (b + new Complex(b * b - 4 * a * c, 0d).SquareRoot())
-                    : -0.5 *
-                    (b - new Complex(b * b - 4 * a * c, 0d).SquareRoot());
+            var q = b > 0d
+                ? -0.5*(b + new Complex(b*b - 4*a*c, 0d).SquareRoot())
+                : -0.5*(b - new Complex(b*b - 4*a*c, 0d).SquareRoot());
 
-            return (q / a, c / q);
+            return (q/a, c/q);
         }
 
         /// <summary>
         /// Find all three complex roots of the cubic equation d + c*x + b*x^2 + a*x^3 = 0.
         /// Note the special coefficient order ascending by exponent (consistent with polynomials).
         /// </summary>
-        public static (Complex, Complex, Complex)
-        Cubic(double d, double c, double b, double a)
+        public static (Complex, Complex, Complex) Cubic(double d, double c, double b, double a)
         {
             return RootFinding.Cubic.Roots(d, c, b, a);
         }
@@ -192,12 +135,7 @@ namespace MathNet.Numerics
         /// <param name="intervalBegin">The real domain interval begin where to start sampling.</param>
         /// <param name="intervalEnd">The real domain interval end where to stop sampling.</param>
         /// <returns>Samples in [a,b] at (b+a)/2+(b-1)/2*cos(pi*(2i-1)/(2n))</returns>
-        public static double[]
-        ChebychevPolynomialFirstKind(
-            int degree,
-            double intervalBegin = -1d,
-            double intervalEnd = 1d
-        )
+        public static double[] ChebychevPolynomialFirstKind(int degree, double intervalBegin = -1d, double intervalEnd = 1d)
         {
             if (degree < 1)
             {
@@ -205,17 +143,16 @@ namespace MathNet.Numerics
             }
 
             // transform to map to [-1..1] interval
-            double location = 0.5 * (intervalBegin + intervalEnd);
-            double scale = 0.5 * (intervalEnd - intervalBegin);
+            double location = 0.5*(intervalBegin + intervalEnd);
+            double scale = 0.5*(intervalEnd - intervalBegin);
 
             // evaluate first kind chebychev nodes
-            double angleFactor = Constants.Pi / (2 * degree);
+            double angleFactor = Constants.Pi/(2*degree);
 
             var samples = new double[degree];
             for (int i = 0; i < samples.Length; i++)
             {
-                samples[i] =
-                    location + scale * Math.Cos(((2 * i) + 1) * angleFactor);
+                samples[i] = location + scale*Math.Cos(((2*i) + 1)*angleFactor);
             }
             return samples;
         }
@@ -227,12 +164,7 @@ namespace MathNet.Numerics
         /// <param name="intervalBegin">The real domain interval begin where to start sampling.</param>
         /// <param name="intervalEnd">The real domain interval end where to stop sampling.</param>
         /// <returns>Samples in [a,b] at (b+a)/2+(b-1)/2*cos(pi*i/(n-1))</returns>
-        public static double[]
-        ChebychevPolynomialSecondKind(
-            int degree,
-            double intervalBegin = -1d,
-            double intervalEnd = 1d
-        )
+        public static double[] ChebychevPolynomialSecondKind(int degree, double intervalBegin = -1d, double intervalEnd = 1d)
         {
             if (degree < 1)
             {
@@ -240,16 +172,16 @@ namespace MathNet.Numerics
             }
 
             // transform to map to [-1..1] interval
-            double location = 0.5 * (intervalBegin + intervalEnd);
-            double scale = 0.5 * (intervalEnd - intervalBegin);
+            double location = 0.5*(intervalBegin + intervalEnd);
+            double scale = 0.5*(intervalEnd - intervalBegin);
 
             // evaluate second kind chebychev nodes
-            double angleFactor = Constants.Pi / (degree + 1);
+            double angleFactor = Constants.Pi/(degree + 1);
 
             var samples = new double[degree];
             for (int i = 0; i < samples.Length; i++)
             {
-                samples[i] = location + scale * Math.Cos((i + 1) * angleFactor);
+                samples[i] = location + scale*Math.Cos((i + 1)*angleFactor);
             }
             return samples;
         }

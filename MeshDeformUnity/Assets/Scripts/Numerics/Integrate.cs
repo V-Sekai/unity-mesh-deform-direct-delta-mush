@@ -26,6 +26,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
+
 using System;
 using System.Numerics;
 using MathNet.Numerics.Integration;
@@ -45,16 +46,9 @@ namespace MathNet.Numerics
         /// <param name="intervalEnd">Where the interval stops, inclusive and finite.</param>
         /// <param name="targetAbsoluteError">The expected relative accuracy of the approximation.</param>
         /// <returns>Approximation of the finite integral in the given interval.</returns>
-        public static double
-        OnClosedInterval(
-            Func<double, double> f,
-            double intervalBegin,
-            double intervalEnd,
-            double targetAbsoluteError
-        )
+        public static double OnClosedInterval(Func<double, double> f, double intervalBegin, double intervalEnd, double targetAbsoluteError)
         {
-            return DoubleExponentialTransformation
-                .Integrate(f, intervalBegin, intervalEnd, targetAbsoluteError);
+            return DoubleExponentialTransformation.Integrate(f, intervalBegin, intervalEnd, targetAbsoluteError);
         }
 
         /// <summary>
@@ -64,15 +58,9 @@ namespace MathNet.Numerics
         /// <param name="intervalBegin">Where the interval starts, inclusive and finite.</param>
         /// <param name="intervalEnd">Where the interval stops, inclusive and finite.</param>
         /// <returns>Approximation of the finite integral in the given interval.</returns>
-        public static double
-        OnClosedInterval(
-            Func<double, double> f,
-            double intervalBegin,
-            double intervalEnd
-        )
+        public static double OnClosedInterval(Func<double, double> f, double intervalBegin, double intervalEnd)
         {
-            return DoubleExponentialTransformation
-                .Integrate(f, intervalBegin, intervalEnd, 1e-8);
+            return DoubleExponentialTransformation.Integrate(f, intervalBegin, intervalEnd, 1e-8);
         }
 
         /// <summary>
@@ -85,23 +73,9 @@ namespace MathNet.Numerics
         /// /// <param name="invervalEndB">Where the interval ends for the second (outside) integral, exclusive and finite.</param>
         /// <param name="order">Defines an Nth order Gauss-Legendre rule. The order also defines the number of abscissas and weights for the rule. Precomputed Gauss-Legendre abscissas/weights for orders 2-20, 32, 64, 96, 100, 128, 256, 512, 1024 are used, otherwise they're calculated on the fly.</param>
         /// <returns>Approximation of the finite integral in the given interval.</returns>
-        public static double
-        OnRectangle(
-            Func<double, double, double> f,
-            double invervalBeginA,
-            double invervalEndA,
-            double invervalBeginB,
-            double invervalEndB,
-            int order
-        )
+        public static double OnRectangle(Func<double, double, double> f, double invervalBeginA, double invervalEndA, double invervalBeginB, double invervalEndB, int order)
         {
-            return GaussLegendreRule
-                .Integrate(f,
-                invervalBeginA,
-                invervalEndA,
-                invervalBeginB,
-                invervalEndB,
-                order);
+            return GaussLegendreRule.Integrate(f, invervalBeginA, invervalEndA, invervalBeginB, invervalEndB, order);
         }
 
         /// <summary>
@@ -113,22 +87,9 @@ namespace MathNet.Numerics
         /// <param name="invervalBeginB">Where the interval starts for the second (outside) integral, exclusive and finite.</param>
         /// /// <param name="invervalEndB">Where the interval ends for the second (outside) integral, exclusive and finite.</param>
         /// <returns>Approximation of the finite integral in the given interval.</returns>
-        public static double
-        OnRectangle(
-            Func<double, double, double> f,
-            double invervalBeginA,
-            double invervalEndA,
-            double invervalBeginB,
-            double invervalEndB
-        )
+        public static double OnRectangle(Func<double, double, double> f, double invervalBeginA, double invervalEndA, double invervalBeginB, double invervalEndB)
         {
-            return GaussLegendreRule
-                .Integrate(f,
-                invervalBeginA,
-                invervalEndA,
-                invervalBeginB,
-                invervalEndB,
-                32);
+            return GaussLegendreRule.Integrate(f, invervalBeginA, invervalEndA, invervalBeginB, invervalEndB, 32);
         }
 
         /// <summary>
@@ -139,24 +100,16 @@ namespace MathNet.Numerics
         /// <param name="intervalEnd">Where the interval stops.</param>
         /// <param name="targetAbsoluteError">The expected relative accuracy of the approximation.</param>
         /// <returns>Approximation of the finite integral in the given interval.</returns>
-        public static double
-        DoubleExponential(
-            Func<double, double> f,
-            double intervalBegin,
-            double intervalEnd,
-            double targetAbsoluteError = 1E-8
-        )
+        public static double DoubleExponential(Func<double, double> f, double intervalBegin, double intervalEnd, double targetAbsoluteError = 1E-8)
         {
             // Reference:
             // Formula used for variable subsitution from
             // 1. Shampine, L. F. (2008). Vectorized adaptive quadrature in MATLAB. Journal of Computational and Applied Mathematics, 211(2), 131-140.
             // 2. quadgk.m, GNU Octave
+
             if (intervalBegin > intervalEnd)
             {
-                return -DoubleExponential(f,
-                intervalEnd,
-                intervalBegin,
-                targetAbsoluteError);
+                return -DoubleExponential(f, intervalEnd, intervalBegin, targetAbsoluteError);
             }
 
             // (-oo, oo) => [-1, 1]
@@ -164,66 +117,45 @@ namespace MathNet.Numerics
             // integral_(-oo)^(oo) f(x) dx = integral_(-1)^(1) f(g(t)) g'(t) dt
             // g(t) = t / (1 - t^2)
             // g'(t) = (1 + t^2) / (1 - t^2)^2
-            if (
-                double.IsInfinity(intervalBegin) &&
-                double.IsInfinity(intervalEnd)
-            )
+            if (double.IsInfinity(intervalBegin) && double.IsInfinity(intervalEnd))
             {
-                Func<double, double> u =
-                    (t) =>
-                    {
-                        return f(t / (1 - t * t)) *
-                        (1 + t * t) /
-                        ((1 - t * t) * (1 - t * t));
-                    };
-                return DoubleExponentialTransformation
-                    .Integrate(u, -1, 1, targetAbsoluteError);
+                Func<double, double> u = (t) =>
+                {
+                    return f(t / (1 - t * t)) * (1 + t * t) / ((1 - t * t) * (1 - t * t));
+                };
+                return DoubleExponentialTransformation.Integrate(u, -1, 1, targetAbsoluteError);
             }
-            else // [a, oo) => [0, 1]
+            // [a, oo) => [0, 1]
             //
             // integral_(a)^(oo) f(x) dx = integral_(0)^(oo) f(a + t^2) 2 t dt
             //                           = integral_(0)^(1) f(a + g(s)^2) 2 g(s) g'(s) ds
             // g(s) = s / (1 - s)
             // g'(s) = 1 / (1 - s)^2
-            if (double.IsInfinity(intervalEnd))
+            else if (double.IsInfinity(intervalEnd))
             {
-                Func<double, double> u =
-                    (s) =>
-                    {
-                        return 2 *
-                        s *
-                        f(intervalBegin + (s / (1 - s)) * (s / (1 - s))) /
-                        ((1 - s) * (1 - s) * (1 - s));
-                    };
-                return DoubleExponentialTransformation
-                    .Integrate(u, 0, 1, targetAbsoluteError);
+                Func<double, double> u = (s) =>
+                {
+                    return 2 * s * f(intervalBegin + (s / (1 - s)) * (s / (1 - s))) / ((1 - s) * (1 - s) * (1 - s));
+                };
+                return DoubleExponentialTransformation.Integrate(u, 0, 1, targetAbsoluteError);
             }
-            else // (-oo, b] => [-1, 0]
+            // (-oo, b] => [-1, 0]
             //
             // integral_(-oo)^(b) f(x) dx = -integral_(-oo)^(0) f(b - t^2) 2 t dt
             //                            = -integral_(-1)^(0) f(b - g(s)^2) 2 g(s) g'(s) ds
             // g(s) = s / (1 + s)
             // g'(s) = 1 / (1 + s)^2
-            if (double.IsInfinity(intervalBegin))
+            else if (double.IsInfinity(intervalBegin))
             {
-                Func<double, double> u =
-                    (s) =>
-                    {
-                        return -2 *
-                        s *
-                        f(intervalEnd - s / (1 + s) * (s / (1 + s))) /
-                        ((1 + s) * (1 + s) * (1 + s));
-                    };
-                return DoubleExponentialTransformation
-                    .Integrate(u, -1, 0, targetAbsoluteError);
+                Func<double, double> u = (s) =>
+                {
+                    return -2 * s * f(intervalEnd - s / (1 + s) * (s / (1 + s))) / ((1 + s) * (1 + s) * (1 + s));
+                };
+                return DoubleExponentialTransformation.Integrate(u, -1, 0, targetAbsoluteError);
             }
             else
             {
-                return DoubleExponentialTransformation
-                    .Integrate(f,
-                    intervalBegin,
-                    intervalEnd,
-                    targetAbsoluteError);
+                return DoubleExponentialTransformation.Integrate(f, intervalBegin, intervalEnd, targetAbsoluteError);
             }
         }
 
@@ -235,18 +167,13 @@ namespace MathNet.Numerics
         /// <param name="intervalEnd">Where the interval stops.</param>
         /// <param name="order">Defines an Nth order Gauss-Legendre rule. The order also defines the number of abscissas and weights for the rule. Precomputed Gauss-Legendre abscissas/weights for orders 2-20, 32, 64, 96, 100, 128, 256, 512, 1024 are used, otherwise they're calculated on the fly.</param>
         /// <returns>Approximation of the finite integral in the given interval.</returns>
-        public static double
-        GaussLegendre(
-            Func<double, double> f,
-            double intervalBegin,
-            double intervalEnd,
-            int order = 128
-        )
+        public static double GaussLegendre(Func<double, double> f, double intervalBegin, double intervalEnd, int order = 128)
         {
             // Reference:
             // Formula used for variable subsitution from
             // 1. Shampine, L. F. (2008). Vectorized adaptive quadrature in MATLAB. Journal of Computational and Applied Mathematics, 211(2), 131-140.
             // 2. quadgk.m, GNU Octave
+
             if (intervalBegin > intervalEnd)
             {
                 return -GaussLegendre(f, intervalEnd, intervalBegin, order);
@@ -257,76 +184,53 @@ namespace MathNet.Numerics
             // integral_(-oo)^(oo) f(x) dx = integral_(-1)^(1) f(g(t)) g'(t) dt
             // g(t) = t / (1 - t^2)
             // g'(t) = (1 + t^2) / (1 - t^2)^2
-            if (
-                double.IsInfinity(intervalBegin) &&
-                double.IsInfinity(intervalEnd)
-            )
+            if (double.IsInfinity(intervalBegin) && double.IsInfinity(intervalEnd))
             {
-                Func<double, double> u =
-                    (t) =>
-                    {
-                        return f(t / (1 - t * t)) *
-                        (1 + t * t) /
-                        ((1 - t * t) * (1 - t * t));
-                    };
+                Func<double, double> u = (t) =>
+                {
+                    return f(t / (1 - t * t)) * (1 + t * t) / ((1 - t * t) * (1 - t * t));
+                };
                 return GaussLegendreRule.Integrate(u, -1, 1, order);
             }
-            else // [a, oo) => [0, 1]
+            // [a, oo) => [0, 1]
             //
             // integral_(a)^(oo) f(x) dx = integral_(0)^(oo) f(a + t^2) 2 t dt
             //                           = integral_(0)^(1) f(a + g(s)^2) 2 g(s) g'(s) ds
             // g(s) = s / (1 - s)
             // g'(s) = 1 / (1 - s)^2
-            if (double.IsInfinity(intervalEnd))
+            else if (double.IsInfinity(intervalEnd))
             {
-                Func<double, double> u =
-                    (s) =>
-                    {
-                        return 2 *
-                        s *
-                        f(intervalBegin + (s / (1 - s)) * (s / (1 - s))) /
-                        ((1 - s) * (1 - s) * (1 - s));
-                    };
+                Func<double, double> u = (s) =>
+                {
+                    return 2 * s * f(intervalBegin + (s / (1 - s)) * (s / (1 - s))) / ((1 - s) * (1 - s) * (1 - s));
+                };
                 return GaussLegendreRule.Integrate(u, 0, 1, order);
             }
-            else // (-oo, b] => [-1, 0]
+            // (-oo, b] => [-1, 0]
             //
             // integral_(-oo)^(b) f(x) dx = -integral_(-oo)^(0) f(b - t^2) 2 t dt
             //                            = -integral_(-1)^(0) f(b - g(s)^2) 2 g(s) g'(s) ds
             // g(s) = s / (1 + s)
             // g'(s) = 1 / (1 + s)^2
-            if (double.IsInfinity(intervalBegin))
+            else if (double.IsInfinity(intervalBegin))
             {
-                Func<double, double> u =
-                    (s) =>
-                    {
-                        return -2 *
-                        s *
-                        f(intervalEnd - s / (1 + s) * (s / (1 + s))) /
-                        ((1 + s) * (1 + s) * (1 + s));
-                    };
+                Func<double, double> u = (s) =>
+                {
+                    return -2 * s * f(intervalEnd - s / (1 + s) * (s / (1 + s))) / ((1 + s) * (1 + s) * (1 + s));
+                };
                 return GaussLegendreRule.Integrate(u, -1, 0, order);
             }
-            else
             // [a, b] => [-1, 1]
             //
             // integral_(a)^(b) f(x) dx = integral_(-1)^(1) f(g(t)) g'(t) dt
             // g(t) = (b - a) * t * (3 - t^2) / 4 + (b + a) / 2
             // g'(t) = 3 / 4 * (b - a) * (1 - t^2)
+            else
             {
-                Func<double, double> u =
-                    (t) =>
-                    {
-                        return f((intervalEnd - intervalBegin) /
-                        4 *
-                        t *
-                        (3 - t * t) +
-                        (intervalEnd + intervalBegin) / 2) *
-                        3 *
-                        (intervalEnd - intervalBegin) /
-                        4 *
-                        (1 - t * t);
-                    };
+                Func<double, double> u = (t) =>
+                {
+                    return f((intervalEnd - intervalBegin) / 4 * t * (3 - t * t) + (intervalEnd + intervalBegin) / 2) * 3 * (intervalEnd - intervalBegin) / 4 * (1 - t * t);
+                };
                 return GaussLegendreRule.Integrate(u, -1, 1, order);
             }
         }
@@ -341,25 +245,9 @@ namespace MathNet.Numerics
         /// <param name="maximumDepth">The maximum number of interval splittings permitted before stopping.</param>
         /// <param name="order">The number of Gauss-Kronrod points. Pre-computed for 15, 21, 31, 41, 51 and 61 points.</param>
         /// <returns>Approximation of the finite integral in the given interval.</returns>
-        public static double
-        GaussKronrod(
-            Func<double, double> f,
-            double intervalBegin,
-            double intervalEnd,
-            double targetRelativeError = 1E-8,
-            int maximumDepth = 15,
-            int order = 15
-        )
+        public static double GaussKronrod(Func<double, double> f, double intervalBegin, double intervalEnd, double targetRelativeError = 1E-8, int maximumDepth = 15, int order = 15)
         {
-            return GaussKronrodRule
-                .Integrate(f,
-                intervalBegin,
-                intervalEnd,
-                out _,
-                out _,
-                targetRelativeError: targetRelativeError,
-                maximumDepth: maximumDepth,
-                order: order);
+            return GaussKronrodRule.Integrate(f, intervalBegin, intervalEnd, out _, out _, targetRelativeError: targetRelativeError, maximumDepth: maximumDepth, order: order);
         }
 
         /// <summary>
@@ -374,27 +262,9 @@ namespace MathNet.Numerics
         /// <param name="maximumDepth">The maximum number of interval splittings permitted before stopping</param>
         /// <param name="order">The number of Gauss-Kronrod points. Pre-computed for 15, 21, 31, 41, 51 and 61 points</param>
         /// <returns>Approximation of the finite integral in the given interval.</returns>
-        public static double
-        GaussKronrod(
-            Func<double, double> f,
-            double intervalBegin,
-            double intervalEnd,
-            out double error,
-            out double L1Norm,
-            double targetRelativeError = 1E-8,
-            int maximumDepth = 15,
-            int order = 15
-        )
+        public static double GaussKronrod(Func<double, double> f, double intervalBegin, double intervalEnd, out double error, out double L1Norm, double targetRelativeError = 1E-8, int maximumDepth = 15, int order = 15)
         {
-            return GaussKronrodRule
-                .Integrate(f,
-                intervalBegin,
-                intervalEnd,
-                out error,
-                out L1Norm,
-                targetRelativeError: targetRelativeError,
-                maximumDepth: maximumDepth,
-                order: order);
+            return GaussKronrodRule.Integrate(f, intervalBegin, intervalEnd, out error, out L1Norm, targetRelativeError: targetRelativeError, maximumDepth: maximumDepth, order: order);
         }
     }
 
@@ -411,24 +281,16 @@ namespace MathNet.Numerics
         /// <param name="intervalEnd">Where the interval stops.</param>
         /// <param name="targetAbsoluteError">The expected relative accuracy of the approximation.</param>
         /// <returns>Approximation of the finite integral in the given interval.</returns>
-        public static Complex
-        DoubleExponential(
-            Func<double, Complex> f,
-            double intervalBegin,
-            double intervalEnd,
-            double targetAbsoluteError = 1E-8
-        )
+        public static Complex DoubleExponential(Func<double, Complex> f, double intervalBegin, double intervalEnd, double targetAbsoluteError = 1E-8)
         {
             // Reference:
             // Formula used for variable subsitution from
             // 1. Shampine, L. F. (2008). Vectorized adaptive quadrature in MATLAB. Journal of Computational and Applied Mathematics, 211(2), 131-140.
             // 2. quadgk.m, GNU Octave
+
             if (intervalBegin > intervalEnd)
             {
-                return -DoubleExponential(f,
-                intervalEnd,
-                intervalBegin,
-                targetAbsoluteError);
+                return -DoubleExponential(f, intervalEnd, intervalBegin, targetAbsoluteError);
             }
 
             // (-oo, oo) => [-1, 1]
@@ -436,66 +298,45 @@ namespace MathNet.Numerics
             // integral_(-oo)^(oo) f(x) dx = integral_(-1)^(1) f(g(t)) g'(t) dt
             // g(t) = t / (1 - t^2)
             // g'(t) = (1 + t^2) / (1 - t^2)^2
-            if (
-                double.IsInfinity(intervalBegin) &&
-                double.IsInfinity(intervalEnd)
-            )
+            if (double.IsInfinity(intervalBegin) && double.IsInfinity(intervalEnd))
             {
-                Func<double, Complex> u =
-                    (t) =>
-                    {
-                        return f(t / (1 - t * t)) *
-                        (1 + t * t) /
-                        ((1 - t * t) * (1 - t * t));
-                    };
-                return DoubleExponentialTransformation
-                    .ContourIntegrate(u, -1, 1, targetAbsoluteError);
+                Func<double, Complex> u = (t) =>
+                {
+                    return f(t / (1 - t * t)) * (1 + t * t) / ((1 - t * t) * (1 - t * t));
+                };
+                return DoubleExponentialTransformation.ContourIntegrate(u, -1, 1, targetAbsoluteError);
             }
-            else // [a, oo) => [0, 1]
+            // [a, oo) => [0, 1]
             //
             // integral_(a)^(oo) f(x) dx = integral_(0)^(oo) f(a + t^2) 2 t dt
             //                           = integral_(0)^(1) f(a + g(s)^2) 2 g(s) g'(s) ds
             // g(s) = s / (1 - s)
             // g'(s) = 1 / (1 - s)^2
-            if (double.IsInfinity(intervalEnd))
+            else if (double.IsInfinity(intervalEnd))
             {
-                Func<double, Complex> u =
-                    (s) =>
-                    {
-                        return 2 *
-                        s *
-                        f(intervalBegin + (s / (1 - s)) * (s / (1 - s))) /
-                        ((1 - s) * (1 - s) * (1 - s));
-                    };
-                return DoubleExponentialTransformation
-                    .ContourIntegrate(u, 0, 1, targetAbsoluteError);
+                Func<double, Complex> u = (s) =>
+                {
+                    return 2 * s * f(intervalBegin + (s / (1 - s)) * (s / (1 - s))) / ((1 - s) * (1 - s) * (1 - s));
+                };
+                return DoubleExponentialTransformation.ContourIntegrate(u, 0, 1, targetAbsoluteError);
             }
-            else // (-oo, b] => [-1, 0]
+            // (-oo, b] => [-1, 0]
             //
             // integral_(-oo)^(b) f(x) dx = -integral_(-oo)^(0) f(b - t^2) 2 t dt
             //                            = -integral_(-1)^(0) f(b - g(s)^2) 2 g(s) g'(s) ds
             // g(s) = s / (1 + s)
             // g'(s) = 1 / (1 + s)^2
-            if (double.IsInfinity(intervalBegin))
+            else if (double.IsInfinity(intervalBegin))
             {
-                Func<double, Complex> u =
-                    (s) =>
-                    {
-                        return -2 *
-                        s *
-                        f(intervalEnd - s / (1 + s) * (s / (1 + s))) /
-                        ((1 + s) * (1 + s) * (1 + s));
-                    };
-                return DoubleExponentialTransformation
-                    .ContourIntegrate(u, -1, 0, targetAbsoluteError);
+                Func<double, Complex> u = (s) =>
+                {
+                    return -2 * s * f(intervalEnd - s / (1 + s) * (s / (1 + s))) / ((1 + s) * (1 + s) * (1 + s));
+                };
+                return DoubleExponentialTransformation.ContourIntegrate(u, -1, 0, targetAbsoluteError);
             }
             else
             {
-                return DoubleExponentialTransformation
-                    .ContourIntegrate(f,
-                    intervalBegin,
-                    intervalEnd,
-                    targetAbsoluteError);
+                return DoubleExponentialTransformation.ContourIntegrate(f, intervalBegin, intervalEnd, targetAbsoluteError);
             }
         }
 
@@ -507,18 +348,13 @@ namespace MathNet.Numerics
         /// <param name="intervalEnd">Where the interval stops.</param>
         /// <param name="order">Defines an Nth order Gauss-Legendre rule. The order also defines the number of abscissas and weights for the rule. Precomputed Gauss-Legendre abscissas/weights for orders 2-20, 32, 64, 96, 100, 128, 256, 512, 1024 are used, otherwise they're calculated on the fly.</param>
         /// <returns>Approximation of the finite integral in the given interval.</returns>
-        public static Complex
-        GaussLegendre(
-            Func<double, Complex> f,
-            double intervalBegin,
-            double intervalEnd,
-            int order = 128
-        )
+        public static Complex GaussLegendre(Func<double, Complex> f, double intervalBegin, double intervalEnd, int order = 128)
         {
             // Reference:
             // Formula used for variable subsitution from
             // 1. Shampine, L. F. (2008). Vectorized adaptive quadrature in MATLAB. Journal of Computational and Applied Mathematics, 211(2), 131-140.
             // 2. quadgk.m, GNU Octave
+
             if (intervalBegin > intervalEnd)
             {
                 return -GaussLegendre(f, intervalEnd, intervalBegin, order);
@@ -529,76 +365,53 @@ namespace MathNet.Numerics
             // integral_(-oo)^(oo) f(x) dx = integral_(-1)^(1) f(g(t)) g'(t) dt
             // g(t) = t / (1 - t^2)
             // g'(t) = (1 + t^2) / (1 - t^2)^2
-            if (
-                double.IsInfinity(intervalBegin) &&
-                double.IsInfinity(intervalEnd)
-            )
+            if (double.IsInfinity(intervalBegin) && double.IsInfinity(intervalEnd))
             {
-                Func<double, Complex> u =
-                    (t) =>
-                    {
-                        return f(t / (1 - t * t)) *
-                        (1 + t * t) /
-                        ((1 - t * t) * (1 - t * t));
-                    };
+                Func<double, Complex> u = (t) =>
+                {
+                    return f(t / (1 - t * t)) * (1 + t * t) / ((1 - t * t) * (1 - t * t));
+                };
                 return GaussLegendreRule.ContourIntegrate(u, -1, 1, order);
             }
-            else // [a, oo) => [0, 1]
+            // [a, oo) => [0, 1]
             //
             // integral_(a)^(oo) f(x) dx = integral_(0)^(oo) f(a + t^2) 2 t dt
             //                           = integral_(0)^(1) f(a + g(s)^2) 2 g(s) g'(s) ds
             // g(s) = s / (1 - s)
             // g'(s) = 1 / (1 - s)^2
-            if (double.IsInfinity(intervalEnd))
+            else if (double.IsInfinity(intervalEnd))
             {
-                Func<double, Complex> u =
-                    (s) =>
-                    {
-                        return 2 *
-                        s *
-                        f(intervalBegin + (s / (1 - s)) * (s / (1 - s))) /
-                        ((1 - s) * (1 - s) * (1 - s));
-                    };
+                Func<double, Complex> u = (s) =>
+                {
+                    return 2 * s * f(intervalBegin + (s / (1 - s)) * (s / (1 - s))) / ((1 - s) * (1 - s) * (1 - s));
+                };
                 return GaussLegendreRule.ContourIntegrate(u, 0, 1, order);
             }
-            else // (-oo, b] => [-1, 0]
+            // (-oo, b] => [-1, 0]
             //
             // integral_(-oo)^(b) f(x) dx = -integral_(-oo)^(0) f(b - t^2) 2 t dt
             //                            = -integral_(-1)^(0) f(b - g(s)^2) 2 g(s) g'(s) ds
             // g(s) = s / (1 + s)
             // g'(s) = 1 / (1 + s)^2
-            if (double.IsInfinity(intervalBegin))
+            else if (double.IsInfinity(intervalBegin))
             {
-                Func<double, Complex> u =
-                    (s) =>
-                    {
-                        return -2 *
-                        s *
-                        f(intervalEnd - s / (1 + s) * (s / (1 + s))) /
-                        ((1 + s) * (1 + s) * (1 + s));
-                    };
+                Func<double, Complex> u = (s) =>
+                {
+                    return -2 * s * f(intervalEnd - s / (1 + s) * (s / (1 + s))) / ((1 + s) * (1 + s) * (1 + s));
+                };
                 return GaussLegendreRule.ContourIntegrate(u, -1, 0, order);
             }
-            else
             // [a, b] => [-1, 1]
             //
             // integral_(a)^(b) f(x) dx = integral_(-1)^(1) f(g(t)) g'(t) dt
             // g(t) = (b - a) * t * (3 - t^2) / 4 + (b + a) / 2
             // g'(t) = 3 / 4 * (b - a) * (1 - t^2)
+            else
             {
-                Func<double, Complex> u =
-                    (t) =>
-                    {
-                        return f((intervalEnd - intervalBegin) /
-                        4 *
-                        t *
-                        (3 - t * t) +
-                        (intervalEnd + intervalBegin) / 2) *
-                        3 *
-                        (intervalEnd - intervalBegin) /
-                        4 *
-                        (1 - t * t);
-                    };
+                Func<double, Complex> u = (t) =>
+                {
+                    return f((intervalEnd - intervalBegin) / 4 * t * (3 - t * t) + (intervalEnd + intervalBegin) / 2) * 3 * (intervalEnd - intervalBegin) / 4 * (1 - t * t);
+                };
                 return GaussLegendreRule.ContourIntegrate(u, -1, 1, order);
             }
         }
@@ -613,25 +426,9 @@ namespace MathNet.Numerics
         /// <param name="maximumDepth">The maximum number of interval splittings permitted before stopping</param>
         /// <param name="order">The number of Gauss-Kronrod points. Pre-computed for 15, 21, 31, 41, 51 and 61 points</param>
         /// <returns>Approximation of the finite integral in the given interval.</returns>
-        public static Complex
-        GaussKronrod(
-            Func<double, Complex> f,
-            double intervalBegin,
-            double intervalEnd,
-            double targetRelativeError = 1E-8,
-            int maximumDepth = 15,
-            int order = 15
-        )
+        public static Complex GaussKronrod(Func<double, Complex> f, double intervalBegin, double intervalEnd, double targetRelativeError = 1E-8, int maximumDepth = 15, int order = 15)
         {
-            return GaussKronrodRule
-                .ContourIntegrate(f,
-                intervalBegin,
-                intervalEnd,
-                out _,
-                out _,
-                targetRelativeError: targetRelativeError,
-                maximumDepth: maximumDepth,
-                order: order);
+            return GaussKronrodRule.ContourIntegrate(f, intervalBegin, intervalEnd, out _, out _, targetRelativeError: targetRelativeError, maximumDepth: maximumDepth, order: order);
         }
 
         /// <summary>
@@ -646,27 +443,9 @@ namespace MathNet.Numerics
         /// <param name="maximumDepth">The maximum number of interval splittings permitted before stopping</param>
         /// <param name="order">The number of Gauss-Kronrod points. Pre-computed for 15, 21, 31, 41, 51 and 61 points</param>
         /// <returns>Approximation of the finite integral in the given interval.</returns>
-        public static Complex
-        GaussKronrod(
-            Func<double, Complex> f,
-            double intervalBegin,
-            double intervalEnd,
-            out double error,
-            out double L1Norm,
-            double targetRelativeError = 1E-8,
-            int maximumDepth = 15,
-            int order = 15
-        )
+        public static Complex GaussKronrod(Func<double, Complex> f, double intervalBegin, double intervalEnd, out double error, out double L1Norm, double targetRelativeError = 1E-8, int maximumDepth = 15, int order = 15)
         {
-            return GaussKronrodRule
-                .ContourIntegrate(f,
-                intervalBegin,
-                intervalEnd,
-                out error,
-                out L1Norm,
-                targetRelativeError: targetRelativeError,
-                maximumDepth: maximumDepth,
-                order: order);
+            return GaussKronrodRule.ContourIntegrate(f, intervalBegin, intervalEnd, out error, out L1Norm, targetRelativeError: targetRelativeError, maximumDepth: maximumDepth, order: order);
         }
     }
 }

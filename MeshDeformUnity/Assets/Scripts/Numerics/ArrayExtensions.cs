@@ -26,8 +26,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
-using System;
 
+using System;
 using Complex = System.Numerics.Complex;
 
 namespace MathNet.Numerics
@@ -44,12 +44,7 @@ namespace MathNet.Numerics
         /// <param name="dest">The destination array.</param>
         public static void Copy(this double[] source, double[] dest)
         {
-            Buffer
-                .BlockCopy(source,
-                0,
-                dest,
-                0,
-                source.Length * Constants.SizeOfDouble);
+            Buffer.BlockCopy(source, 0, dest, 0, source.Length * Constants.SizeOfDouble);
         }
 
         /// <summary>
@@ -59,12 +54,7 @@ namespace MathNet.Numerics
         /// <param name="dest">The destination array.</param>
         public static void Copy(this float[] source, float[] dest)
         {
-            Buffer
-                .BlockCopy(source,
-                0,
-                dest,
-                0,
-                source.Length * Constants.SizeOfFloat);
+            Buffer.BlockCopy(source, 0, dest, 0, source.Length * Constants.SizeOfFloat);
         }
 
         /// <summary>

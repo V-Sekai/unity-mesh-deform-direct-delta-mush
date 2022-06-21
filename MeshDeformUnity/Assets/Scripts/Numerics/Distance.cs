@@ -26,6 +26,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
+
 using System;
 using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra;
@@ -42,8 +43,7 @@ namespace MathNet.Numerics
         /// <summary>
         /// Sum of Absolute Difference (SAD), i.e. the L1-norm (Manhattan) of the difference.
         /// </summary>
-        public static double SAD<T>(Vector<T> a, Vector<T> b)
-            where T : struct, IEquatable<T>, IFormattable
+        public static double SAD<T>(Vector<T> a, Vector<T> b) where T : struct, IEquatable<T>, IFormattable
         {
             return (a - b).L1Norm();
         }
@@ -87,10 +87,9 @@ namespace MathNet.Numerics
         /// <summary>
         /// Mean-Absolute Error (MAE), i.e. the normalized L1-norm (Manhattan) of the difference.
         /// </summary>
-        public static double MAE<T>(Vector<T> a, Vector<T> b)
-            where T : struct, IEquatable<T>, IFormattable
+        public static double MAE<T>(Vector<T> a, Vector<T> b) where T : struct, IEquatable<T>, IFormattable
         {
-            return (a - b).L1Norm() / a.Count;
+            return (a - b).L1Norm()/a.Count;
         }
 
         /// <summary>
@@ -98,7 +97,7 @@ namespace MathNet.Numerics
         /// </summary>
         public static double MAE(double[] a, double[] b)
         {
-            return SAD(a, b) / a.Length;
+            return SAD(a, b)/a.Length;
         }
 
         /// <summary>
@@ -106,17 +105,16 @@ namespace MathNet.Numerics
         /// </summary>
         public static float MAE(float[] a, float[] b)
         {
-            return SAD(a, b) / a.Length;
+            return SAD(a, b)/a.Length;
         }
 
         /// <summary>
         /// Sum of Squared Difference (SSD), i.e. the squared L2-norm (Euclidean) of the difference.
         /// </summary>
-        public static double SSD<T>(Vector<T> a, Vector<T> b)
-            where T : struct, IEquatable<T>, IFormattable
+        public static double SSD<T>(Vector<T> a, Vector<T> b) where T : struct, IEquatable<T>, IFormattable
         {
             var norm = (a - b).L2Norm();
-            return norm * norm;
+            return norm*norm;
         }
 
         /// <summary>
@@ -130,7 +128,7 @@ namespace MathNet.Numerics
             }
 
             var diff = new double[a.Length];
-            LinearAlgebraControl.Provider.SubtractArrays (a, b, diff);
+            LinearAlgebraControl.Provider.SubtractArrays(a, b, diff);
             return LinearAlgebraControl.Provider.DotProduct(diff, diff);
         }
 
@@ -145,18 +143,17 @@ namespace MathNet.Numerics
             }
 
             var diff = new float[a.Length];
-            LinearAlgebraControl.Provider.SubtractArrays (a, b, diff);
+            LinearAlgebraControl.Provider.SubtractArrays(a, b, diff);
             return LinearAlgebraControl.Provider.DotProduct(diff, diff);
         }
 
         /// <summary>
         /// Mean-Squared Error (MSE), i.e. the normalized squared L2-norm (Euclidean) of the difference.
         /// </summary>
-        public static double MSE<T>(Vector<T> a, Vector<T> b)
-            where T : struct, IEquatable<T>, IFormattable
+        public static double MSE<T>(Vector<T> a, Vector<T> b) where T : struct, IEquatable<T>, IFormattable
         {
             var norm = (a - b).L2Norm();
-            return norm * norm / a.Count;
+            return norm*norm/a.Count;
         }
 
         /// <summary>
@@ -164,7 +161,7 @@ namespace MathNet.Numerics
         /// </summary>
         public static double MSE(double[] a, double[] b)
         {
-            return SSD(a, b) / a.Length;
+            return SSD(a, b)/a.Length;
         }
 
         /// <summary>
@@ -172,14 +169,13 @@ namespace MathNet.Numerics
         /// </summary>
         public static float MSE(float[] a, float[] b)
         {
-            return SSD(a, b) / a.Length;
+            return SSD(a, b)/a.Length;
         }
 
         /// <summary>
         /// Euclidean Distance, i.e. the L2-norm of the difference.
         /// </summary>
-        public static double Euclidean<T>(Vector<T> a, Vector<T> b)
-            where T : struct, IEquatable<T>, IFormattable
+        public static double Euclidean<T>(Vector<T> a, Vector<T> b) where T : struct, IEquatable<T>, IFormattable
         {
             return (a - b).L2Norm();
         }
@@ -203,8 +199,7 @@ namespace MathNet.Numerics
         /// <summary>
         /// Manhattan Distance, i.e. the L1-norm of the difference.
         /// </summary>
-        public static double Manhattan<T>(Vector<T> a, Vector<T> b)
-            where T : struct, IEquatable<T>, IFormattable
+        public static double Manhattan<T>(Vector<T> a, Vector<T> b) where T : struct, IEquatable<T>, IFormattable
         {
             return (a - b).L1Norm();
         }
@@ -228,8 +223,7 @@ namespace MathNet.Numerics
         /// <summary>
         /// Chebyshev Distance, i.e. the Infinity-norm of the difference.
         /// </summary>
-        public static double Chebyshev<T>(Vector<T> a, Vector<T> b)
-            where T : struct, IEquatable<T>, IFormattable
+        public static double Chebyshev<T>(Vector<T> a, Vector<T> b) where T : struct, IEquatable<T>, IFormattable
         {
             return (a - b).InfinityNorm();
         }
@@ -281,8 +275,7 @@ namespace MathNet.Numerics
         /// <summary>
         /// Minkowski Distance, i.e. the generalized p-norm of the difference.
         /// </summary>
-        public static double Minkowski<T>(double p, Vector<T> a, Vector<T> b)
-            where T : struct, IEquatable<T>, IFormattable
+        public static double Minkowski<T>(double p, Vector<T> a, Vector<T> b) where T : struct, IEquatable<T>, IFormattable
         {
             return (a - b).Norm(p);
         }
@@ -360,7 +353,7 @@ namespace MathNet.Numerics
             {
                 sum += Math.Pow(Math.Abs(a[i] - b[i]), p);
             }
-            return (float) Math.Pow(sum, 1.0 / p);
+            return (float) Math.Pow(sum, 1.0/p);
         }
 
         /// <summary>
@@ -376,8 +369,7 @@ namespace MathNet.Numerics
             double sum = 0d;
             for (var i = 0; i < a.Length; i++)
             {
-                sum +=
-                    Math.Abs(a[i] - b[i]) / (Math.Abs(a[i]) + Math.Abs(b[i]));
+                sum += Math.Abs(a[i] - b[i]) / (Math.Abs(a[i]) + Math.Abs(b[i]));
             }
             return sum;
         }
@@ -395,8 +387,7 @@ namespace MathNet.Numerics
             float sum = 0f;
             for (var i = 0; i < a.Length; i++)
             {
-                sum +=
-                    Math.Abs(a[i] - b[i]) / (Math.Abs(a[i]) + Math.Abs(b[i]));
+                sum += Math.Abs(a[i] - b[i]) / (Math.Abs(a[i]) + Math.Abs(b[i]));
             }
             return sum;
         }
@@ -414,7 +405,7 @@ namespace MathNet.Numerics
             var ab = LinearAlgebraControl.Provider.DotProduct(a, b);
             var a2 = LinearAlgebraControl.Provider.DotProduct(a, a);
             var b2 = LinearAlgebraControl.Provider.DotProduct(b, b);
-            return 1d - ab / Math.Sqrt(a2 * b2);
+            return 1d - ab/Math.Sqrt(a2*b2);
         }
 
         /// <summary>
@@ -430,7 +421,7 @@ namespace MathNet.Numerics
             var ab = LinearAlgebraControl.Provider.DotProduct(a, b);
             var a2 = LinearAlgebraControl.Provider.DotProduct(a, a);
             var b2 = LinearAlgebraControl.Provider.DotProduct(b, b);
-            return (float)(1d - ab / Math.Sqrt(a2 * b2));
+            return (float)(1d - ab/Math.Sqrt(a2*b2));
         }
 
         /// <summary>
@@ -478,8 +469,7 @@ namespace MathNet.Numerics
         /// <summary>
         /// Pearson's distance, i.e. 1 - the person correlation coefficient.
         /// </summary>
-        public static double
-        Pearson(IEnumerable<double> a, IEnumerable<double> b)
+        public static double Pearson(IEnumerable<double> a, IEnumerable<double> b)
         {
             return 1.0 - Correlation.Pearson(a, b);
         }
@@ -492,9 +482,7 @@ namespace MathNet.Numerics
         /// <returns>Jaccard distance.</returns>
         public static double Jaccard(double[] a, double[] b)
         {
-            int
-                intersection = 0,
-                union = 0;
+            int intersection = 0, union = 0;
 
             if (a == null)
             {
@@ -516,13 +504,7 @@ namespace MathNet.Numerics
                 return 0;
             }
 
-            for (
-                int
-                    x = 0,
-                    len = a.Length;
-                x < len;
-                x++
-            )
+            for (int x = 0, len = a.Length; x < len; x++)
             {
                 if (a[x] != 0 && b[x] != 0)
                 {
@@ -535,7 +517,7 @@ namespace MathNet.Numerics
                 }
             }
 
-            return 1.0 - ((double) intersection / union);
+            return 1.0 - ((double)intersection / union);
         }
 
         /// <summary>
@@ -546,9 +528,7 @@ namespace MathNet.Numerics
         /// <returns>Jaccard distance.</returns>
         public static double Jaccard(float[] a, float[] b)
         {
-            int
-                intersection = 0,
-                union = 0;
+            int intersection = 0, union = 0;
 
             if (a == null)
             {
@@ -570,13 +550,7 @@ namespace MathNet.Numerics
                 return 0;
             }
 
-            for (
-                int
-                    x = 0,
-                    len = a.Length;
-                x < len;
-                x++
-            )
+            for (int x = 0, len = a.Length; x < len; x++)
             {
                 if (a[x] != 0 && b[x] != 0)
                 {
@@ -589,7 +563,7 @@ namespace MathNet.Numerics
                 }
             }
 
-            return 1.0 - ((float) intersection / union);
+            return 1.0 - ((float)intersection / union);
         }
     }
 }

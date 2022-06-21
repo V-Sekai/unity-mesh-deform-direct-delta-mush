@@ -26,6 +26,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -46,8 +47,7 @@ namespace MathNet.Numerics
         /// formatting information.
         /// </param>
         /// <returns>A <see cref="CultureInfo"/> instance.</returns>
-        internal static CultureInfo
-        GetCultureInfo(this IFormatProvider formatProvider)
+        internal static CultureInfo GetCultureInfo(this IFormatProvider formatProvider)
         {
             if (formatProvider == null)
             {
@@ -55,9 +55,7 @@ namespace MathNet.Numerics
             }
 
             return (formatProvider as CultureInfo)
-                ?? (
-                formatProvider.GetFormat(typeof (CultureInfo)) as CultureInfo
-                )
+                ?? (formatProvider.GetFormat(typeof (CultureInfo)) as CultureInfo)
                     ?? CultureInfo.CurrentCulture;
         }
 
@@ -70,8 +68,7 @@ namespace MathNet.Numerics
         /// formatting information.
         /// </param>
         /// <returns>A <see cref="NumberFormatInfo"/> instance.</returns>
-        internal static NumberFormatInfo
-        GetNumberFormatInfo(this IFormatProvider formatProvider)
+        internal static NumberFormatInfo GetNumberFormatInfo(this IFormatProvider formatProvider)
         {
             return NumberFormatInfo.GetInstance(formatProvider);
         }
@@ -84,8 +81,7 @@ namespace MathNet.Numerics
         /// formatting information.
         /// </param>
         /// <returns>A <see cref="TextInfo"/> instance.</returns>
-        internal static TextInfo
-        GetTextInfo(this IFormatProvider formatProvider)
+        internal static TextInfo GetTextInfo(this IFormatProvider formatProvider)
         {
             if (formatProvider == null)
             {
@@ -102,31 +98,19 @@ namespace MathNet.Numerics
         /// <param name="node">Node that contains the trimmed string to be tokenized.</param>
         /// <param name="keywords">List of keywords to tokenize by.</param>
         /// <param name="skip">keywords to skip looking for (because they've already been handled).</param>
-        internal static void Tokenize(
-            LinkedListNode<string> node,
-            string[] keywords,
-            int skip
-        )
+        internal static void Tokenize(LinkedListNode<string> node, string[] keywords, int skip)
         {
             for (int i = skip; i < keywords.Length; i++)
             {
                 var keyword = keywords[i];
                 int indexOfKeyword;
-                while ((
-                    indexOfKeyword =
-                        node.Value.IndexOf(keyword, StringComparison.Ordinal)
-                    ) >=
-                    0
-                )
+                while ((indexOfKeyword = node.Value.IndexOf(keyword, StringComparison.Ordinal)) >= 0)
                 {
                     if (indexOfKeyword != 0)
                     {
                         // separate part before the token, process recursively
-                        string partBeforeKeyword =
-                            node.Value.Substring(0, indexOfKeyword).Trim();
-                        Tokenize(node.List.AddBefore(node, partBeforeKeyword),
-                        keywords,
-                        i + 1);
+                        string partBeforeKeyword = node.Value.Substring(0, indexOfKeyword).Trim();
+                        Tokenize(node.List.AddBefore(node, partBeforeKeyword), keywords, i + 1);
 
                         // continue processing the rest iteratively
                         node.Value = node.Value.Substring(indexOfKeyword);
@@ -138,9 +122,8 @@ namespace MathNet.Numerics
                     }
 
                     // separate the token, done
-                    string partAfterKeyword =
-                        node.Value.Substring(keyword.Length).Trim();
-                    node.List.AddBefore (node, keyword);
+                    string partAfterKeyword = node.Value.Substring(keyword.Length).Trim();
+                    node.List.AddBefore(node, keyword);
 
                     // continue processing the rest on the right iteratively
                     node.Value = partAfterKeyword;
@@ -155,8 +138,7 @@ namespace MathNet.Numerics
         /// <param name="culture">Culture Info.</param>
         /// <returns>The parsed double number using the given culture information.</returns>
         /// <exception cref="FormatException" />
-        internal static double
-        ParseDouble(ref LinkedListNode<string> token, CultureInfo culture)
+        internal static double ParseDouble(ref LinkedListNode<string> token, CultureInfo culture)
         {
             // in case the + and - in scientific notation are separated, join them back together.
             if (token.Value.EndsWith("e", true, culture))
@@ -166,8 +148,7 @@ namespace MathNet.Numerics
                     throw new FormatException();
                 }
 
-                token.Value =
-                    token.Value + token.Next.Value + token.Next.Next.Value;
+                token.Value = token.Value + token.Next.Value + token.Next.Next.Value;
 
                 var list = token.List;
                 list.Remove(token.Next.Next);
@@ -175,10 +156,7 @@ namespace MathNet.Numerics
             }
 
             double value;
-            if (
-                !double
-                    .TryParse(token.Value, NumberStyles.Any, culture, out value)
-            )
+            if (!double.TryParse(token.Value, NumberStyles.Any, culture, out value))
             {
                 throw new FormatException();
             }
@@ -194,8 +172,7 @@ namespace MathNet.Numerics
         /// <param name="culture">Culture Info.</param>
         /// <returns>The parsed float number using the given culture information.</returns>
         /// <exception cref="FormatException" />
-        internal static float
-        ParseSingle(ref LinkedListNode<string> token, CultureInfo culture)
+        internal static float ParseSingle(ref LinkedListNode<string> token, CultureInfo culture)
         {
             // in case the + and - in scientific notation are separated, join them back together.
             if (token.Value.EndsWith("e", true, culture))
@@ -205,8 +182,7 @@ namespace MathNet.Numerics
                     throw new FormatException();
                 }
 
-                token.Value =
-                    token.Value + token.Next.Value + token.Next.Next.Value;
+                token.Value = token.Value + token.Next.Value + token.Next.Next.Value;
 
                 var list = token.List;
                 list.Remove(token.Next.Next);
@@ -214,10 +190,7 @@ namespace MathNet.Numerics
             }
 
             float value;
-            if (
-                !Single
-                    .TryParse(token.Value, NumberStyles.Any, culture, out value)
-            )
+            if (!Single.TryParse(token.Value, NumberStyles.Any, culture, out value))
             {
                 throw new FormatException();
             }
