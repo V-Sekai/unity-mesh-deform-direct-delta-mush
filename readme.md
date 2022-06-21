@@ -1,4 +1,4 @@
-# Real-Time Mesh Skinning with Direct Delta Mush (Unity)
+# Real-Time Mesh Skinning with Direct Delta Mush (Unity) (fire edition) 
 
 ## Project Description
 
