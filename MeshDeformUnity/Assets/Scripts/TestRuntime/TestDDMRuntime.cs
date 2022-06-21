@@ -5,17 +5,17 @@ using UnityEngine;
 public class TestDDMRuntime : MonoBehaviour
 {
     //public List<GameObject> meshObjects;
-
-    
     public int iterations = -1;
+
     public float smoothLambda = -1.0f;
+
     public float adjacencyMatchingVertexTolerance = -1.0f;
 
     void UpdateValues(DDMSkinnedMeshGPUBase script)
     {
-        if(script != null)
+        if (script != null)
         {
-            if(iterations >= 0)
+            if (iterations >= 0)
             {
                 script.iterations = iterations;
             }
@@ -25,7 +25,8 @@ public class TestDDMRuntime : MonoBehaviour
             }
             if (adjacencyMatchingVertexTolerance >= 0.0f)
             {
-                script.adjacencyMatchingVertexTolerance = adjacencyMatchingVertexTolerance;
+                script.adjacencyMatchingVertexTolerance =
+                    adjacencyMatchingVertexTolerance;
             }
         }
     }
@@ -38,13 +39,15 @@ public class TestDDMRuntime : MonoBehaviour
             {
                 script.iterations = iterations;
             }
+
             //if (smoothLambda >= 0.0f)
             //{
             //    script.smoothLambda = smoothLambda;
             //}
             if (adjacencyMatchingVertexTolerance >= 0.0f)
             {
-                script.adjacencyMatchingVertexTolerance = adjacencyMatchingVertexTolerance;
+                script.adjacencyMatchingVertexTolerance =
+                    adjacencyMatchingVertexTolerance;
             }
         }
     }
@@ -52,17 +55,19 @@ public class TestDDMRuntime : MonoBehaviour
     void Awake()
     {
         Debug.Log("Test DDM runtime awake.");
-        DDMSkinnedMeshGPUBase[] scriptsDDM = FindObjectsOfType<DDMSkinnedMeshGPUBase>(false);
+        DDMSkinnedMeshGPUBase[] scriptsDDM =
+            FindObjectsOfType<DDMSkinnedMeshGPUBase>(false);
         Debug.Log("Find " + scriptsDDM.Length.ToString() + " DDM scripts.");
         foreach (DDMSkinnedMeshGPUBase script in scriptsDDM)
         {
-            UpdateValues(script);
+            UpdateValues (script);
         }
-        DeltaMushSkinnedMesh[] scriptsDM = FindObjectsOfType<DeltaMushSkinnedMesh>(false);
+        DeltaMushSkinnedMesh[] scriptsDM =
+            FindObjectsOfType<DeltaMushSkinnedMesh>(false);
         Debug.Log("Find " + scriptsDM.Length.ToString() + " DM scripts.");
         foreach (DeltaMushSkinnedMesh script in scriptsDM)
         {
-            UpdateValues(script);
+            UpdateValues (script);
         }
 
         //foreach (GameObject meshObject in meshObjects)
@@ -72,16 +77,13 @@ public class TestDDMRuntime : MonoBehaviour
         //}
     }
 
-
     // Start is called before the first frame update
     void Start()
     {
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        
     }
 }

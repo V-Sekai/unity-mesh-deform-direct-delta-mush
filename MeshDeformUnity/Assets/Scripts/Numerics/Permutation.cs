@@ -26,7 +26,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
-
 using System;
 
 namespace MathNet.Numerics
@@ -37,17 +36,18 @@ namespace MathNet.Numerics
     [Serializable]
     public class Permutation
     {
-        #region fields
-
+#region fields
         /// <summary>
         /// Entry _indices[i] represents the location to which i is permuted to.
         /// </summary>
         readonly int[] _indices;
 
-        #endregion fields
 
-        #region Constructor
+#endregion fields
 
+
+
+#region Constructor
         /// <summary>
         /// Initializes a new instance of the Permutation class.
         /// </summary>
@@ -57,13 +57,16 @@ namespace MathNet.Numerics
         {
             if (!CheckForProperPermutation(indices))
             {
-                throw new ArgumentException("The integer array does not represent a valid permutation.", nameof(indices));
+                throw new ArgumentException("The integer array does not represent a valid permutation.",
+                    nameof(indices));
             }
 
-            _indices = (int[])indices.Clone();
+            _indices = (int[]) indices.Clone();
         }
 
-        #endregion
+
+#endregion
+
 
         /// <summary>
         /// Gets the number of elements this permutation is over.
@@ -75,7 +78,7 @@ namespace MathNet.Numerics
         /// </summary>
         /// <param name="idx">The index to permute from.</param>
         /// <returns>The index which is permuted to.</returns>
-        public int this[int idx] => _indices[idx];
+        public int this[int idx] => _indices[idx]
 
         /// <summary>
         /// Computes the inverse of the permutation.
@@ -132,7 +135,7 @@ namespace MathNet.Numerics
         /// <returns>A sequence of inversions.</returns>
         public int[] ToInversions()
         {
-            var idx = (int[])_indices.Clone();
+            var idx = (int[]) _indices.Clone();
 
             for (int i = 0; i < idx.Length; i++)
             {

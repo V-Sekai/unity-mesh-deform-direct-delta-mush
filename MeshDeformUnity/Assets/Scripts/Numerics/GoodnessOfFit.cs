@@ -26,7 +26,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
-
 using System;
 using System.Collections.Generic;
 using MathNet.Numerics.Statistics;
@@ -43,7 +42,11 @@ namespace MathNet.Numerics
         /// <param name="modelledValues">The modelled/predicted values</param>
         /// <param name="observedValues">The observed/actual values</param>
         /// <returns>Squared Person product-momentum correlation coefficient.</returns>
-        public static double RSquared(IEnumerable<double> modelledValues, IEnumerable<double> observedValues)
+        public static double
+        RSquared(
+            IEnumerable<double> modelledValues,
+            IEnumerable<double> observedValues
+        )
         {
             var corr = Correlation.Pearson(modelledValues, observedValues);
             return corr * corr;
@@ -56,7 +59,11 @@ namespace MathNet.Numerics
         /// <param name="modelledValues">The modelled/predicted values</param>
         /// <param name="observedValues">The observed/actual values</param>
         /// <returns>Person product-momentum correlation coefficient.</returns>
-        public static double R(IEnumerable<double> modelledValues, IEnumerable<double> observedValues)
+        public static double
+        R(
+            IEnumerable<double> modelledValues,
+            IEnumerable<double> observedValues
+        )
         {
             return Correlation.Pearson(modelledValues, observedValues);
         }
@@ -68,7 +75,11 @@ namespace MathNet.Numerics
         /// <param name="modelledValues">The modelled/predicted values</param>
         /// <param name="observedValues">The observed/actual values</param>
         /// <returns>The Standard Error of the regression</returns>
-        public static double PopulationStandardError(IEnumerable<double> modelledValues, IEnumerable<double> observedValues)
+        public static double
+        PopulationStandardError(
+            IEnumerable<double> modelledValues,
+            IEnumerable<double> observedValues
+        )
         {
             return StandardError(modelledValues, observedValues, 0);
         }
@@ -82,7 +93,12 @@ namespace MathNet.Numerics
         /// <param name="degreesOfFreedom">The degrees of freedom by which the
         /// number of samples is reduced for performing the Standard Error calculation</param>
         /// <returns>The Standard Error of the regression</returns>
-        public static double StandardError(IEnumerable<double> modelledValues, IEnumerable<double> observedValues, int degreesOfFreedom)
+        public static double
+        StandardError(
+            IEnumerable<double> modelledValues,
+            IEnumerable<double> observedValues,
+            int degreesOfFreedom
+        )
         {
             using (IEnumerator<double> ieM = modelledValues.GetEnumerator())
             using (IEnumerator<double> ieO = observedValues.GetEnumerator())
@@ -93,7 +109,8 @@ namespace MathNet.Numerics
                 {
                     if (!ieO.MoveNext())
                     {
-                        throw new ArgumentOutOfRangeException(nameof(modelledValues), "The array arguments must have the same length.");
+                        throw new ArgumentOutOfRangeException(nameof(modelledValues),
+                            "The array arguments must have the same length.");
                     }
                     double currentM = ieM.Current;
                     double currentO = ieO.Current;
@@ -104,7 +121,8 @@ namespace MathNet.Numerics
 
                 if (degreesOfFreedom >= n)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(degreesOfFreedom), "The sample size must be larger than the given degrees of freedom.");
+                    throw new ArgumentOutOfRangeException(nameof(degreesOfFreedom),
+                        "The sample size must be larger than the given degrees of freedom.");
                 }
                 return Math.Sqrt(accumulator / (n - degreesOfFreedom));
             }
@@ -117,7 +135,11 @@ namespace MathNet.Numerics
         /// <param name="modelledValues">The values expected from the model.</param>
         /// <param name="observedValues">The actual values obtained.</param>
         /// <returns>Coefficient of determination.</returns>
-        public static double CoefficientOfDetermination(IEnumerable<double> modelledValues, IEnumerable<double> observedValues)
+        public static double
+        CoefficientOfDetermination(
+            IEnumerable<double> modelledValues,
+            IEnumerable<double> observedValues
+        )
         {
             var y = observedValues;
             var f = modelledValues;
@@ -134,7 +156,8 @@ namespace MathNet.Numerics
                 {
                     if (!ieF.MoveNext())
                     {
-                        throw new ArgumentOutOfRangeException(nameof(modelledValues), "The array arguments must have the same length.");
+                        throw new ArgumentOutOfRangeException(nameof(modelledValues),
+                            "The array arguments must have the same length.");
                     }
 
                     double currentY = ieY.Current;
@@ -155,19 +178,20 @@ namespace MathNet.Numerics
                     double scaleDeltaY = deltaY / ++n;
 
                     meanY += scaleDeltaY;
-                    ssTot += scaleDeltaY* deltaY* (n - 1);
+                    ssTot += scaleDeltaY * deltaY * (n - 1);
 
                     // This calculation is as safe as ssTot
                     // in the case when a constant is added to both y and f.
-                    ssRes += (currentY - currentF)* (currentY-currentF);
+                    ssRes += (currentY - currentF) * (currentY - currentF);
                 }
 
                 if (ieF.MoveNext())
                 {
-                    throw new ArgumentOutOfRangeException(nameof(observedValues), "The array arguments must have the same length.");
+                    throw new ArgumentOutOfRangeException(nameof(observedValues),
+                        "The array arguments must have the same length.");
                 }
             }
-            return 1 - ssRes/ssTot;
+            return 1 - ssRes / ssTot;
         }
     }
 }

@@ -26,10 +26,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
-
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+
 using BigInteger = System.Numerics.BigInteger;
 
 namespace MathNet.Numerics
@@ -47,7 +47,7 @@ namespace MathNet.Numerics
 #endif
         public static double Modulus(double dividend, double divisor)
         {
-            return ((dividend%divisor) + divisor)%divisor;
+            return ((dividend % divisor) + divisor) % divisor;
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace MathNet.Numerics
 #endif
         public static float Modulus(float dividend, float divisor)
         {
-            return ((dividend%divisor) + divisor)%divisor;
+            return ((dividend % divisor) + divisor) % divisor;
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace MathNet.Numerics
 #endif
         public static int Modulus(int dividend, int divisor)
         {
-            return ((dividend%divisor) + divisor)%divisor;
+            return ((dividend % divisor) + divisor) % divisor;
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace MathNet.Numerics
 #endif
         public static long Modulus(long dividend, long divisor)
         {
-            return ((dividend%divisor) + divisor)%divisor;
+            return ((dividend % divisor) + divisor) % divisor;
         }
 
         /// <summary>
@@ -89,9 +89,10 @@ namespace MathNet.Numerics
 #if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        public static BigInteger Modulus(BigInteger dividend, BigInteger divisor)
+        public static BigInteger
+        Modulus(BigInteger dividend, BigInteger divisor)
         {
-            return ((dividend%divisor) + divisor)%divisor;
+            return ((dividend % divisor) + divisor) % divisor;
         }
 
         /// <summary>
@@ -102,7 +103,7 @@ namespace MathNet.Numerics
 #endif
         public static double Remainder(double dividend, double divisor)
         {
-            return dividend%divisor;
+            return dividend % divisor;
         }
 
         /// <summary>
@@ -113,7 +114,7 @@ namespace MathNet.Numerics
 #endif
         public static float Remainder(float dividend, float divisor)
         {
-            return dividend%divisor;
+            return dividend % divisor;
         }
 
         /// <summary>
@@ -124,7 +125,7 @@ namespace MathNet.Numerics
 #endif
         public static int Remainder(int dividend, int divisor)
         {
-            return dividend%divisor;
+            return dividend % divisor;
         }
 
         /// <summary>
@@ -135,7 +136,7 @@ namespace MathNet.Numerics
 #endif
         public static long Remainder(long dividend, long divisor)
         {
-            return dividend%divisor;
+            return dividend % divisor;
         }
 
         /// <summary>
@@ -144,9 +145,10 @@ namespace MathNet.Numerics
 #if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        public static BigInteger Remainder(BigInteger dividend, BigInteger divisor)
+        public static BigInteger
+        Remainder(BigInteger dividend, BigInteger divisor)
         {
-            return dividend%divisor;
+            return dividend % divisor;
         }
 
         /// <summary>
@@ -245,9 +247,14 @@ namespace MathNet.Numerics
                 return false; // return immediately in 6 cases out of 16.
             }
 
-            if (lastHexDigit == 0 || lastHexDigit == 1 || lastHexDigit == 4 || lastHexDigit == 9)
+            if (
+                lastHexDigit == 0 ||
+                lastHexDigit == 1 ||
+                lastHexDigit == 4 ||
+                lastHexDigit == 9
+            )
             {
-                int t = (int)Math.Floor(Math.Sqrt(number) + 0.5);
+                int t = (int) Math.Floor(Math.Sqrt(number) + 0.5);
                 return (t * t) == number;
             }
 
@@ -272,9 +279,14 @@ namespace MathNet.Numerics
                 return false; // return immediately in 6 cases out of 16.
             }
 
-            if (lastHexDigit == 0 || lastHexDigit == 1 || lastHexDigit == 4 || lastHexDigit == 9)
+            if (
+                lastHexDigit == 0 ||
+                lastHexDigit == 1 ||
+                lastHexDigit == 4 ||
+                lastHexDigit == 9
+            )
             {
-                long t = (long)Math.Floor(Math.Sqrt(number) + 0.5);
+                long t = (long) Math.Floor(Math.Sqrt(number) + 0.5);
                 return (t * t) == number;
             }
 
@@ -310,7 +322,7 @@ namespace MathNet.Numerics
                 throw new ArgumentOutOfRangeException(nameof(exponent));
             }
 
-            return ((long)1) << (int)exponent;
+            return ((long) 1) << (int) exponent;
         }
 
         /// <summary>
@@ -325,14 +337,47 @@ namespace MathNet.Numerics
             number |= number >> 8;
             number |= number >> 16;
 
-            return MultiplyDeBruijnBitPosition[(uint)(number * 0x07C4ACDDU) >> 27];
+            return MultiplyDeBruijnBitPosition[(uint)(number * 0x07C4ACDDU) >>
+            27];
         }
 
-        static readonly int[] MultiplyDeBruijnBitPosition = new int[32]
-        {
-            0, 9, 1, 10, 13, 21, 2, 29, 11, 14, 16, 18, 22, 25, 3, 30,
-            8, 12, 20, 28, 15, 17, 24, 7, 19, 27, 23, 6, 26, 5, 4, 31
-        };
+        static readonly int[]
+            MultiplyDeBruijnBitPosition =
+                new int[32]
+                {
+                    0,
+                    9,
+                    1,
+                    10,
+                    13,
+                    21,
+                    2,
+                    29,
+                    11,
+                    14,
+                    16,
+                    18,
+                    22,
+                    25,
+                    3,
+                    30,
+                    8,
+                    12,
+                    20,
+                    28,
+                    15,
+                    17,
+                    24,
+                    7,
+                    19,
+                    27,
+                    23,
+                    6,
+                    26,
+                    5,
+                    4,
+                    31
+                };
 
         /// <summary>
         /// Find the closest perfect power of two that is larger or equal to the provided
@@ -403,7 +448,7 @@ namespace MathNet.Numerics
         {
             while (b != 0)
             {
-                var remainder = a%b;
+                var remainder = a % b;
                 a = b;
                 b = remainder;
             }
@@ -446,7 +491,7 @@ namespace MathNet.Numerics
         /// <returns>Greatest common divisor <c>gcd</c>(list of integers)</returns>
         public static long GreatestCommonDivisor(params long[] integers)
         {
-            return GreatestCommonDivisor((IList<long>)integers);
+            return GreatestCommonDivisor((IList<long>) integers);
         }
 
         /// <summary>
@@ -465,9 +510,14 @@ namespace MathNet.Numerics
         /// </code>
         /// The <c>gcd</c> of 45 and 18 is 9: 18 = 2*9, 45 = 5*9. 9 = 1*45 -2*18, therefore x=1 and y=-2.
         /// </example>
-        public static long ExtendedGreatestCommonDivisor(long a, long b, out long x, out long y)
+        public static long
+        ExtendedGreatestCommonDivisor(long a, long b, out long x, out long y)
         {
-            long mp = 1, np = 0, m = 0, n = 1;
+            long
+                mp = 1,
+                np = 0,
+                m = 0,
+                n = 1;
 
             while (b != 0)
             {
@@ -477,11 +527,11 @@ namespace MathNet.Numerics
                 b = rem;
 
                 var tmp = m;
-                m = mp - (quot*m);
+                m = mp - (quot * m);
                 mp = tmp;
 
                 tmp = n;
-                n = np - (quot*n);
+                n = np - (quot * n);
                 np = tmp;
             }
 
@@ -510,7 +560,7 @@ namespace MathNet.Numerics
                 return 0;
             }
 
-            return Math.Abs((a/GreatestCommonDivisor(a, b))*b);
+            return Math.Abs((a / GreatestCommonDivisor(a, b)) * b);
         }
 
         /// <summary>
@@ -547,7 +597,7 @@ namespace MathNet.Numerics
         /// <returns>Least common multiple <c>lcm</c>(list of integers)</returns>
         public static long LeastCommonMultiple(params long[] integers)
         {
-            return LeastCommonMultiple((IList<long>)integers);
+            return LeastCommonMultiple((IList<long>) integers);
         }
 
         /// <summary>
@@ -556,7 +606,8 @@ namespace MathNet.Numerics
         /// <param name="a">First Integer: a.</param>
         /// <param name="b">Second Integer: b.</param>
         /// <returns>Greatest common divisor <c>gcd</c>(a,b)</returns>
-        public static BigInteger GreatestCommonDivisor(BigInteger a, BigInteger b)
+        public static BigInteger
+        GreatestCommonDivisor(BigInteger a, BigInteger b)
         {
             return BigInteger.GreatestCommonDivisor(a, b);
         }
@@ -566,7 +617,8 @@ namespace MathNet.Numerics
         /// </summary>
         /// <param name="integers">List of Integers.</param>
         /// <returns>Greatest common divisor <c>gcd</c>(list of integers)</returns>
-        public static BigInteger GreatestCommonDivisor(IList<BigInteger> integers)
+        public static BigInteger
+        GreatestCommonDivisor(IList<BigInteger> integers)
         {
             if (null == integers)
             {
@@ -593,9 +645,10 @@ namespace MathNet.Numerics
         /// </summary>
         /// <param name="integers">List of Integers.</param>
         /// <returns>Greatest common divisor <c>gcd</c>(list of integers)</returns>
-        public static BigInteger GreatestCommonDivisor(params BigInteger[] integers)
+        public static BigInteger
+        GreatestCommonDivisor(params BigInteger[] integers)
         {
-            return GreatestCommonDivisor((IList<BigInteger>)integers);
+            return GreatestCommonDivisor((IList<BigInteger>) integers);
         }
 
         /// <summary>
@@ -614,9 +667,19 @@ namespace MathNet.Numerics
         /// </code>
         /// The <c>gcd</c> of 45 and 18 is 9: 18 = 2*9, 45 = 5*9. 9 = 1*45 -2*18, therefore x=1 and y=-2.
         /// </example>
-        public static BigInteger ExtendedGreatestCommonDivisor(BigInteger a, BigInteger b, out BigInteger x, out BigInteger y)
+        public static BigInteger
+        ExtendedGreatestCommonDivisor(
+            BigInteger a,
+            BigInteger b,
+            out BigInteger x,
+            out BigInteger y
+        )
         {
-            BigInteger mp = BigInteger.One, np = BigInteger.Zero, m = BigInteger.Zero, n = BigInteger.One;
+            BigInteger
+                mp = BigInteger.One,
+                np = BigInteger.Zero,
+                m = BigInteger.Zero,
+                n = BigInteger.One;
 
             while (!b.IsZero)
             {
@@ -626,11 +689,11 @@ namespace MathNet.Numerics
                 b = rem;
 
                 BigInteger tmp = m;
-                m = mp - (quot*m);
+                m = mp - (quot * m);
                 mp = tmp;
 
                 tmp = n;
-                n = np - (quot*n);
+                n = np - (quot * n);
                 np = tmp;
             }
 
@@ -659,7 +722,8 @@ namespace MathNet.Numerics
                 return BigInteger.Zero;
             }
 
-            return BigInteger.Abs((a/BigInteger.GreatestCommonDivisor(a, b))*b);
+            return BigInteger
+                .Abs((a / BigInteger.GreatestCommonDivisor(a, b)) * b);
         }
 
         /// <summary>
@@ -694,9 +758,10 @@ namespace MathNet.Numerics
         /// </summary>
         /// <param name="integers">List of Integers.</param>
         /// <returns>Least common multiple <c>lcm</c>(list of integers)</returns>
-        public static BigInteger LeastCommonMultiple(params BigInteger[] integers)
+        public static BigInteger
+        LeastCommonMultiple(params BigInteger[] integers)
         {
-            return LeastCommonMultiple((IList<BigInteger>)integers);
+            return LeastCommonMultiple((IList<BigInteger>) integers);
         }
     }
 }

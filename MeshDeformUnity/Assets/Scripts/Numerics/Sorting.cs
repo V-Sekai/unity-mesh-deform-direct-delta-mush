@@ -26,7 +26,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
-
 using System;
 using System.Collections.Generic;
 
@@ -83,16 +82,16 @@ namespace MathNet.Numerics
             }
 
             // array case
-            if (keys is T[] keysArray)
+            if (keys is T []keysArray)
             {
-                Array.Sort(keysArray, comparer);
+                Array.Sort (keysArray, comparer);
                 return;
             }
 
             // generic list case
             if (keys is List<T> keysList)
             {
-                keysList.Sort(comparer);
+                keysList.Sort (comparer);
                 return;
             }
 
@@ -108,7 +107,11 @@ namespace MathNet.Numerics
         /// <param name="keys">List to sort.</param>
         /// <param name="items">List to permute the same way as the key list.</param>
         /// <param name="comparer">Comparison, defining the sort order.</param>
-        public static void Sort<TKey, TItem>(IList<TKey> keys, IList<TItem> items, IComparer<TKey> comparer = null)
+        public static void Sort<TKey, TItem>(
+            IList<TKey> keys,
+            IList<TItem> items,
+            IComparer<TKey> comparer = null
+        )
         {
             int count = keys.Count;
             if (count <= 1)
@@ -152,9 +155,9 @@ namespace MathNet.Numerics
             }
 
             // array case
-            if (keys is TKey[] keysArray && items is TItem[] itemsArray)
+            if (keys is TKey []keysArray && items is TItem []itemsArray)
             {
-                Array.Sort(keysArray, itemsArray, comparer);
+                Array.Sort (keysArray, itemsArray, comparer);
                 return;
             }
 
@@ -172,7 +175,12 @@ namespace MathNet.Numerics
         /// <param name="items1">First list to permute the same way as the key list.</param>
         /// <param name="items2">Second list to permute the same way as the key list.</param>
         /// <param name="comparer">Comparison, defining the sort order.</param>
-        public static void Sort<TKey, TItem1, TItem2>(IList<TKey> keys, IList<TItem1> items1, IList<TItem2> items2, IComparer<TKey> comparer = null)
+        public static void Sort<TKey, TItem1, TItem2>(
+            IList<TKey> keys,
+            IList<TItem1> items1,
+            IList<TItem2> items2,
+            IComparer<TKey> comparer = null
+        )
         {
             int count = keys.Count;
             if (count <= 1)
@@ -231,7 +239,12 @@ namespace MathNet.Numerics
         /// <param name="index">The zero-based starting index of the range to sort.</param>
         /// <param name="count">The length of the range to sort.</param>
         /// <param name="comparer">Comparison, defining the sort order.</param>
-        public static void Sort<T>(IList<T> keys, int index, int count, IComparer<T> comparer = null)
+        public static void Sort<T>(
+            IList<T> keys,
+            int index,
+            int count,
+            IComparer<T> comparer = null
+        )
         {
             if (index < 0)
             {
@@ -281,16 +294,16 @@ namespace MathNet.Numerics
             }
 
             // array case
-            if (keys is T[] keysArray)
+            if (keys is T []keysArray)
             {
-                Array.Sort(keysArray, index, count, comparer);
+                Array.Sort (keysArray, index, count, comparer);
                 return;
             }
 
             // generic list case
             if (keys is List<T> keysList)
             {
-                keysList.Sort(index, count, comparer);
+                keysList.Sort (index, count, comparer);
                 return;
             }
 
@@ -308,7 +321,13 @@ namespace MathNet.Numerics
         /// <param name="index">The zero-based starting index of the range to sort.</param>
         /// <param name="count">The length of the range to sort.</param>
         /// <param name="comparer">Comparison, defining the sort order.</param>
-        public static void Sort<TKey, TItem>(IList<TKey> keys, IList<TItem> items, int index, int count, IComparer<TKey> comparer = null)
+        public static void Sort<TKey, TItem>(
+            IList<TKey> keys,
+            IList<TItem> items,
+            int index,
+            int count,
+            IComparer<TKey> comparer = null
+        )
         {
             if (index < 0)
             {
@@ -362,9 +381,9 @@ namespace MathNet.Numerics
             }
 
             // array case
-            if (keys is TKey[] keysArray && items is TItem[] itemsArray)
+            if (keys is TKey []keysArray && items is TItem []itemsArray)
             {
-                Array.Sort(keysArray, itemsArray, index, count, comparer);
+                Array.Sort (keysArray, itemsArray, index, count, comparer);
                 return;
             }
 
@@ -384,7 +403,14 @@ namespace MathNet.Numerics
         /// <param name="index">The zero-based starting index of the range to sort.</param>
         /// <param name="count">The length of the range to sort.</param>
         /// <param name="comparer">Comparison, defining the sort order.</param>
-        public static void Sort<TKey, TItem1, TItem2>(IList<TKey> keys, IList<TItem1> items1, IList<TItem2> items2, int index, int count, IComparer<TKey> comparer = null)
+        public static void Sort<TKey, TItem1, TItem2>(
+            IList<TKey> keys,
+            IList<TItem1> items1,
+            IList<TItem2> items2,
+            int index,
+            int count,
+            IComparer<TKey> comparer = null
+        )
         {
             if (index < 0)
             {
@@ -454,7 +480,12 @@ namespace MathNet.Numerics
         /// <param name="secondary">List to sort on duplicate primary items, and permute the same way as the key list.</param>
         /// <param name="primaryComparer">Comparison, defining the primary sort order.</param>
         /// <param name="secondaryComparer">Comparison, defining the secondary sort order.</param>
-        public static void SortAll<T1, T2>(IList<T1> primary, IList<T2> secondary, IComparer<T1> primaryComparer = null, IComparer<T2> secondaryComparer = null)
+        public static void SortAll<T1, T2>(
+            IList<T1> primary,
+            IList<T2> secondary,
+            IComparer<T1> primaryComparer = null,
+            IComparer<T2> secondaryComparer = null
+        )
         {
             if (null == primaryComparer)
             {
@@ -467,9 +498,13 @@ namespace MathNet.Numerics
             }
 
             // local sort implementation
-            QuickSortAll(primary, secondary, primaryComparer, secondaryComparer, 0, primary.Count - 1);
+            QuickSortAll(primary,
+            secondary,
+            primaryComparer,
+            secondaryComparer,
+            0,
+            primary.Count - 1);
         }
-
 
         /// <summary>
         /// Recursive implementation for an in place quick sort on a list.
@@ -479,7 +514,12 @@ namespace MathNet.Numerics
         /// <param name="comparer">The method with which to compare two elements of the quick sort.</param>
         /// <param name="left">The left boundary of the quick sort.</param>
         /// <param name="right">The right boundary of the quick sort.</param>
-        static void QuickSort<T>(IList<T> keys, IComparer<T> comparer, int left, int right)
+        static void QuickSort<T>(
+            IList<T> keys,
+            IComparer<T> comparer,
+            int left,
+            int right
+        )
         {
             do
             {
@@ -490,17 +530,17 @@ namespace MathNet.Numerics
 
                 if (comparer.Compare(keys[a], keys[p]) > 0)
                 {
-                    Swap(keys, a, p);
+                    Swap (keys, a, p);
                 }
 
                 if (comparer.Compare(keys[a], keys[b]) > 0)
                 {
-                    Swap(keys, a, b);
+                    Swap (keys, a, b);
                 }
 
                 if (comparer.Compare(keys[p], keys[b]) > 0)
                 {
-                    Swap(keys, p, b);
+                    Swap (keys, p, b);
                 }
 
                 T pivot = keys[p];
@@ -525,12 +565,13 @@ namespace MathNet.Numerics
 
                     if (a < b)
                     {
-                        Swap(keys, a, b);
+                        Swap (keys, a, b);
                     }
 
                     a++;
                     b--;
-                } while (a <= b);
+                }
+                while (a <= b);
 
                 // In order to limit the recursion depth to log(n), we sort the
                 // shorter partition recursively and the longer partition iteratively.
@@ -538,7 +579,7 @@ namespace MathNet.Numerics
                 {
                     if (left < b)
                     {
-                        QuickSort(keys, comparer, left, b);
+                        QuickSort (keys, comparer, left, b);
                     }
 
                     left = a;
@@ -547,12 +588,13 @@ namespace MathNet.Numerics
                 {
                     if (a < right)
                     {
-                        QuickSort(keys, comparer, a, right);
+                        QuickSort (keys, comparer, a, right);
                     }
 
                     right = b;
                 }
-            } while (left < right);
+            }
+            while (left < right);
         }
 
         /// <summary>
@@ -565,7 +607,13 @@ namespace MathNet.Numerics
         /// <param name="comparer">The method with which to compare two elements of the quick sort.</param>
         /// <param name="left">The left boundary of the quick sort.</param>
         /// <param name="right">The right boundary of the quick sort.</param>
-        static void QuickSort<T, TItems>(IList<T> keys, IList<TItems> items, IComparer<T> comparer, int left, int right)
+        static void QuickSort<T, TItems>(
+            IList<T> keys,
+            IList<TItems> items,
+            IComparer<T> comparer,
+            int left,
+            int right
+        )
         {
             do
             {
@@ -576,20 +624,20 @@ namespace MathNet.Numerics
 
                 if (comparer.Compare(keys[a], keys[p]) > 0)
                 {
-                    Swap(keys, a, p);
-                    Swap(items, a, p);
+                    Swap (keys, a, p);
+                    Swap (items, a, p);
                 }
 
                 if (comparer.Compare(keys[a], keys[b]) > 0)
                 {
-                    Swap(keys, a, b);
-                    Swap(items, a, b);
+                    Swap (keys, a, b);
+                    Swap (items, a, b);
                 }
 
                 if (comparer.Compare(keys[p], keys[b]) > 0)
                 {
-                    Swap(keys, p, b);
-                    Swap(items, p, b);
+                    Swap (keys, p, b);
+                    Swap (items, p, b);
                 }
 
                 T pivot = keys[p];
@@ -614,13 +662,14 @@ namespace MathNet.Numerics
 
                     if (a < b)
                     {
-                        Swap(keys, a, b);
-                        Swap(items, a, b);
+                        Swap (keys, a, b);
+                        Swap (items, a, b);
                     }
 
                     a++;
                     b--;
-                } while (a <= b);
+                }
+                while (a <= b);
 
                 // In order to limit the recursion depth to log(n), we sort the
                 // shorter partition recursively and the longer partition iteratively.
@@ -628,7 +677,7 @@ namespace MathNet.Numerics
                 {
                     if (left < b)
                     {
-                        QuickSort(keys, items, comparer, left, b);
+                        QuickSort (keys, items, comparer, left, b);
                     }
 
                     left = a;
@@ -637,12 +686,13 @@ namespace MathNet.Numerics
                 {
                     if (a < right)
                     {
-                        QuickSort(keys, items, comparer, a, right);
+                        QuickSort (keys, items, comparer, a, right);
                     }
 
                     right = b;
                 }
-            } while (left < right);
+            }
+            while (left < right);
         }
 
         /// <summary>
@@ -658,9 +708,13 @@ namespace MathNet.Numerics
         /// <param name="left">The left boundary of the quick sort.</param>
         /// <param name="right">The right boundary of the quick sort.</param>
         static void QuickSort<T, TItems1, TItems2>(
-            IList<T> keys, IList<TItems1> items1, IList<TItems2> items2,
+            IList<T> keys,
+            IList<TItems1> items1,
+            IList<TItems2> items2,
             IComparer<T> comparer,
-            int left, int right)
+            int left,
+            int right
+        )
         {
             do
             {
@@ -671,23 +725,23 @@ namespace MathNet.Numerics
 
                 if (comparer.Compare(keys[a], keys[p]) > 0)
                 {
-                    Swap(keys, a, p);
-                    Swap(items1, a, p);
-                    Swap(items2, a, p);
+                    Swap (keys, a, p);
+                    Swap (items1, a, p);
+                    Swap (items2, a, p);
                 }
 
                 if (comparer.Compare(keys[a], keys[b]) > 0)
                 {
-                    Swap(keys, a, b);
-                    Swap(items1, a, b);
-                    Swap(items2, a, b);
+                    Swap (keys, a, b);
+                    Swap (items1, a, b);
+                    Swap (items2, a, b);
                 }
 
                 if (comparer.Compare(keys[p], keys[b]) > 0)
                 {
-                    Swap(keys, p, b);
-                    Swap(items1, p, b);
-                    Swap(items2, p, b);
+                    Swap (keys, p, b);
+                    Swap (items1, p, b);
+                    Swap (items2, p, b);
                 }
 
                 T pivot = keys[p];
@@ -712,14 +766,15 @@ namespace MathNet.Numerics
 
                     if (a < b)
                     {
-                        Swap(keys, a, b);
-                        Swap(items1, a, b);
-                        Swap(items2, a, b);
+                        Swap (keys, a, b);
+                        Swap (items1, a, b);
+                        Swap (items2, a, b);
                     }
 
                     a++;
                     b--;
-                } while (a <= b);
+                }
+                while (a <= b);
 
                 // In order to limit the recursion depth to log(n), we sort the
                 // shorter partition recursively and the longer partition iteratively.
@@ -727,7 +782,7 @@ namespace MathNet.Numerics
                 {
                     if (left < b)
                     {
-                        QuickSort(keys, items1, items2, comparer, left, b);
+                        QuickSort (keys, items1, items2, comparer, left, b);
                     }
 
                     left = a;
@@ -736,12 +791,13 @@ namespace MathNet.Numerics
                 {
                     if (a < right)
                     {
-                        QuickSort(keys, items1, items2, comparer, a, right);
+                        QuickSort (keys, items1, items2, comparer, a, right);
                     }
 
                     right = b;
                 }
-            } while (left < right);
+            }
+            while (left < right);
         }
 
         /// <summary>
@@ -756,9 +812,13 @@ namespace MathNet.Numerics
         /// <param name="left">The left boundary of the quick sort.</param>
         /// <param name="right">The right boundary of the quick sort.</param>
         static void QuickSortAll<T1, T2>(
-            IList<T1> primary, IList<T2> secondary,
-            IComparer<T1> primaryComparer, IComparer<T2> secondaryComparer,
-            int left, int right)
+            IList<T1> primary,
+            IList<T2> secondary,
+            IComparer<T1> primaryComparer,
+            IComparer<T2> secondaryComparer,
+            int left,
+            int right
+        )
         {
             do
             {
@@ -768,24 +828,36 @@ namespace MathNet.Numerics
                 int p = a + ((b - a) >> 1); // midpoint
 
                 int ap = primaryComparer.Compare(primary[a], primary[p]);
-                if (ap > 0 || ap == 0 && secondaryComparer.Compare(secondary[a], secondary[p]) > 0)
+                if (
+                    ap > 0 ||
+                    ap == 0 &&
+                    secondaryComparer.Compare(secondary[a], secondary[p]) > 0
+                )
                 {
-                    Swap(primary, a, p);
-                    Swap(secondary, a, p);
+                    Swap (primary, a, p);
+                    Swap (secondary, a, p);
                 }
 
                 int ab = primaryComparer.Compare(primary[a], primary[b]);
-                if (ab > 0 || ab == 0 && secondaryComparer.Compare(secondary[a], secondary[b]) > 0)
+                if (
+                    ab > 0 ||
+                    ab == 0 &&
+                    secondaryComparer.Compare(secondary[a], secondary[b]) > 0
+                )
                 {
-                    Swap(primary, a, b);
-                    Swap(secondary, a, b);
+                    Swap (primary, a, b);
+                    Swap (secondary, a, b);
                 }
 
                 int pb = primaryComparer.Compare(primary[p], primary[b]);
-                if (pb > 0 || pb == 0 && secondaryComparer.Compare(secondary[p], secondary[b]) > 0)
+                if (
+                    pb > 0 ||
+                    pb == 0 &&
+                    secondaryComparer.Compare(secondary[p], secondary[b]) > 0
+                )
                 {
-                    Swap(primary, p, b);
-                    Swap(secondary, p, b);
+                    Swap (primary, p, b);
+                    Swap (secondary, p, b);
                 }
 
                 T1 pivot1 = primary[p];
@@ -795,13 +867,21 @@ namespace MathNet.Numerics
                 do
                 {
                     int ax;
-                    while ((ax = primaryComparer.Compare(primary[a], pivot1)) < 0 || ax == 0 && secondaryComparer.Compare(secondary[a], pivot2) < 0)
+                    while ((ax = primaryComparer.Compare(primary[a], pivot1)) <
+                        0 ||
+                        ax == 0 &&
+                        secondaryComparer.Compare(secondary[a], pivot2) < 0
+                    )
                     {
                         a++;
                     }
 
                     int xb;
-                    while ((xb = primaryComparer.Compare(pivot1, primary[b])) < 0 || xb == 0 && secondaryComparer.Compare(pivot2, secondary[b]) < 0)
+                    while ((xb = primaryComparer.Compare(pivot1, primary[b])) <
+                        0 ||
+                        xb == 0 &&
+                        secondaryComparer.Compare(pivot2, secondary[b]) < 0
+                    )
                     {
                         b--;
                     }
@@ -813,13 +893,14 @@ namespace MathNet.Numerics
 
                     if (a < b)
                     {
-                        Swap(primary, a, b);
-                        Swap(secondary, a, b);
+                        Swap (primary, a, b);
+                        Swap (secondary, a, b);
                     }
 
                     a++;
                     b--;
-                } while (a <= b);
+                }
+                while (a <= b);
 
                 // In order to limit the recursion depth to log(n), we sort the
                 // shorter partition recursively and the longer partition iteratively.
@@ -827,7 +908,14 @@ namespace MathNet.Numerics
                 {
                     if (left < b)
                     {
-                        QuickSortAll(primary, secondary, primaryComparer, secondaryComparer, left, b);
+                        QuickSortAll (
+                            primary,
+                            secondary,
+                            primaryComparer,
+                            secondaryComparer,
+                            left,
+                            b
+                        );
                     }
 
                     left = a;
@@ -836,12 +924,20 @@ namespace MathNet.Numerics
                 {
                     if (a < right)
                     {
-                        QuickSortAll(primary, secondary, primaryComparer, secondaryComparer, a, right);
+                        QuickSortAll (
+                            primary,
+                            secondary,
+                            primaryComparer,
+                            secondaryComparer,
+                            a,
+                            right
+                        );
                     }
 
                     right = b;
                 }
-            } while (left < right);
+            }
+            while (left < right);
         }
 
         /// <summary>

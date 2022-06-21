@@ -26,7 +26,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
-
 using System;
 using System.Collections.Generic;
 
@@ -58,7 +57,7 @@ namespace MathNet.Numerics
                 compensation -= y;
                 sum = t;
             }
-            while (Math.Abs(sum) < Math.Abs(factor*current));
+            while (Math.Abs(sum) < Math.Abs(factor * current));
 
             return sum;
         }
@@ -71,7 +70,9 @@ namespace MathNet.Numerics
         public static double Evaluate(IEnumerable<double> infiniteSummands)
         {
             double compensation = 0.0;
-            double current, sum;
+            double
+                current,
+                sum;
             const double factor = 1 << 16;
 
             using (var enumerator = infiniteSummands.GetEnumerator())
@@ -97,7 +98,10 @@ namespace MathNet.Numerics
                     compensation = t - sum;
                     compensation -= y;
                     sum = t;
-                } while (Math.Abs(sum) < Math.Abs(factor * current) && enumerator.MoveNext());
+                }
+                while (Math.Abs(sum) < Math.Abs(factor * current) &&
+                    enumerator.MoveNext()
+                );
             }
 
             return sum;

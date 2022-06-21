@@ -1,30 +1,36 @@
 ﻿//#define DEBUG_GPU_OUTPUT
-
-using UnityEngine;
 using System;
 using MathNet.Numerics.LinearAlgebra.Single;
+using UnityEngine;
 
 public class DDMUtilsGPU
 {
     public struct IndexWeightPair
     {
         public int index;
+
         public float weight;
     }
 
-    static public int omegaCount = DDMSkinnedMeshGPUBase.maxOmegaCount;
-    static public bool isTestingPerformance = false;
+    public static int omegaCount = DDMSkinnedMeshGPUBase.maxOmegaCount;
+
+    public static bool isTestingPerformance = false;
 
     static void SynchronizeCompute()
     {
     }
 
-    static public IndexWeightPair[,] ComputeLaplacianWithIndexFromAdjacency(int[,] adjacencyMatrix)
+    public static IndexWeightPair[,]
+    ComputeLaplacianWithIndexFromAdjacency(int[,] adjacencyMatrix)
     {
-        UnityEngine.Profiling.Profiler.BeginSample("ComputeLaplacianWithIndexFromAdjacency");
+        UnityEngine
+            .Profiling
+            .Profiler
+            .BeginSample("ComputeLaplacianWithIndexFromAdjacency");
         int vCount = adjacencyMatrix.GetLength(0);
         int aCount = adjacencyMatrix.GetLength(1);
-        IndexWeightPair[,] indexWeightPairsCPU = new IndexWeightPair[vCount, omegaCount];
+        IndexWeightPair[,] indexWeightPairsCPU =
+            new IndexWeightPair[vCount, omegaCount];
 
         for (int vi = 0; vi < vCount; ++vi)
         {
@@ -54,56 +60,89 @@ public class DDMUtilsGPU
         return indexWeightPairsCPU;
     }
 
-    static public bool ComputeLaplacianCBFromAdjacencyCPU(ref ComputeBuffer laplacianCB, ComputeShader precomputeShader, int[,] adjacencyMatrix)
-    {
-        if(precomputeShader == null)
-        {
-            return false;
-        }
-        UnityEngine.Profiling.Profiler.BeginSample("ComputeLaplacianCBFromAdjacencyCPU");
-
-        int vCount = adjacencyMatrix.GetLength(0);
-        int aCount = adjacencyMatrix.GetLength(1);
-
-        Debug.Assert(laplacianCB.count == vCount * omegaCount && laplacianCB.stride == sizeof(int) + sizeof(float));
-
-        IndexWeightPair[,] indexWeightPairsCPU = ComputeLaplacianWithIndexFromAdjacency(adjacencyMatrix);
-        laplacianCB.SetData(indexWeightPairsCPU);
-
-        UnityEngine.Profiling.Profiler.EndSample();
-        return true;
-    }
-
-    static public bool ComputeLaplacianCBFromAdjacency(ref ComputeBuffer laplacianCB, ComputeShader precomputeShader, int[,] adjacencyMatrix)
+    public static bool
+    ComputeLaplacianCBFromAdjacencyCPU(
+        ref ComputeBuffer laplacianCB,
+        ComputeShader precomputeShader,
+        int[,] adjacencyMatrix
+    )
     {
         if (precomputeShader == null)
         {
             return false;
         }
-        UnityEngine.Profiling.Profiler.BeginSample("ComputeLaplacianCBFromAdjacency");
+        UnityEngine
+            .Profiling
+            .Profiler
+            .BeginSample("ComputeLaplacianCBFromAdjacencyCPU");
 
         int vCount = adjacencyMatrix.GetLength(0);
         int aCount = adjacencyMatrix.GetLength(1);
 
-        ComputeBuffer AdjacencyCB = new ComputeBuffer(vCount * aCount, sizeof(int));
-        AdjacencyCB.SetData(adjacencyMatrix);
+        Debug
+            .Assert(laplacianCB.count == vCount * omegaCount &&
+            laplacianCB.stride == sizeof(int) + sizeof(float));
 
-        Debug.Assert(laplacianCB.count == vCount * omegaCount && laplacianCB.stride == sizeof(int) + sizeof(float));
+        IndexWeightPair[,] indexWeightPairsCPU =
+            ComputeLaplacianWithIndexFromAdjacency(adjacencyMatrix);
+        laplacianCB.SetData (indexWeightPairsCPU);
+
+        UnityEngine.Profiling.Profiler.EndSample();
+        return true;
+    }
+
+    public static bool
+    ComputeLaplacianCBFromAdjacency(
+        ref ComputeBuffer laplacianCB,
+        ComputeShader precomputeShader,
+        int[,] adjacencyMatrix
+    )
+    {
+        if (precomputeShader == null)
+        {
+            return false;
+        }
+        UnityEngine
+            .Profiling
+            .Profiler
+            .BeginSample("ComputeLaplacianCBFromAdjacency");
+
+        int vCount = adjacencyMatrix.GetLength(0);
+        int aCount = adjacencyMatrix.GetLength(1);
+
+        ComputeBuffer AdjacencyCB =
+            new ComputeBuffer(vCount * aCount, sizeof(int));
+        AdjacencyCB.SetData (adjacencyMatrix);
+
+        Debug
+            .Assert(laplacianCB.count == vCount * omegaCount &&
+            laplacianCB.stride == sizeof(int) + sizeof(float));
 
         precomputeShader.SetInt("VertexCount", vCount);
 
-        uint threadGroupSizeX, threadGroupSizeY, threadGroupSizeZ;
+        uint
+            threadGroupSizeX,
+            threadGroupSizeY,
+            threadGroupSizeZ;
 
-        int kernelBuildLaplacian = precomputeShader.FindKernel("BuildLaplacianFromAdjacency");
-        precomputeShader.GetKernelThreadGroupSizes(kernelBuildLaplacian, out threadGroupSizeX, out threadGroupSizeY, out threadGroupSizeZ);
-        int threadGroupsX = (vCount + (int)threadGroupSizeX - 1) / (int)threadGroupSizeX;
-        precomputeShader.SetBuffer(kernelBuildLaplacian, "Adjacency", AdjacencyCB);
-        precomputeShader.SetBuffer(kernelBuildLaplacian, "OutLaplacian", laplacianCB);
+        int kernelBuildLaplacian =
+            precomputeShader.FindKernel("BuildLaplacianFromAdjacency");
+        precomputeShader
+            .GetKernelThreadGroupSizes(kernelBuildLaplacian,
+            out threadGroupSizeX,
+            out threadGroupSizeY,
+            out threadGroupSizeZ);
+        int threadGroupsX =
+            (vCount + (int) threadGroupSizeX - 1) / (int) threadGroupSizeX;
+        precomputeShader
+            .SetBuffer(kernelBuildLaplacian, "Adjacency", AdjacencyCB);
+        precomputeShader
+            .SetBuffer(kernelBuildLaplacian, "OutLaplacian", laplacianCB);
         precomputeShader.Dispatch(kernelBuildLaplacian, threadGroupsX, 1, 1);
 
         AdjacencyCB.Release();
 
-        if(isTestingPerformance)
+        if (isTestingPerformance)
         {
             SynchronizeCompute();
         }
@@ -112,17 +151,25 @@ public class DDMUtilsGPU
         return true;
     }
 
-    static public DDMUtilsIterative.OmegaWithIndex[,] ComputeOmegasFromLaplacian(
+    public static DDMUtilsIterative.OmegaWithIndex[,]
+    ComputeOmegasFromLaplacian(
         Vector3[] vertices,
         IndexWeightPair[,] laplacian,
         BoneWeight[] weights,
-        int boneCount, int iterations, float lambda)
+        int boneCount,
+        int iterations,
+        float lambda
+    )
     {
         int vCount = vertices.Length;
         int aCount = omegaCount;
-        UnityEngine.Profiling.Profiler.BeginSample("ComputeOmegasFromLaplacian");
+        UnityEngine
+            .Profiling
+            .Profiler
+            .BeginSample("ComputeOmegasFromLaplacian");
 
-        DDMUtilsIterative.OmegaWithIndex[,] omegas = new DDMUtilsIterative.OmegaWithIndex[vCount, aCount];
+        DDMUtilsIterative.OmegaWithIndex[,] omegas =
+            new DDMUtilsIterative.OmegaWithIndex[vCount, aCount];
 
         Matrix4x4[,] tmpOmegas0 = new Matrix4x4[vCount, boneCount];
         int[,] tmpOmegaIdxs0 = new int[vCount, boneCount];
@@ -132,7 +179,7 @@ public class DDMUtilsGPU
         // InitOmegas
         for (int vi = 0; vi < vCount; ++vi)
         {
-            for(int bi = 0; bi < boneCount; ++bi)
+            for (int bi = 0; bi < boneCount; ++bi)
             {
                 tmpOmegaIdxs0[vi, bi] = -1;
                 tmpOmegaIdxs1[vi, bi] = -1;
@@ -145,9 +192,9 @@ public class DDMUtilsGPU
             Vector3 pos = vertices[vi];
 
             Matrix4x4 Pi4 = Matrix4x4.identity;
-            for(int row = 0; row < 3; ++row)
+            for (int row = 0; row < 3; ++row)
             {
-                for(int col = 0; col < 3; ++col)
+                for (int col = 0; col < 3; ++col)
                 {
                     Pi4[row, col] = pos[row] * pos[col];
                 }
@@ -166,7 +213,7 @@ public class DDMUtilsGPU
             {
                 tmpOmegaIdxs0[vi, bw.boneIndex0] = bw.boneIndex0;
                 Matrix4x4 tmpMat = Matrix4x4.zero;
-                for(int i = 0; i < 16; ++i)
+                for (int i = 0; i < 16; ++i)
                 {
                     tmpMat[i] = Pi4[i] * bw.weight0;
                 }
@@ -208,14 +255,14 @@ public class DDMUtilsGPU
         }
 
         // OneSweep
-        for(int it = 0; it < iterations; ++it)
+        for (int it = 0; it < iterations; ++it)
         {
             Matrix4x4[,] inOmegas = (it % 2 == 0) ? tmpOmegas0 : tmpOmegas1;
             int[,] inOmegaIdxs = (it % 2 == 0) ? tmpOmegaIdxs0 : tmpOmegaIdxs1;
             Matrix4x4[,] outOmegas = (it % 2 == 0) ? tmpOmegas1 : tmpOmegas0;
             int[,] outOmegaIdxs = (it % 2 == 0) ? tmpOmegaIdxs1 : tmpOmegaIdxs0;
 
-            for(int vi = 0; vi < vCount; ++vi)
+            for (int vi = 0; vi < vCount; ++vi)
             {
                 for (int bi = 0; bi < boneCount; ++bi)
                 {
@@ -227,11 +274,12 @@ public class DDMUtilsGPU
                     if (inOmegaIdx0 >= 0)
                     {
                         counter = 1;
-                        for(int i = 0; i < 16; ++i)
+                        for (int i = 0; i < 16; ++i)
                         {
                             outOmega[i] = inOmega0[i] * weight0;
                         }
                     }
+
                     // Correct?
                     for (int ai = 0; ai < aCount; ++ai)
                     {
@@ -268,8 +316,10 @@ public class DDMUtilsGPU
         }
 
         // Compress
-        Matrix4x4[,] inOmegas1 = (iterations % 2 == 0) ? tmpOmegas0 : tmpOmegas1;
-        int[,] inOmegaIdxs1 = (iterations % 2 == 0) ? tmpOmegaIdxs0 : tmpOmegaIdxs1;
+        Matrix4x4[,] inOmegas1 =
+            (iterations % 2 == 0) ? tmpOmegas0 : tmpOmegas1;
+        int[,] inOmegaIdxs1 =
+            (iterations % 2 == 0) ? tmpOmegaIdxs0 : tmpOmegaIdxs1;
         for (int vi = 0; vi < vCount; ++vi)
         {
             int curOI = 0;
@@ -281,7 +331,8 @@ public class DDMUtilsGPU
                     continue;
                 }
                 Matrix4x4 inOmega = inOmegas1[vi, bi];
-                DDMUtilsIterative.OmegaWithIndex oswi = new DDMUtilsIterative.OmegaWithIndex();
+                DDMUtilsIterative.OmegaWithIndex oswi =
+                    new DDMUtilsIterative.OmegaWithIndex();
                 oswi.boneIndex = bi;
                 oswi.m00 = inOmega.m00;
                 oswi.m01 = inOmega.m01;
@@ -299,7 +350,8 @@ public class DDMUtilsGPU
 
             while (curOI < DDMSkinnedMeshGPUVar0.maxOmegaCount)
             {
-                DDMUtilsIterative.OmegaWithIndex oswi = new DDMUtilsIterative.OmegaWithIndex();
+                DDMUtilsIterative.OmegaWithIndex oswi =
+                    new DDMUtilsIterative.OmegaWithIndex();
                 oswi.boneIndex = -1;
                 omegas[vi, curOI] = oswi;
                 ++curOI;
@@ -310,56 +362,79 @@ public class DDMUtilsGPU
         return omegas;
     }
 
-    static public bool ComputeOmegasCBFromLaplacianCB(
-        ref ComputeBuffer omegasCB, 
-        ComputeShader precomputeShader, 
-        ComputeBuffer verticesCB, 
-        ComputeBuffer laplacianCB, 
-        ComputeBuffer weightsCB, 
-        int boneCount, int iterations, float lambda)
+    public static bool
+    ComputeOmegasCBFromLaplacianCB(
+        ref ComputeBuffer omegasCB,
+        ComputeShader precomputeShader,
+        ComputeBuffer verticesCB,
+        ComputeBuffer laplacianCB,
+        ComputeBuffer weightsCB,
+        int boneCount,
+        int iterations,
+        float lambda
+    )
     {
         if (precomputeShader == null)
         {
             return false;
         }
-        UnityEngine.Profiling.Profiler.BeginSample("ComputeOmegasCBFromLaplacianCB");
+        UnityEngine
+            .Profiling
+            .Profiler
+            .BeginSample("ComputeOmegasCBFromLaplacianCB");
         int vCount = verticesCB.count;
         int aCount = omegaCount;
 
         int stride = (10 * sizeof(float) + sizeof(int));
-        Debug.Assert(omegasCB.count == vCount * aCount && omegasCB.stride == stride);
-        //omegasCB = new ComputeBuffer(vCount * aCount, stride);
+        Debug
+            .Assert(omegasCB.count == vCount * aCount &&
+            omegasCB.stride == stride);
 
-        ComputeBuffer tmpOmegasCB0 = new ComputeBuffer(vCount * boneCount, stride);
-        ComputeBuffer tmpOmegasCB1 = new ComputeBuffer(vCount * boneCount, stride);
+        //omegasCB = new ComputeBuffer(vCount * aCount, stride);
+        ComputeBuffer tmpOmegasCB0 =
+            new ComputeBuffer(vCount * boneCount, stride);
+        ComputeBuffer tmpOmegasCB1 =
+            new ComputeBuffer(vCount * boneCount, stride);
 
         precomputeShader.SetInt("VertexCount", vCount);
         precomputeShader.SetInt("BoneCount", boneCount);
         precomputeShader.SetFloat("Lambda", lambda);
 
-        uint threadGroupSizeX, threadGroupSizeY, threadGroupSizeZ;
+        uint
+            threadGroupSizeX,
+            threadGroupSizeY,
+            threadGroupSizeZ;
 
         int kernelInitOmegas = precomputeShader.FindKernel("InitOmegas");
-        precomputeShader.GetKernelThreadGroupSizes(kernelInitOmegas, out threadGroupSizeX, out threadGroupSizeY, out threadGroupSizeZ);
-        int threadGroupsX = (vCount * boneCount + (int)threadGroupSizeX - 1) / (int)threadGroupSizeX;
+        precomputeShader
+            .GetKernelThreadGroupSizes(kernelInitOmegas,
+            out threadGroupSizeX,
+            out threadGroupSizeY,
+            out threadGroupSizeZ);
+        int threadGroupsX =
+            (vCount * boneCount + (int) threadGroupSizeX - 1) /
+            (int) threadGroupSizeX;
         precomputeShader.SetBuffer(kernelInitOmegas, "Omegas", tmpOmegasCB0);
         precomputeShader.Dispatch(kernelInitOmegas, threadGroupsX, 1, 1);
         precomputeShader.SetBuffer(kernelInitOmegas, "Omegas", tmpOmegasCB1);
         precomputeShader.Dispatch(kernelInitOmegas, threadGroupsX, 1, 1);
 
+
 #if DEBUG_GPU_OUTPUT
-        DDMUtilsIterative.OmegaWithIndex[,] tmpOmegas = new DDMUtilsIterative.OmegaWithIndex[vCount, boneCount];
-        tmpOmegasCB1.GetData(tmpOmegas);
+        DDMUtilsIterative.OmegaWithIndex[,] tmpOmegas =
+            new DDMUtilsIterative.OmegaWithIndex[vCount, boneCount];
+        tmpOmegasCB1.GetData (tmpOmegas);
 
         BoneWeight[] bws = new BoneWeight[vCount];
-        weightsCB.GetData(bws);
+        weightsCB.GetData (bws);
 
         IndexWeightPair[,] laplacians = new IndexWeightPair[vCount, omegaCount];
-        laplacianCB.GetData(laplacians);
+        laplacianCB.GetData (laplacians);
 #endif // DEBUG_GPU_OUTPUT
 
         int kernelPreStep = precomputeShader.FindKernel("ComputeOmegasPreStep");
-        threadGroupsX = (vCount + (int)threadGroupSizeX - 1) / (int)threadGroupSizeX;
+        threadGroupsX =
+            (vCount + (int) threadGroupSizeX - 1) / (int) threadGroupSizeX;
 
         precomputeShader.SetBuffer(kernelPreStep, "Vertices", verticesCB);
         precomputeShader.SetBuffer(kernelPreStep, "Weights", weightsCB);
@@ -368,42 +443,61 @@ public class DDMUtilsGPU
 
         precomputeShader.Dispatch(kernelPreStep, threadGroupsX, 1, 1);
 
+
 #if DEBUG_GPU_OUTPUT
-        tmpOmegasCB0.GetData(tmpOmegas);
+        tmpOmegasCB0.GetData (tmpOmegas);
+
 
 #endif // DEBUG_GPU_OUTPUT
 
         if (iterations > 0)
         {
-            int kernelOneSweep = precomputeShader.FindKernel("ComputeOmegasOneSweep");
+            int kernelOneSweep =
+                precomputeShader.FindKernel("ComputeOmegasOneSweep");
 
-            precomputeShader.SetBuffer(kernelOneSweep, "Laplacian", laplacianCB);
+            precomputeShader
+                .SetBuffer(kernelOneSweep, "Laplacian", laplacianCB);
 
             for (int it = 0; it < iterations; ++it)
             {
-                precomputeShader.SetBuffer(kernelOneSweep, "PreOmegas", (it % 2 == 0) ? tmpOmegasCB0 : tmpOmegasCB1);
-                precomputeShader.SetBuffer(kernelOneSweep, "Omegas", (it % 2 == 0) ? tmpOmegasCB1 : tmpOmegasCB0);
+                precomputeShader
+                    .SetBuffer(kernelOneSweep,
+                    "PreOmegas",
+                    (it % 2 == 0) ? tmpOmegasCB0 : tmpOmegasCB1);
+                precomputeShader
+                    .SetBuffer(kernelOneSweep,
+                    "Omegas",
+                    (it % 2 == 0) ? tmpOmegasCB1 : tmpOmegasCB0);
                 precomputeShader.Dispatch(kernelOneSweep, threadGroupsX, 1, 1);
 
+
 #if DEBUG_GPU_OUTPUT
-                DDMUtilsIterative.OmegaWithIndex[,] tmpOmegas1 = new DDMUtilsIterative.OmegaWithIndex[vCount, boneCount];
-                ComputeBuffer tmpCB = (it % 2 == 0) ? tmpOmegasCB1 : tmpOmegasCB0;
-                tmpCB.GetData(tmpOmegas1);
+                DDMUtilsIterative.OmegaWithIndex[,] tmpOmegas1 =
+                    new DDMUtilsIterative.OmegaWithIndex[vCount, boneCount];
+                ComputeBuffer tmpCB =
+                    (it % 2 == 0) ? tmpOmegasCB1 : tmpOmegasCB0;
+                tmpCB.GetData (tmpOmegas1);
                 Debug.Log("tmpCB" + it.ToString());
 #endif // DEBUG_GPU_OUTPUT
             }
         }
 
-        int kernelCompressOmegas = precomputeShader.FindKernel("CompressOmegas");
+        int kernelCompressOmegas =
+            precomputeShader.FindKernel("CompressOmegas");
 
-        precomputeShader.SetBuffer(kernelCompressOmegas, "PreOmegas", (iterations % 2 == 0) ? tmpOmegasCB0 : tmpOmegasCB1);
+        precomputeShader
+            .SetBuffer(kernelCompressOmegas,
+            "PreOmegas",
+            (iterations % 2 == 0) ? tmpOmegasCB0 : tmpOmegasCB1);
         precomputeShader.SetBuffer(kernelCompressOmegas, "Omegas", omegasCB);
 
         precomputeShader.Dispatch(kernelCompressOmegas, threadGroupsX, 1, 1);
 
+
 #if DEBUG_GPU_OUTPUT
-        DDMUtilsIterative.OmegaWithIndex[,] outOmegas = new DDMUtilsIterative.OmegaWithIndex[vCount, omegaCount];
-        omegasCB.GetData(outOmegas);
+        DDMUtilsIterative.OmegaWithIndex[,] outOmegas =
+            new DDMUtilsIterative.OmegaWithIndex[vCount, omegaCount];
+        omegasCB.GetData (outOmegas);
 #endif // DEBUG_GPU_OUTPUT
 
         tmpOmegasCB0.Release();
@@ -418,11 +512,14 @@ public class DDMUtilsGPU
         return true;
     }
 
-    static public bool ComputePppsCBFromOmegasCB(
+    public static bool
+    ComputePppsCBFromOmegasCB(
         ref ComputeBuffer pppsCB,
         ComputeShader precomputeShader,
         ComputeBuffer omegasCB,
-        int vCount, int boneCount)
+        int vCount,
+        int boneCount
+    )
     {
         if (precomputeShader == null)
         {
@@ -432,11 +529,19 @@ public class DDMUtilsGPU
         precomputeShader.SetInt("VertexCount", vCount);
         precomputeShader.SetInt("BoneCount", boneCount);
 
-        uint threadGroupSizeX, threadGroupSizeY, threadGroupSizeZ;
+        uint
+            threadGroupSizeX,
+            threadGroupSizeY,
+            threadGroupSizeZ;
 
         int kernelComputePpps = precomputeShader.FindKernel("ComputePpps");
-        precomputeShader.GetKernelThreadGroupSizes(kernelComputePpps, out threadGroupSizeX, out threadGroupSizeY, out threadGroupSizeZ);
-        int threadGroupsX = (vCount + (int)threadGroupSizeX - 1) / (int)threadGroupSizeX;
+        precomputeShader
+            .GetKernelThreadGroupSizes(kernelComputePpps,
+            out threadGroupSizeX,
+            out threadGroupSizeY,
+            out threadGroupSizeZ);
+        int threadGroupsX =
+            (vCount + (int) threadGroupSizeX - 1) / (int) threadGroupSizeX;
         precomputeShader.SetBuffer(kernelComputePpps, "PreOmegas", omegasCB);
         precomputeShader.SetBuffer(kernelComputePpps, "Ppps", pppsCB);
         precomputeShader.Dispatch(kernelComputePpps, threadGroupsX, 1, 1);
@@ -444,12 +549,15 @@ public class DDMUtilsGPU
         return true;
     }
 
-    static public bool ComputeLastcolsCBPsCBFromOmegasCB(
+    public static bool
+    ComputeLastcolsCBPsCBFromOmegasCB(
         ref ComputeBuffer lastcolsCB,
         ref ComputeBuffer psCB,
         ComputeShader precomputeShader,
         ComputeBuffer omegasCB,
-        int vCount, int boneCount)
+        int vCount,
+        int boneCount
+    )
     {
         if (precomputeShader == null)
         {
@@ -459,25 +567,39 @@ public class DDMUtilsGPU
         precomputeShader.SetInt("VertexCount", vCount);
         precomputeShader.SetInt("BoneCount", boneCount);
 
-        uint threadGroupSizeX, threadGroupSizeY, threadGroupSizeZ;
+        uint
+            threadGroupSizeX,
+            threadGroupSizeY,
+            threadGroupSizeZ;
 
-        int kernelComputeLastcolsPs = precomputeShader.FindKernel("ComputeLastcolsPs");
-        precomputeShader.GetKernelThreadGroupSizes(kernelComputeLastcolsPs, out threadGroupSizeX, out threadGroupSizeY, out threadGroupSizeZ);
-        int threadGroupsX = (vCount + (int)threadGroupSizeX - 1) / (int)threadGroupSizeX;
-        precomputeShader.SetBuffer(kernelComputeLastcolsPs, "PreOmegas", omegasCB);
-        precomputeShader.SetBuffer(kernelComputeLastcolsPs, "Lastcols", lastcolsCB);
+        int kernelComputeLastcolsPs =
+            precomputeShader.FindKernel("ComputeLastcolsPs");
+        precomputeShader
+            .GetKernelThreadGroupSizes(kernelComputeLastcolsPs,
+            out threadGroupSizeX,
+            out threadGroupSizeY,
+            out threadGroupSizeZ);
+        int threadGroupsX =
+            (vCount + (int) threadGroupSizeX - 1) / (int) threadGroupSizeX;
+        precomputeShader
+            .SetBuffer(kernelComputeLastcolsPs, "PreOmegas", omegasCB);
+        precomputeShader
+            .SetBuffer(kernelComputeLastcolsPs, "Lastcols", lastcolsCB);
         precomputeShader.SetBuffer(kernelComputeLastcolsPs, "Ps", psCB);
         precomputeShader.Dispatch(kernelComputeLastcolsPs, threadGroupsX, 1, 1);
 
         return true;
     }
 
-    static public bool ComputeLastomegasCBPsCBFromOmegasCB(
+    public static bool
+    ComputeLastomegasCBPsCBFromOmegasCB(
         ref ComputeBuffer lastomegasCB,
         ref ComputeBuffer psCB,
         ComputeShader precomputeShader,
         ComputeBuffer omegasCB,
-        int vCount, int boneCount)
+        int vCount,
+        int boneCount
+    )
     {
         if (precomputeShader == null)
         {
@@ -487,15 +609,27 @@ public class DDMUtilsGPU
         precomputeShader.SetInt("VertexCount", vCount);
         precomputeShader.SetInt("BoneCount", boneCount);
 
-        uint threadGroupSizeX, threadGroupSizeY, threadGroupSizeZ;
+        uint
+            threadGroupSizeX,
+            threadGroupSizeY,
+            threadGroupSizeZ;
 
-        int kernelComputeLastomegasPs = precomputeShader.FindKernel("ComputeLastomegasPs");
-        precomputeShader.GetKernelThreadGroupSizes(kernelComputeLastomegasPs, out threadGroupSizeX, out threadGroupSizeY, out threadGroupSizeZ);
-        int threadGroupsX = (vCount + (int)threadGroupSizeX - 1) / (int)threadGroupSizeX;
-        precomputeShader.SetBuffer(kernelComputeLastomegasPs, "PreOmegas", omegasCB);
-        precomputeShader.SetBuffer(kernelComputeLastomegasPs, "Lastomegas", lastomegasCB);
+        int kernelComputeLastomegasPs =
+            precomputeShader.FindKernel("ComputeLastomegasPs");
+        precomputeShader
+            .GetKernelThreadGroupSizes(kernelComputeLastomegasPs,
+            out threadGroupSizeX,
+            out threadGroupSizeY,
+            out threadGroupSizeZ);
+        int threadGroupsX =
+            (vCount + (int) threadGroupSizeX - 1) / (int) threadGroupSizeX;
+        precomputeShader
+            .SetBuffer(kernelComputeLastomegasPs, "PreOmegas", omegasCB);
+        precomputeShader
+            .SetBuffer(kernelComputeLastomegasPs, "Lastomegas", lastomegasCB);
         precomputeShader.SetBuffer(kernelComputeLastomegasPs, "Ps", psCB);
-        precomputeShader.Dispatch(kernelComputeLastomegasPs, threadGroupsX, 1, 1);
+        precomputeShader
+            .Dispatch(kernelComputeLastomegasPs, threadGroupsX, 1, 1);
 
         return true;
     }

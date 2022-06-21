@@ -26,7 +26,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
-
 using System.Collections.Generic;
 using MathNet.Numerics.Interpolation;
 
@@ -52,9 +51,11 @@ namespace MathNet.Numerics
         /// MathNet.Numerics.Interpolation.Barycentric.InterpolateRationalFloaterHormannSorted
         /// instead, which is more efficient.
         /// </remarks>
-        public static IInterpolation Common(IEnumerable<double> points, IEnumerable<double> values)
+        public static IInterpolation
+        Common(IEnumerable<double> points, IEnumerable<double> values)
         {
-            return Barycentric.InterpolateRationalFloaterHormann(points, values);
+            return Barycentric
+                .InterpolateRationalFloaterHormann(points, values);
         }
 
         /// <summary>
@@ -72,9 +73,14 @@ namespace MathNet.Numerics
         /// MathNet.Numerics.Interpolation.Barycentric.InterpolateRationalFloaterHormannSorted
         /// instead, which is more efficient.
         /// </remarks>
-        public static IInterpolation RationalWithoutPoles(IEnumerable<double> points, IEnumerable<double> values)
+        public static IInterpolation
+        RationalWithoutPoles(
+            IEnumerable<double> points,
+            IEnumerable<double> values
+        )
         {
-            return Barycentric.InterpolateRationalFloaterHormann(points, values);
+            return Barycentric
+                .InterpolateRationalFloaterHormann(points, values);
         }
 
         /// <summary>
@@ -92,9 +98,14 @@ namespace MathNet.Numerics
         /// MathNet.Numerics.Interpolation.BulirschStoerRationalInterpolation.InterpolateSorted
         /// instead, which is more efficient.
         /// </remarks>
-        public static IInterpolation RationalWithPoles(IEnumerable<double> points, IEnumerable<double> values)
+        public static IInterpolation
+        RationalWithPoles(
+            IEnumerable<double> points,
+            IEnumerable<double> values
+        )
         {
-            return BulirschStoerRationalInterpolation.Interpolate(points, values);
+            return BulirschStoerRationalInterpolation
+                .Interpolate(points, values);
         }
 
         /// <summary>
@@ -112,7 +123,11 @@ namespace MathNet.Numerics
         /// MathNet.Numerics.Interpolation.Barycentric.InterpolatePolynomialEquidistantSorted
         /// instead, which is more efficient.
         /// </remarks>
-        public static IInterpolation PolynomialEquidistant(IEnumerable<double> points, IEnumerable<double> values)
+        public static IInterpolation
+        PolynomialEquidistant(
+            IEnumerable<double> points,
+            IEnumerable<double> values
+        )
         {
             return Barycentric.InterpolatePolynomialEquidistant(points, values);
         }
@@ -134,7 +149,8 @@ namespace MathNet.Numerics
         /// MathNet.Numerics.Interpolation.NevillePolynomialInterpolation.InterpolateSorted
         /// instead, which is more efficient.
         /// </remarks>
-        public static IInterpolation Polynomial(IEnumerable<double> points, IEnumerable<double> values)
+        public static IInterpolation
+        Polynomial(IEnumerable<double> points, IEnumerable<double> values)
         {
             return NevillePolynomialInterpolation.Interpolate(points, values);
         }
@@ -154,7 +170,8 @@ namespace MathNet.Numerics
         /// MathNet.Numerics.Interpolation.LinearSpline.InterpolateSorted
         /// instead, which is more efficient.
         /// </remarks>
-        public static IInterpolation Linear(IEnumerable<double> points, IEnumerable<double> values)
+        public static IInterpolation
+        Linear(IEnumerable<double> points, IEnumerable<double> values)
         {
             return LinearSpline.Interpolate(points, values);
         }
@@ -174,7 +191,8 @@ namespace MathNet.Numerics
         /// MathNet.Numerics.Interpolation.LogLinear.InterpolateSorted
         /// instead, which is more efficient.
         /// </remarks>
-        public static IInterpolation LogLinear(IEnumerable<double> points, IEnumerable<double> values)
+        public static IInterpolation
+        LogLinear(IEnumerable<double> points, IEnumerable<double> values)
         {
             return Interpolation.LogLinear.Interpolate(points, values);
         }
@@ -195,7 +213,8 @@ namespace MathNet.Numerics
         /// MathNet.Numerics.Interpolation.CubicSpline.InterpolateNaturalSorted
         /// instead, which is more efficient.
         /// </remarks>
-        public static IInterpolation CubicSpline(IEnumerable<double> points, IEnumerable<double> values)
+        public static IInterpolation
+        CubicSpline(IEnumerable<double> points, IEnumerable<double> values)
         {
             return Interpolation.CubicSpline.InterpolateNatural(points, values);
         }
@@ -216,7 +235,11 @@ namespace MathNet.Numerics
         /// MathNet.Numerics.Interpolation.CubicSpline.InterpolateAkimaSorted
         /// instead, which is more efficient.
         /// </remarks>
-        public static IInterpolation CubicSplineRobust(IEnumerable<double> points, IEnumerable<double> values)
+        public static IInterpolation
+        CubicSplineRobust(
+            IEnumerable<double> points,
+            IEnumerable<double> values
+        )
         {
             return Interpolation.CubicSpline.InterpolateAkima(points, values);
         }
@@ -237,7 +260,11 @@ namespace MathNet.Numerics
         /// MathNet.Numerics.Interpolation.CubicSpline.InterpolatePchipSorted
         /// instead, which is more efficient.
         /// </remarks>
-        public static IInterpolation CubicSplineMonotone(IEnumerable<double> points, IEnumerable<double> values)
+        public static IInterpolation
+        CubicSplineMonotone(
+            IEnumerable<double> points,
+            IEnumerable<double> values
+        )
         {
             return Interpolation.CubicSpline.InterpolatePchip(points, values);
         }
@@ -259,9 +286,16 @@ namespace MathNet.Numerics
         /// MathNet.Numerics.Interpolation.CubicSpline.InterpolateHermiteSorted
         /// instead, which is more efficient.
         /// </remarks>
-        public static IInterpolation CubicSplineWithDerivatives(IEnumerable<double> points, IEnumerable<double> values, IEnumerable<double> firstDerivatives)
+        public static IInterpolation
+        CubicSplineWithDerivatives(
+            IEnumerable<double> points,
+            IEnumerable<double> values,
+            IEnumerable<double> firstDerivatives
+        )
         {
-            return Interpolation.CubicSpline.InterpolateHermite(points, values, firstDerivatives);
+            return Interpolation
+                .CubicSpline
+                .InterpolateHermite(points, values, firstDerivatives);
         }
 
         /// <summary>
@@ -279,7 +313,8 @@ namespace MathNet.Numerics
         /// MathNet.Numerics.Interpolation.StepInterpolation.InterpolateSorted
         /// instead, which is more efficient.
         /// </remarks>
-        public static IInterpolation Step(IEnumerable<double> points, IEnumerable<double> values)
+        public static IInterpolation
+        Step(IEnumerable<double> points, IEnumerable<double> values)
         {
             return StepInterpolation.Interpolate(points, values);
         }
