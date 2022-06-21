@@ -169,7 +169,3 @@ The presented results may include significant overhead that would need to be inv
 4. [Milestone 3](https://docs.google.com/presentation/d/1FIu6bGBnXOtndSAxtpXztczM1mbGk7st8uuC3rlGfBQ/)
 5. [Final Presentation](https://docs.google.com/presentation/d/1wim-hyjRPX4jIR6AkHR4tgXh2nGj3MpmaegtT0uUxrw/)
 6. [Sample Video](https://vimeo.com/655985843)
-
-## Bloopers
-
-![Blooper](Readme/blooper.png)
