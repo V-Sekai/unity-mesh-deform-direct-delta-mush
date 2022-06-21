@@ -11,18 +11,18 @@ using UnityEngine;
 [RequireComponent(typeof (SkinnedMeshRenderer))]
 public abstract class DDMSkinnedMeshGPUBase : MonoBehaviour
 {
-    public int iterations = 5;
+    public int iterations = 30;
 
     public float smoothLambda = 0.9f;
 
     public bool useCompute = true;
 
-    public float adjacencyMatchingVertexTolerance = 1e-4f; // 0.0f;
+    public float adjacencyMatchingVertexTolerance = 1e-4f;
 
     public enum DebugMode
     {
         Off,
-        CompareWithLinearBlend /*SmoothOnly, Deltas*/
+        CompareWithLinearBlend
     }
 
     public DebugMode debugMode = DebugMode.Off;
@@ -328,7 +328,6 @@ public abstract class DDMSkinnedMeshGPUBase : MonoBehaviour
 
 
 #region Direct Delta Mush implementation
-
     protected virtual void UpdateMeshOnCPU()
     {
         Debug.LogError("UpdateMeshOnCPU Not implemented.");
