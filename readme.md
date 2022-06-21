@@ -12,16 +12,15 @@ With Direct Delta Mush (left), we get less bulging effect than what we get with 
 
 ### Requirement
 
-- Unity 2020.3.13
-- Visual Studio 2019
+- Unity 2020.3.36f1
+- Visual Studio 2022
 
 ### Build
 
-Add `MeshDeformUnity` to Unity Hub and select unity version. Then you can open this project.
+Add `MeshDeformUnity` to Unity Hub and select Unity version to open this project.
 
 ## Features Overview
 
-- Delta Mush with CPU or GPU.
 - Direct Delta Mush with GPU variant 0.
 - Precomputation of Direct Delta Mush with GPU.
 
@@ -36,8 +35,6 @@ The table above shows how the number of iterations affect the visual effect of s
 The [paper](https://www.ea.com/seed/news/siggraph2019-direct-delta-mush) also shows some variants which are equivalent to special cases of several previous skinning algorithms.
 
 - The variant 0 is the full DDM model.
-
-Keep in mind that using less precomputation data doesn't mean the performance would be improved. The visual effect of different variants are shown below. For DDM v0 and DDM v2, there are less collapsing artifact, and v0 keeps the shape mostly, thus performs the best.
 
 | LBS                                 | v0                                 |
 | ----------------------------------- | ---------------------------------- |
@@ -97,24 +94,18 @@ See [technical notes](notes.md) for technical details.
 ## Credit & Reference
 
 1. Xuntong Liang
-
-- xuntong@seas.upenn.edu
-- [LinkedIn](https://www.linkedin.com/in/xuntong-liang-406429181/)
-- [GitHub](https://github.com/PacosLelouch)
-- [twitter](https://twitter.com/XTL90234545)
-
+   - xuntong@seas.upenn.edu
+   - [LinkedIn](https://www.linkedin.com/in/xuntong-liang-406429181/)
+   - [GitHub](https://github.com/PacosLelouch)
+   - [twitter](https://twitter.com/XTL90234545)
 2. Bowen Deng
-
-- dengbw@seas.upenn.edu
-- [LinkedIn](www.linkedin.com/in/bowen-deng-7dbw13)
-
+   - dengbw@seas.upenn.edu
+   - [LinkedIn](www.linkedin.com/in/bowen-deng-7dbw13)
 3. Beini Gu
-
-- gubeini@seas.upenn.edu
-- [LinkedIn](www.linkedin.com/in/bowen-deng-7dbw13)
-- [personal website](https://www.seas.upenn.edu/~gubeini/)
-- [twitter](https://twitter.com/scoutydren)
-
+   - gubeini@seas.upenn.edu
+   - [LinkedIn](www.linkedin.com/in/bowen-deng-7dbw13)
+   - [personal website](https://www.seas.upenn.edu/~gubeini/)
+   - [twitter](https://twitter.com/scoutydren)
 1. [Unity](https://unity.com/)
 1. [Math.NET Numerics](https://github.com/mathnet/mathnet-numerics)
 1. [Delta Mush: smoothing deformations while preserving detail](https://dl.acm.org/doi/10.1145/2633374.2633376)
