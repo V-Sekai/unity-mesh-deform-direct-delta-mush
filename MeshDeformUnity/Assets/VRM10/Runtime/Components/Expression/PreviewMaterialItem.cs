@@ -1,0 +1,136 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UniGLTF.Extensions.VRMC_vrm;
+
+
+namespace UniVRM10
+{
+    public enum ShaderPropertyType
+    {
+        //
+        // 概要:
+        //     Color Property.
+        Color = 0,
+        //
+        // 概要:
+        //     Vector Property.
+        Vector = 1,
+        //
+        // 概要:
+        //     Float Property.
+        Float = 2,
+        //
+        // 概要:
+        //     Range Property.
+        Range = 3,
+        //
+        // 概要:
+        //     Texture Property.
+        TexEnv = 4
+    }
+
+    [Serializable]
+    public struct PropItem
+    {
+        public string Name;
+        public ShaderPropertyType PropertyType;
+        public Vector4 DefaultValues;
+    }
+
+    /// <summary>
+    /// Material 一つ分のプロパティを蓄えている
+    ///
+    /// * PreviewSceneManager で使う
+    /// * MaterialValueBindingMerger で使う
+    ///
+    /// </summary>
+    [Serializable]
+    public sealed class PreviewMaterialItem
+    {
+        public readonly Material Material;
+
+        public PreviewMaterialItem(Material material)
+        {
+            Material = material;
+
+            // uv default value
+            DefaultUVScaleOffset = material.GetVector(UV_PROPERTY);
+        }
+
+        public Dictionary<UniGLTF.Extensions.VRMC_vrm.MaterialColorType, PropItem> PropMap = new Dictionary<UniGLTF.Extensions.VRMC_vrm.MaterialColorType, PropItem>();
+
+        public Vector4 DefaultUVScaleOffset = new Vector4(1, 1, 0, 0);
+
+        public string[] PropNames
+        {
+            get;
+            set;
+        }
+
+        public void RestoreInitialValues()
+        {
+            foreach (var prop in PropMap)
+            {
+                Material.SetColor(prop.Value.Name, prop.Value.DefaultValues);
+            }
+        }
+
+        public const string UV_PROPERTY = "_MainTex_ST";
+        public const string COLOR_PROPERTY = "_Color";
+        public const string EMISSION_COLOR_PROPERTY = "_EmissionColor";
+        public const string RIM_COLOR_PROPERTY = "_RimColor";
+        public const string OUTLINE_COLOR_PROPERTY = "_OutlineColor";
+        public const string SHADE_COLOR_PROPERTY = "_ShadeColor";
+        public static MaterialColorType GetBindType(string property)
+        {
+            switch (property)
+            {
+                case COLOR_PROPERTY:
+                    return MaterialColorType.color;
+
+                case EMISSION_COLOR_PROPERTY:
+                    return MaterialColorType.emissionColor;
+
+                case RIM_COLOR_PROPERTY:
+                    return MaterialColorType.rimColor;
+
+                case SHADE_COLOR_PROPERTY:
+                    return MaterialColorType.shadeColor;
+
+                case OUTLINE_COLOR_PROPERTY:
+                    return MaterialColorType.outlineColor;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// [Preview] 積算する前の初期値にクリアする
+        /// </summary>
+        public void Clear()
+        {
+            // clear Color
+            foreach (var _kv in PropMap)
+            {
+                Material.SetColor(_kv.Value.Name, _kv.Value.DefaultValues);
+            }
+
+            // clear UV
+            Material.SetVector(UV_PROPERTY, DefaultUVScaleOffset);
+        }
+
+        /// <summary>
+        /// [Preview] scaleOffset を weight で重みを付けて加える
+        /// </summary>
+        /// <param name="scaleOffset"></param>
+        /// <param name="weight"></param>
+        public void AddScaleOffset(Vector4 scaleOffset, float weight)
+        {
+            var value = Material.GetVector(UV_PROPERTY);
+            //Debug.LogFormat("{0} => {1}", valueName, x.TargetValue);
+            value += (scaleOffset - DefaultUVScaleOffset) * weight;
+            Material.SetColor(UV_PROPERTY, value);
+        }
+    }
+}
