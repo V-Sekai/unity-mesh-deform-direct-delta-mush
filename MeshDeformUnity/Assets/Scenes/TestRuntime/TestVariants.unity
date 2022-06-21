@@ -243,7 +243,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2f347b7d3cc1ac40aa02b76dc1bf1e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  iterations: 5
+  iterations: 30
   smoothLambda: 0.9
   useCompute: 1
   adjacencyMatchingVertexTolerance: 0.0001
