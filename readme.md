@@ -8,10 +8,6 @@ This is a Unity project implementing real-time mesh skinning using GPU-based Dir
 
 <center>With Direct Delta Mush (left), we get less bulging effect than what we get with built-in skinning (right).</center>
 
-![Overview2](Readme/Overview2.gif)
-
-<center>We can get smooth skinning result even with rigid binding.</center>
-
 ## How to Build
 
 ### Requirement
@@ -49,9 +45,9 @@ The [paper](https://www.ea.com/seed/news/siggraph2019-direct-delta-mush) also sh
 
 Keep in mind that using less precomputation data doesn't mean the performance would be improved. The visual effect of different variants are shown below. For DDM v0 and DDM v2, there are less collapsing artifact, and v0 keeps the shape mostly, thus performs the best.
 
-| LBS                                 | v0                                
-| ----------------------------------- | ---------------------------------- 
-| ![img](Readme/VisualEffect_LBS.png) | ![img](Readme/VisualEffect_v0.png) 
+| LBS                                 | v0                                 |
+| ----------------------------------- | ---------------------------------- |
+| ![img](Readme/VisualEffect_LBS.png) | ![img](Readme/VisualEffect_v0.png) |
 
 See [technical notes](notes.md) for technical details.
 
@@ -135,18 +131,24 @@ The presented results may include significant overhead that would need to be inv
 ## Credit & Reference
 
 1. Xuntong Liang
-  - xuntong@seas.upenn.edu
-  - [LinkedIn](https://www.linkedin.com/in/xuntong-liang-406429181/)
-  - [GitHub](https://github.com/PacosLelouch)
-  - [twitter](https://twitter.com/XTL90234545)
+
+- xuntong@seas.upenn.edu
+- [LinkedIn](https://www.linkedin.com/in/xuntong-liang-406429181/)
+- [GitHub](https://github.com/PacosLelouch)
+- [twitter](https://twitter.com/XTL90234545)
+
 2. Bowen Deng
-  - dengbw@seas.upenn.edu
-  - [LinkedIn](www.linkedin.com/in/bowen-deng-7dbw13)
+
+- dengbw@seas.upenn.edu
+- [LinkedIn](www.linkedin.com/in/bowen-deng-7dbw13)
+
 3. Beini Gu
-  - gubeini@seas.upenn.edu
-  - [LinkedIn](www.linkedin.com/in/bowen-deng-7dbw13)
-  - [personal website](https://www.seas.upenn.edu/~gubeini/)
-  - [twitter](https://twitter.com/scoutydren)
+
+- gubeini@seas.upenn.edu
+- [LinkedIn](www.linkedin.com/in/bowen-deng-7dbw13)
+- [personal website](https://www.seas.upenn.edu/~gubeini/)
+- [twitter](https://twitter.com/scoutydren)
+
 1. [Unity](https://unity.com/)
 1. [Math.NET Numerics](https://github.com/mathnet/mathnet-numerics)
 1. [Delta Mush: smoothing deformations while preserving detail](https://dl.acm.org/doi/10.1145/2633374.2633376)
