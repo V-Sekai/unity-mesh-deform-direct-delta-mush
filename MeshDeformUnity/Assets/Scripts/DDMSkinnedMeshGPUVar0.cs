@@ -11,77 +11,16 @@ using MathNet.Numerics.LinearAlgebra.Solvers;
 //[ExecuteInEditMode]
 public class DDMSkinnedMeshGPUVar0 : DDMSkinnedMeshGPUBase
 {
-	//internal DenseMatrix[,] omegas;
-	//internal DDMUtilsIterative ddmUtils;
-
-	//internal ComputeBuffer verticesCB; // float3
-	//internal ComputeBuffer normalsCB; // float3
-
-	//internal ComputeBuffer weightsCB; // float4 + int4
-	//internal ComputeBuffer bonesCB; // float4x4
-	//internal ComputeBuffer omegasCB; // float4x4 * 4
-	//internal ComputeBuffer outputCB; // float3 + float3
-
-	//////
-	//internal ComputeBuffer laplacianCB;
-	//////laplacianCB
-
 	internal DDMUtilsIterative.OmegaWithIndex[,] omegaWithIdxs;
 
 
 	void Start()
 	{
 		InitBase();
-
-		//BoneWeight[] bws = mesh.boneWeights;
-
-		// Compute
 		if (computeShader && ductTapedShader)
 		{
-			//verticesCB = new ComputeBuffer(vCount, 3 * sizeof(float));
-			//normalsCB = new ComputeBuffer(vCount, 3 * sizeof(float));
-			//weightsCB = new ComputeBuffer(vCount, 4 * sizeof(float) + 4 * sizeof(int));
-			//bonesCB = new ComputeBuffer(bCount, 16 * sizeof(float));
-			//verticesCB.SetData(mesh.vertices);
-			//normalsCB.SetData(mesh.normals);
-			//weightsCB.SetData(bws);
-
-			////omegasCB = new ComputeBuffer(vCount, 16 * sizeof(float) * 4);
-			////omegasCB.SetData(compressedOmegas);
-			//omegasCB = new ComputeBuffer(vCount * maxOmegaCount, (10 * sizeof(float) + sizeof(int)));
-			////omegasCB.SetData(convertedOmegas);
-
-			//outputCB = new ComputeBuffer(vCount, 6 * sizeof(float));
-
-			//deformKernel = computeShader.FindKernel("DeformMesh");
-			//computeShader.SetBuffer(deformKernel, "Vertices", verticesCB);
-			//computeShader.SetBuffer(deformKernel, "Normals", normalsCB);
-			//computeShader.SetBuffer(deformKernel, "Weights", weightsCB);
-			//computeShader.SetBuffer(deformKernel, "Bones", bonesCB);
 			computeShader.SetBuffer(deformKernel, "Omegas", omegasCB);
-			//computeShader.SetBuffer(deformKernel, "Output", outputCB);
-			//computeShader.SetInt("VertexCount", vCount);
-
-			//uint threadGroupSizeX, threadGroupSizeY, threadGroupSizeZ;
-			//computeShader.GetKernelThreadGroupSizes(deformKernel, out threadGroupSizeX, out threadGroupSizeY, out threadGroupSizeZ);
-			//computeThreadGroupSizeX = (int)threadGroupSizeX;
-
-			//ductTapedMaterial = new Material(ductTapedShader);
-			//ductTapedMaterial.CopyPropertiesFromMaterial(skin.sharedMaterial);
 		}
-		//else
-		//{
-		//	useCompute = false;
-		//}
-
-		//laplacianCB = new ComputeBuffer(vCount * maxOmegaCount, (sizeof(int) + sizeof(float)));
-		//DDMUtilsGPU.ComputeLaplacianCBFromAdjacency(
-		//	ref laplacianCB, precomputeShader, adjacencyMatrix);
-		//DDMUtilsGPU.ComputeOmegasCBFromLaplacianCB(
-		//	ref omegasCB, precomputeShader,
-		//	verticesCB, laplacianCB, weightsCB, 
-		//	bCount, iterations, translationSmooth);
-
 		if(!useCompute)
         {
 			omegaWithIdxs = new DDMUtilsIterative.OmegaWithIndex[vCount, maxOmegaCount];
@@ -91,17 +30,6 @@ public class DDMSkinnedMeshGPUVar0 : DDMSkinnedMeshGPUBase
 
 	void OnDestroy()
 	{
-		//if (laplacianCB == null)
-		//	return;
-
-		//verticesCB.Release();
-		//normalsCB.Release();
-		//weightsCB.Release();
-		//bonesCB.Release();
-		//omegasCB.Release();
-		//outputCB.Release();
-
-		//laplacianCB.Release();
 		ReleaseBase();
 	}
 
@@ -114,9 +42,6 @@ public class DDMSkinnedMeshGPUVar0 : DDMSkinnedMeshGPUBase
 	protected override void UpdateMeshOnCPU()
 	{
 		Matrix4x4[] boneMatrices = GenerateBoneMatrices();
-
-		//Debug.Log(boneMatrices[1]);
-
 		BoneWeight[] bw = mesh.boneWeights;
 		Vector3[] vs = mesh.vertices;
 		Vector3[] ns = mesh.normals;
@@ -211,56 +136,34 @@ public class DDMSkinnedMeshGPUVar0 : DDMSkinnedMeshGPUBase
 			DenseMatrix qi_piT = new DenseMatrix(3);
 			qi.OuterProduct(pi, qi_piT);
 			DenseMatrix M = Qi - qi_piT;
-
-			// SVD, still need to fix
 			Matrix4x4 gamma = Matrix4x4.zero;
+			var SVD = M.Svd(true);
+			DenseMatrix U = (DenseMatrix)SVD.U;
+			DenseMatrix VT = (DenseMatrix)SVD.VT;
+			DenseMatrix R = U * VT;
 
-			//float detM = M.Determinant();
-			//if(true)//(Math.Abs(detM) >= 1e-4f)
-			//{
-				var SVD = M.Svd(true);
-				DenseMatrix U = (DenseMatrix)SVD.U;
-				DenseMatrix VT = (DenseMatrix)SVD.VT;
-				DenseMatrix R = U * VT;
-				//for(int i = 0; i < 3; ++i)
-				//{
-				//	R.SetColumn(i, R.Column(i).Normalize(2d));
-				//}
+			DenseVector ti = qi - (R * pi);
 
-				DenseVector ti = qi - (R * pi);
-
-				// Get gamma
-				for (int row = 0; row < 3; ++row)
+			// Get gamma
+			for (int row = 0; row < 3; ++row)
+			{
+				for (int col = 0; col < 3; ++col)
 				{
-					for (int col = 0; col < 3; ++col)
-					{
-						gamma[row, col] = R[row, col];
-					}
+					gamma[row, col] = R[row, col];
 				}
-				gamma[0, 3] = ti[0];
-				gamma[1, 3] = ti[1];
-				gamma[2, 3] = ti[2];
-				gamma[3, 3] = 1.0f;
-			//}
-			//         else
-			//         {
-			//	gamma = Matrix4x4.identity;
-			//}
+			}
+			gamma[0, 3] = ti[0];
+			gamma[1, 3] = ti[1];
+			gamma[2, 3] = ti[2];
+			gamma[3, 3] = 1.0f;
 #if WITH_SCALE_MATRIX
 			gamma *= scaleMatrix;
 #endif // WITH_SCALE_MATRIX
 
 			Vector3 vertex = gamma.MultiplyPoint3x4(vs[vi]);
 			deformedMesh.vertices[vi] = vertex;
-
-			//TODO: Bug
 			Vector3 normal = gamma.MultiplyVector(ns[vi]);
-			deformedMesh.normals[vi] = normal;// normal.normalized;
-
-			//if (vi == 49)
-			//{
-			//    Debug.Log(gamma.ToString() + "\n" + vertex.ToString() + "\n" + normal.ToString());
-			//}
+			deformedMesh.normals[vi] = normal;
 		}
 
 		Bounds bounds = new Bounds();
@@ -280,9 +183,6 @@ public class DDMSkinnedMeshGPUVar0 : DDMSkinnedMeshGPUBase
 
 		bonesCB.SetData(boneMatrices);
 		computeShader.SetBuffer(deformKernel, "Bones", bonesCB);
-		//computeShader.SetBuffer(deformKernel, "Vertices", verticesCB);
-		//computeShader.SetBuffer(deformKernel, "Normals", normalsCB);
-		//computeShader.SetBuffer(deformKernel, "Output", outputCB);
 		computeShader.Dispatch(deformKernel, threadGroupsX, 1, 1);
 		ductTapedMaterial.SetBuffer("Vertices", outputCB);
 	}

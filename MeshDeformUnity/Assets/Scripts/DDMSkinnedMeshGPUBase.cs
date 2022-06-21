@@ -12,15 +12,9 @@ using MathNet.Numerics.LinearAlgebra.Solvers;
 [RequireComponent(typeof(SkinnedMeshRenderer))]
 abstract public class DDMSkinnedMeshGPUBase : MonoBehaviour
 {
-	//public bool readCachedAdjacencyMatrix = true;
 	public int iterations = 5;
 
 	public float smoothLambda = 0.9f; 
-	//public float rotationSmooth = 0.9f;
-	//public float dm_blend = 0.0f;
-
-	//public bool deformNormals = true;
-	//public bool weightedSmooth = false;//true;
 	public bool useCompute = true;
 
 	public float adjacencyMatchingVertexTolerance = 1e-4f;// 0.0f;
@@ -29,8 +23,7 @@ abstract public class DDMSkinnedMeshGPUBase : MonoBehaviour
 
 	public DebugMode debugMode = DebugMode.Off;
 
-	//bool disableDeltaPass { get { return false;/*return (debugMode == DebugMode.SmoothOnly || debugMode == DebugMode.Deltas);*/ } }
-	protected bool actuallyUseCompute { get { return useCompute && debugMode != DebugMode.CompareWithLinearBlend /*&& debugMode != DebugMode.Deltas && !usePrefilteredBoneWeights*/; } }
+	protected bool actuallyUseCompute { get { return useCompute && debugMode != DebugMode.CompareWithLinearBlend; } }
 
 	protected int vCount;
 	protected int bCount;
@@ -85,11 +78,6 @@ abstract public class DDMSkinnedMeshGPUBase : MonoBehaviour
 
 	protected void InitBase()
 	{
-		//// Start Test Math.NET
-		//MathNet.Numerics.LinearAlgebra.Single.SparseMatrix B = new MathNet.Numerics.LinearAlgebra.Single.SparseMatrix(3, 3);
-		//B.At(0, 1, 1.0f);
-		//Debug.Log("B:" + B);
-		//// End Test Math.NET
 		Debug.Assert(SystemInfo.supportsComputeShaders && precomputeShader != null);
 
 		if (precomputeShader)
@@ -106,7 +94,6 @@ abstract public class DDMSkinnedMeshGPUBase : MonoBehaviour
 
 		deformedMesh = new DeformedMesh(mesh.vertexCount);
 
-		//adjacencyMatrix = GetCachedAdjacencyMatrix(mesh, adjacencyMatchingVertexTolerance, readCachedAdjacencyMatrix);
 		adjacencyMatrix = GetCachedAdjacencyMatrix(mesh, adjacencyMatchingVertexTolerance);
 
 		vCount = mesh.vertexCount;
@@ -140,9 +127,7 @@ abstract public class DDMSkinnedMeshGPUBase : MonoBehaviour
 			deformKernel = computeShader.FindKernel("DeformMesh");
 			computeShader.SetBuffer(deformKernel, "Vertices", verticesCB);
 			computeShader.SetBuffer(deformKernel, "Normals", normalsCB);
-		//	computeShader.SetBuffer(deformKernel, "Weights", weightsCB);
 			computeShader.SetBuffer(deformKernel, "Bones", bonesCB);
-		//	computeShader.SetBuffer(deformKernel, "Omegas", omegasCB);
 			computeShader.SetBuffer(deformKernel, "Output", outputCB);
 			computeShader.SetInt("VertexCount", vCount);
 
@@ -157,12 +142,6 @@ abstract public class DDMSkinnedMeshGPUBase : MonoBehaviour
 		{
 			useCompute = false;
 		}
-
-		//if(!useCompute)
-  //      {
-		//	omegaWithIdxs = new DDMUtilsIterative.OmegaWithIndex[vCount, maxOmegaCount];
-		//	omegasCB.GetData(omegaWithIdxs);
-		//}
 	}
 
 	protected void ReleaseBase()
@@ -182,21 +161,6 @@ abstract public class DDMSkinnedMeshGPUBase : MonoBehaviour
         outputCB.Release();
     }
 
-    //void OnDestroy()
-    //{
-    //	if (verticesCB == null)
-    //		return;
-
-    //	verticesCB.Release();
-    //	normalsCB.Release();
-    //	weightsCB.Release();
-    //	bonesCB.Release();
-    //	omegasCB.Release();
-    //	outputCB.Release();
-
-    //	laplacianCB.Release();
-    //}
-
     protected void UpdateBase()
 	{
 		bool compareWithSkinning = debugMode == DebugMode.CompareWithLinearBlend;
@@ -209,8 +173,6 @@ abstract public class DDMSkinnedMeshGPUBase : MonoBehaviour
 		}
 		if (compareWithSkinning)
 			DrawVerticesVsSkin();
-		//else if (debugMode == DebugMode.Deltas)
-		//	DrawDeltas();
 		else
 			DrawMesh();
 
@@ -325,7 +287,6 @@ abstract public class DDMSkinnedMeshGPUBase : MonoBehaviour
 			bindPose.SetColumn(1, bindPose.GetColumn(1) / bpScale.y);
 			bindPose.SetColumn(2, bindPose.GetColumn(2) / bpScale.z);
 
-			//scaleMatrices[i] = Matrix4x4.Scale(localScale) * Matrix4x4.Scale(bindPose.MultiplyVector(bpScale));
 			scaleMatrices[i] = Matrix4x4.Scale(localScale) * Matrix4x4.Scale(bpScale);
 #endif // WITH_SCALE_MATRIX
 			boneMatrices[i] = localToWorld * bindPose;
@@ -342,38 +303,18 @@ abstract public class DDMSkinnedMeshGPUBase : MonoBehaviour
 		if (actuallyUseCompute)
 		{
 			mesh.bounds = skin.bounds; // skin is actually disabled, so it only remembers the last animation frame
-			//Graphics.DrawMesh(mesh, skin.transform.parent.worldToLocalMatrix * skin.transform.localToWorldMatrix, ductTapedMaterial, 0);
 			Graphics.DrawMesh(mesh, Matrix4x4.identity, ductTapedMaterial, 0);
 		}
 		else
-			//Graphics.DrawMesh(mesh, skin.transform.parent.worldToLocalMatrix * skin.transform.localToWorldMatrix, skin.sharedMaterial, 0);
 			Graphics.DrawMesh(meshForCPUOutput, Matrix4x4.identity, skin.sharedMaterial, 0);
 	}
 
 	void DrawDeltas()
 	{
-		//for (int i = 0; i < deformedMesh.vertexCount; i++)
-		//{
-		//	Vector3 position = deformedMesh.vertices[i];
-		//	Vector3 delta = deformedMesh.deltaV[i];
-
-		//	Color color = Color.green;
-		//	Debug.DrawRay(position, delta, color);
-		//}
-
-		//Graphics.DrawMesh(meshForCPUOutput, Matrix4x4.identity, skin.sharedMaterial, 0);
 	}
 
 	void DrawVerticesVsSkin()
 	{
-		//for (int i = 0; i < deformedMesh.vertexCount; i++)
-		//{
-		//	Vector3 position = deformedMesh.vertices[i];
-		//	Vector3 normal = deformedMesh.normals[i];
-
-		//	Color color = Color.green;
-		//	Debug.DrawRay(position, normal * 0.01f, color);
-		//}
 	}
 #endregion
 }

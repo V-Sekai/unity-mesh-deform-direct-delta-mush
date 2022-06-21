@@ -15,19 +15,8 @@ public class DDMUtilsGPU
     static public int omegaCount = DDMSkinnedMeshGPUBase.maxOmegaCount;
     static public bool isTestingPerformance = false;
 
-    //internal ComputeBuffer verticesCB;
-    //internal ComputeBuffer laplacianCB;
-    //internal ComputeBuffer omegasCB;
-
     static void SynchronizeCompute()
     {
-        //TODO
-        //var fence = Graphics.CreateGraphicsFence(UnityEngine.Rendering.GraphicsFenceType.AsyncQueueSynchronisation, UnityEngine.Rendering.SynchronisationStageFlags.ComputeProcessing);
-        //Graphics.WaitOnAsyncGraphicsFence(fence);
-        //while(!fence.passed)
-        //{
-        //    Debug.Log(fence);
-        //}
     }
 
     static public IndexWeightPair[,] ComputeLaplacianWithIndexFromAdjacency(int[,] adjacencyMatrix)
@@ -71,11 +60,6 @@ public class DDMUtilsGPU
         {
             return false;
         }
-        //if(laplacianCB != null)
-        //{
-        //    laplacianCB.Release();
-        //    laplacianCB = null;
-        //}
         UnityEngine.Profiling.Profiler.BeginSample("ComputeLaplacianCBFromAdjacencyCPU");
 
         int vCount = adjacencyMatrix.GetLength(0);
@@ -97,11 +81,6 @@ public class DDMUtilsGPU
         {
             return false;
         }
-        //if(laplacianCB != null)
-        //{
-        //    laplacianCB.Release();
-        //    laplacianCB = null;
-        //}
         UnityEngine.Profiling.Profiler.BeginSample("ComputeLaplacianCBFromAdjacency");
 
         int vCount = adjacencyMatrix.GetLength(0);
@@ -258,10 +237,6 @@ public class DDMUtilsGPU
                     for (int ai = 0; ai < aCount; ++ai)
                     {
                         IndexWeightPair iwp = laplacian[vi, ai];
-                        //if (iwp.weight == 0.0f)
-                        //{
-                        //	break;
-                        //}
                         int ki = iwp.index;
                         if (ki < 0)
                         {
@@ -348,11 +323,6 @@ public class DDMUtilsGPU
         {
             return false;
         }
-        //if (omegasCB != null)
-        //{
-        //    omegasCB.Release();
-        //    omegasCB = null;
-        //}
         UnityEngine.Profiling.Profiler.BeginSample("ComputeOmegasCBFromLaplacianCB");
         int vCount = verticesCB.count;
         int aCount = omegaCount;
@@ -396,12 +366,10 @@ public class DDMUtilsGPU
         precomputeShader.SetBuffer(kernelPreStep, "Weights", weightsCB);
 
         precomputeShader.SetBuffer(kernelPreStep, "Omegas", tmpOmegasCB0);
-        //precomputeShader.SetBuffer(kernel0, "Omegas", iterations == 0 ? omegasCB : tmpOmemgasCB0);
 
         precomputeShader.Dispatch(kernelPreStep, threadGroupsX, 1, 1);
 
 #if DEBUG_GPU_OUTPUT
-        //DDMUtilsIterative.OmegaWithIndex[,] tmpOmegas = new DDMUtilsIterative.OmegaWithIndex[vCount, boneCount];
         tmpOmegasCB0.GetData(tmpOmegas);
 
 #endif // DEBUG_GPU_OUTPUT
@@ -409,16 +377,12 @@ public class DDMUtilsGPU
         if (iterations > 0)
         {
             int kernelOneSweep = precomputeShader.FindKernel("ComputeOmegasOneSweep");
-            //precomputeShader.GetKernelThreadGroupSizes(kernelOneSweep, out threadGroupSizeX, out threadGroupSizeY, out threadGroupSizeZ);
 
             precomputeShader.SetBuffer(kernelOneSweep, "Laplacian", laplacianCB);
 
             for (int it = 0; it < iterations; ++it)
             {
                 precomputeShader.SetBuffer(kernelOneSweep, "PreOmegas", (it % 2 == 0) ? tmpOmegasCB0 : tmpOmegasCB1);
-                //precomputeShader.SetBuffer(kernel1, "Omegas", (it + 1 == iterations) ? omegasCB : (
-                //    (iterations % 2 == 0) ? tmpOmemgasCB1 : tmpOmemgasCB0)
-                //    );
                 precomputeShader.SetBuffer(kernelOneSweep, "Omegas", (it % 2 == 0) ? tmpOmegasCB1 : tmpOmegasCB0);
                 precomputeShader.Dispatch(kernelOneSweep, threadGroupsX, 1, 1);
 
@@ -432,7 +396,6 @@ public class DDMUtilsGPU
         }
 
         int kernelCompressOmegas = precomputeShader.FindKernel("CompressOmegas");
-        //precomputeShader.GetKernelThreadGroupSizes(kernelCompressOmegas, out threadGroupSizeX, out threadGroupSizeY, out threadGroupSizeZ);
 
         precomputeShader.SetBuffer(kernelCompressOmegas, "PreOmegas", (iterations % 2 == 0) ? tmpOmegasCB0 : tmpOmegasCB1);
         precomputeShader.SetBuffer(kernelCompressOmegas, "Omegas", omegasCB);
