@@ -84,13 +84,6 @@ See [technical notes](notes.md) for technical details.
 
    After you play, you can see the animation. Some of the models can be found at [mixamo](https://www.mixamo.com/).
 
-## Future Work
-
-- Implement different Laplacian matrix.
-- Refer to [the next paper in SIGGRAPH 2021](<(https://www.ea.com/seed/news/ddm-compression-with-continuous-examples)>).
-- Support more models and scaling.
-- Optimize implementation for variants.
-
 ## Credit & Reference
 
 1. Xuntong Liang
