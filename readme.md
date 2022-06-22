@@ -1,5 +1,9 @@
 # Real-Time Mesh Skinning with Direct Delta Mush (Unity) (fire edition) 
 
+## Problem solved
+
+Simply authored skinned meshes can have skinning and animations with efficiency and quality.
+
 ## Project Description
 
 This is a Unity project implementing real-time mesh skinning using GPU-based Direct Delta Mush algorithm. This algorithm and its variants enable us to compute mesh skinning and animations with efficiency and quality, even with simply authored skinned meshes.
