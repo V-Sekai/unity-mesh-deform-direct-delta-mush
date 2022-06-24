@@ -20,7 +20,7 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
 
     public bool deformNormals = true;
 
-    public bool weightedSmooth = false; //true;
+    public bool weightedSmooth = true;
 
     public bool useCompute = true;
 
@@ -29,7 +29,7 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
     public enum DebugMode
     {
         Off,
-        CompareWithSkinning /*SmoothOnly, Deltas*/
+        CompareWithSkinning
     }
 
     public DebugMode debugMode = DebugMode.Off;
@@ -38,7 +38,7 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
     {
         get
         {
-            return false; /*return (debugMode == DebugMode.SmoothOnly || debugMode == DebugMode.Deltas);*/
+            return false;
         }
     }
 
@@ -46,7 +46,7 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
     {
         get
         {
-            return useCompute && debugMode != DebugMode.CompareWithSkinning; /*&& debugMode != DebugMode.Deltas && !usePrefilteredBoneWeights*/
+            return useCompute && debugMode != DebugMode.CompareWithSkinning;
         }
     }
 
@@ -128,11 +128,6 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
 
     void Start()
     {
-        //// Start Test Math.NET
-        //MathNet.Numerics.LinearAlgebra.Single.SparseMatrix B = new MathNet.Numerics.LinearAlgebra.Single.SparseMatrix(3, 3);
-        //B.At(0, 1, 1.0f);
-        //Debug.Log("B:" + B);
-        //// End Test Math.NET
         if (computeShader)
         {
             computeShader = Instantiate(computeShader);
@@ -156,8 +151,6 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
                 true,
                 weightedSmooth);
 
-        //SparseMatrix B = MeshUtils.BuildSmoothMatrixFromLaplacian(lapl, translationSmooth, iterations);
-        //SparseMatrix C = MeshUtils.BuildSmoothMatrixFromLaplacian(lapl, rotationSmooth, iterations);
         DenseMatrix V = new DenseMatrix(vCount, 3);
         Vector3[] vs = mesh.vertices;
         for (int i = 0; i < vCount; ++i)
@@ -198,8 +191,6 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
         ddmUtils.n = vCount;
         ddmUtils.num_transforms = bCount;
 
-        //ddmUtils.B = iterations == 0 ? I : I - (translationSmooth / iterations) * lapl;//B;
-        //ddmUtils.C = iterations == 0 ? I : I - (rotationSmooth / iterations) * lapl;//C;
         ddmUtils.B = iterations == 0 ? I : I - (translationSmooth) * lapl; //B;
         ddmUtils.C = iterations == 0 ? I : I - (rotationSmooth) * lapl; //C;
         ddmUtils.V = V;
@@ -220,7 +211,6 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
             ductTapedShader
         )
         {
-            //Matrix4x4[,] compressedOmegas = DDMUtilsIterative.CompressOmegas2D(omegas, bws);
             DDMUtilsIterative.OmegaWithIndex[,] convertedOmegas =
                 DDMUtilsIterative.ConvertOmegas1D(omegas, maxOmegaCount);
 
@@ -233,8 +223,6 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
             normalsCB.SetData(mesh.normals);
             weightsCB.SetData (bws);
 
-            //omegasCB = new ComputeBuffer(vCount, 16 * sizeof(float) * 4);
-            //omegasCB.SetData(compressedOmegas);
             omegasCB =
                 new ComputeBuffer(vCount * maxOmegaCount,
                     (10 * sizeof(float) + sizeof(int)));
@@ -267,30 +255,6 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
         }
         else
             useCompute = false;
-
-        //UpdateDeltaVectors();
-
-        //// Experiment with blending bone weights
-        //prefilteredBoneWeights = new float[mesh.vertexCount, skin.bones.Length];
-        //for (int i = 0; i < mesh.vertexCount; ++i)
-        //{
-        //	prefilteredBoneWeights[i, bw[i].boneIndex0] = bw[i].weight0;
-        //	prefilteredBoneWeights[i, bw[i].boneIndex1] = bw[i].weight1;
-        //	prefilteredBoneWeights[i, bw[i].boneIndex2] = bw[i].weight2;
-        //	prefilteredBoneWeights[i, bw[i].boneIndex3] = bw[i].weight3;
-        //}
-        //for (int i = 0; i < iterations; i++)
-        //	prefilteredBoneWeights = SmoothFilter.distanceWeightedLaplacianFilter(mesh.vertices, prefilteredBoneWeights, adjacencyMatrix);
-
-        //var boneCount = skin.bones.Length;
-        //for (int i = 0; i < mesh.vertexCount; ++i)
-        //{
-        //	float l = 0.0f;
-        //	for (int b = 0; b < boneCount; ++b)
-        //		l += prefilteredBoneWeights[i, b];
-        //	for (int b = 0; b < boneCount; ++b)
-        //		prefilteredBoneWeights[i, b] += prefilteredBoneWeights[i, b] * (1.0f - l);
-        //}
     }
 
     void OnDestroy()
@@ -317,8 +281,6 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
         if (compareWithSkinning)
             DrawVerticesVsSkin();
         else
-            //else if (debugMode == DebugMode.Deltas)
-            //	DrawDeltas();
             DrawMesh();
 
         skin.enabled = compareWithSkinning;
@@ -365,18 +327,6 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
     {
         int[,] adjacencyMatrix;
 
-        //#if UNITY_EDITOR
-        ////var path = Path.Combine(Application.persistentDataPath, AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(mesh)) + ".adj");
-        //var path = Path.Combine("", AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(mesh)) + "_" + adjacencyMatchingVertexTolerance.ToString() + ".adj");
-        //Debug.Log(path);
-        //if (File.Exists(path))
-        //{
-        //	string json = File.ReadAllText(path);
-        //	adjacencyMatrix = JsonUtility.FromJson<AdjacencyMatrix>(json).data;
-        //}
-        //else
-        //{
-        //#endif
         adjacencyMatrix =
             MeshUtils
                 .BuildAdjacencyMatrix(mesh.vertices,
@@ -385,30 +335,9 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
                 adjacencyMatchingVertexTolerance *
                 adjacencyMatchingVertexTolerance);
 
-        //#if UNITY_EDITOR
-        //	var json = JsonUtility.ToJson(new AdjacencyMatrix(adjacencyMatrix));
-        //	Debug.Log(json);
-        //	using (FileStream fs = new FileStream(path, FileMode.Create))
-        //	{
-        //		using (StreamWriter writer = new StreamWriter(fs))
-        //		{
-        //			writer.Write(json);
-        //		}
-        //	}
-        //}
-        //#endif
         return adjacencyMatrix;
     }
 #endregion
-
-
-    //private int GetSmoothKernel()
-    //{
-    //	if (weightedSmooth)
-    //		return computeShader.FindKernel("WeightedLaplacianFilter");
-    //	else
-    //		return computeShader.FindKernel("LaplacianFilter");
-    //}
 
 #region Direct Delta Mush implementation
     //private Func<Vector3[], int[,], Vector3[]> GetSmoothFilter()
@@ -657,11 +586,9 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
         {
             mesh.bounds = skin.bounds; // skin is actually disabled, so it only remembers the last animation frame
 
-            //Graphics.DrawMesh(mesh, skin.transform.parent.worldToLocalMatrix * skin.transform.localToWorldMatrix, ductTapedMaterial, 0);
             Graphics.DrawMesh(mesh, Matrix4x4.identity, ductTapedMaterial, 0);
         }
         else
-            //Graphics.DrawMesh(mesh, skin.transform.parent.worldToLocalMatrix * skin.transform.localToWorldMatrix, skin.sharedMaterial, 0);
             Graphics
                 .DrawMesh(meshForCPUOutput,
                 Matrix4x4.identity,
@@ -671,25 +598,10 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
 
     void DrawDeltas()
     {
-        //for (int i = 0; i < deformedMesh.vertexCount; i++)
-        //{
-        //	Vector3 position = deformedMesh.vertices[i];
-        //	Vector3 delta = deformedMesh.deltaV[i];
-        //	Color color = Color.green;
-        //	Debug.DrawRay(position, delta, color);
-        //}
-        //Graphics.DrawMesh(meshForCPUOutput, Matrix4x4.identity, skin.sharedMaterial, 0);
     }
 
     void DrawVerticesVsSkin()
     {
-        //for (int i = 0; i < deformedMesh.vertexCount; i++)
-        //{
-        //	Vector3 position = deformedMesh.vertices[i];
-        //	Vector3 normal = deformedMesh.normals[i];
-        //	Color color = Color.green;
-        //	Debug.DrawRay(position, normal * 0.01f, color);
-        //}
     }
 #endregion
 }
