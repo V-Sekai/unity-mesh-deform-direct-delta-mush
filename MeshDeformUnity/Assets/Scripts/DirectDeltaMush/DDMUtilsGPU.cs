@@ -12,7 +12,7 @@ public class DDMUtilsGPU
         public float weight;
     }
 
-    public static int omegaCount = DDMSkinnedMeshGPUVar0.maxOmegaCount;
+    public static int omegaCount = DDMSkinnedMeshGPUBase.maxOmegaCount;
 
     public static bool isTestingPerformance = false;
 

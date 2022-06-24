@@ -136,7 +136,7 @@ public class DeltaMushSkinnedMesh : MonoBehaviour
         deformedMesh = new DeformedMesh(mesh.vertexCount);
 
         adjacencyMatrix =
-            DDMSkinnedMeshGPUVar0
+            DDMSkinnedMeshGPUBase
                 .GetCachedAdjacencyMatrix(mesh,
                 adjacencyMatchingVertexTolerance);
 
