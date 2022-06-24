@@ -12,7 +12,7 @@ public class DDMUtilsGPU
         public float weight;
     }
 
-    public static int omegaCount = DDMSkinnedMeshGPUVar0.maxOmegaCount;
+    public static int omegaCount = DDMSkinnedMeshGPU.maxOmegaCount;
 
     public static bool isTestingPerformance = false;
 
@@ -348,7 +348,7 @@ public class DDMUtilsGPU
                 ++curOI;
             }
 
-            while (curOI < DDMSkinnedMeshGPUVar0.maxOmegaCount)
+            while (curOI < DDMSkinnedMeshGPU.maxOmegaCount)
             {
                 DDMUtilsIterative.OmegaWithIndex oswi =
                     new DDMUtilsIterative.OmegaWithIndex();

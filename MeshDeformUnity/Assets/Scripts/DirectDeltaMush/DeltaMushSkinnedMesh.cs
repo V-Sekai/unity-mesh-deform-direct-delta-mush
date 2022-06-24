@@ -24,14 +24,14 @@ public class DeltaMushSkinnedMesh : MonoBehaviour
         Deltas
     }
 
-    public DebugMode debugMode = DebugMode.Off;
+    public DebugMode IsDebugMode = DebugMode.Off;
 
     bool disableDeltaPass
     {
         get
         {
             return (
-            debugMode == DebugMode.SmoothOnly || debugMode == DebugMode.Deltas
+            IsDebugMode == DebugMode.SmoothOnly || IsDebugMode == DebugMode.Deltas
             );
         }
     }
@@ -41,8 +41,8 @@ public class DeltaMushSkinnedMesh : MonoBehaviour
         get
         {
             return useCompute &&
-            debugMode != DebugMode.CompareWithSkinning &&
-            debugMode != DebugMode.Deltas &&
+            IsDebugMode != DebugMode.CompareWithSkinning &&
+            IsDebugMode != DebugMode.Deltas &&
             !usePrefilteredBoneWeights;
         }
     }
@@ -136,7 +136,7 @@ public class DeltaMushSkinnedMesh : MonoBehaviour
         deformedMesh = new DeformedMesh(mesh.vertexCount);
 
         adjacencyMatrix =
-            DDMSkinnedMeshGPUVar0
+            DDMSkinnedMeshGPU
                 .GetCachedAdjacencyMatrix(mesh,
                 adjacencyMatchingVertexTolerance);
 
@@ -267,7 +267,7 @@ public class DeltaMushSkinnedMesh : MonoBehaviour
     {
         UpdateDeltaVectors();
 
-        bool compareWithSkinning = debugMode == DebugMode.CompareWithSkinning;
+        bool compareWithSkinning = IsDebugMode == DebugMode.CompareWithSkinning;
 
         if (actuallyUseCompute)
             UpdateMeshOnGPU();
@@ -276,7 +276,7 @@ public class DeltaMushSkinnedMesh : MonoBehaviour
 
         if (compareWithSkinning)
             DrawVerticesVsSkin();
-        else if (debugMode == DebugMode.Deltas)
+        else if (IsDebugMode == DebugMode.Deltas)
             DrawDeltas();
         else
             DrawMesh();
