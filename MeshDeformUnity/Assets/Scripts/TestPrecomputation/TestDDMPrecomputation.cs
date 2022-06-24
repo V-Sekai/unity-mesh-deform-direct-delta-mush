@@ -77,10 +77,10 @@ public class TestDDMPrecomputation : MonoBehaviour
         weightsCB.SetData (bws);
 
         omegasCB =
-            new ComputeBuffer(vCount * DDMSkinnedMeshGPUBase.maxOmegaCount,
+            new ComputeBuffer(vCount * DDMSkinnedMeshGPUVar0.maxOmegaCount,
                 (10 * sizeof(float) + sizeof(int)));
         laplacianCB =
-            new ComputeBuffer(vCount * DDMSkinnedMeshGPUBase.maxOmegaCount,
+            new ComputeBuffer(vCount * DDMSkinnedMeshGPUVar0.maxOmegaCount,
                 (sizeof(int) + sizeof(float)));
 
         //omegaWithIdxs = new DDMUtilsIterative.OmegaWithIndex[vCount, DDMSkinnedMeshGPU.maxOmegaCount];
@@ -94,7 +94,7 @@ public class TestDDMPrecomputation : MonoBehaviour
             .Profiler
             .BeginSample("PrecomputationAdjacencyMatrix");
         adjacencyMatrix =
-            DDMSkinnedMeshGPUBase
+            DDMSkinnedMeshGPUVar0
                 .GetCachedAdjacencyMatrix(mesh,
                 adjacencyMatchingVertexTolerance);
         UnityEngine.Profiling.Profiler.EndSample();

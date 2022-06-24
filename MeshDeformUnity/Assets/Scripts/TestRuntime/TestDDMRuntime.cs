@@ -11,7 +11,7 @@ public class TestDDMRuntime : MonoBehaviour
 
     public float adjacencyMatchingVertexTolerance = -1.0f;
 
-    void UpdateValues(DDMSkinnedMeshGPUBase script)
+    void UpdateValues(DDMSkinnedMeshGPUVar0 script)
     {
         if (script != null)
         {
@@ -39,11 +39,6 @@ public class TestDDMRuntime : MonoBehaviour
             {
                 script.iterations = iterations;
             }
-
-            //if (smoothLambda >= 0.0f)
-            //{
-            //    script.smoothLambda = smoothLambda;
-            //}
             if (adjacencyMatchingVertexTolerance >= 0.0f)
             {
                 script.adjacencyMatchingVertexTolerance =
@@ -55,10 +50,10 @@ public class TestDDMRuntime : MonoBehaviour
     void Awake()
     {
         Debug.Log("Test DDM runtime awake.");
-        DDMSkinnedMeshGPUBase[] scriptsDDM =
-            FindObjectsOfType<DDMSkinnedMeshGPUBase>(false);
+        DDMSkinnedMeshGPUVar0[] scriptsDDM =
+            FindObjectsOfType<DDMSkinnedMeshGPUVar0>(false);
         Debug.Log("Find " + scriptsDDM.Length.ToString() + " DDM scripts.");
-        foreach (DDMSkinnedMeshGPUBase script in scriptsDDM)
+        foreach (DDMSkinnedMeshGPUVar0 script in scriptsDDM)
         {
             UpdateValues (script);
         }
