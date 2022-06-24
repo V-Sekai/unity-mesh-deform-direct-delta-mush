@@ -661,6 +661,7 @@ public class DirectDeltaMushSkinnedMeshVar1 : MonoBehaviour
     {
         Matrix4x4[] boneMatrices = new Matrix4x4[skin.bones.Length];
 
+
 #if WITH_SCALE_MATRIX
         Matrix4x4[] scaleMatrices = new Matrix4x4[skin.bones.Length];
 #endif // WITH_SCALE_MATRIX
@@ -669,6 +670,7 @@ public class DirectDeltaMushSkinnedMeshVar1 : MonoBehaviour
         {
             Matrix4x4 localToWorld = skin.bones[i].localToWorldMatrix;
             Matrix4x4 bindPose = mesh.bindposes[i];
+
 
 #if WITH_SCALE_MATRIX
             Vector3 localScale = localToWorld.lossyScale;
