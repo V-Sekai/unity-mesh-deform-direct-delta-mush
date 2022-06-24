@@ -11,7 +11,7 @@ public class TestDDMRuntime : MonoBehaviour
 
     public float adjacencyMatchingVertexTolerance = -1.0f;
 
-    void UpdateValues(DDMSkinnedMeshGPU script)
+    void UpdateValues(DDMSkinnedMeshGPUVar0 script)
     {
         if (script != null)
         {
@@ -50,10 +50,10 @@ public class TestDDMRuntime : MonoBehaviour
     void Awake()
     {
         Debug.Log("Test DDM runtime awake.");
-        DDMSkinnedMeshGPU[] scriptsDDM =
-            FindObjectsOfType<DDMSkinnedMeshGPU>(false);
+        DDMSkinnedMeshGPUVar0[] scriptsDDM =
+            FindObjectsOfType<DDMSkinnedMeshGPUVar0>(false);
         Debug.Log("Find " + scriptsDDM.Length.ToString() + " DDM scripts.");
-        foreach (DDMSkinnedMeshGPU script in scriptsDDM)
+        foreach (DDMSkinnedMeshGPUVar0 script in scriptsDDM)
         {
             UpdateValues (script);
         }

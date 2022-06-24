@@ -9,7 +9,7 @@ using UnityEngine;
 
 //[ExecuteInEditMode]
 [RequireComponent(typeof(SkinnedMeshRenderer))]
-public abstract class DDMSkinnedMeshGPU : MonoBehaviour
+public abstract class DDMSkinnedMeshGPUVar0 : MonoBehaviour
 {
     public int iterations = 30;
 
