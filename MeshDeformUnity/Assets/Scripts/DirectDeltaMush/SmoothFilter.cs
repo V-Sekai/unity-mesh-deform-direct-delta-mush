@@ -225,7 +225,6 @@ SmoothFilter // : MonoBehaviour
         for (int j = 0; j < bv.Length; j++)
         {
             // Find the bv neighboring vertices
-            // adjacentIndexes = MeshUtils.findAdjacentNeighborIndexes (sv, t, sv[j]);
             float dx = 0.0f;
             float dy = 0.0f;
             float dz = 0.0f;

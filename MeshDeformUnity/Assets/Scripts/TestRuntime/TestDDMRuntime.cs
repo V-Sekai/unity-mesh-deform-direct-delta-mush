@@ -31,7 +31,6 @@ using UnityEngine;
 
 public class TestDDMRuntime : MonoBehaviour
 {
-    //public List<GameObject> meshObjects;
     public int iterations = -1;
 
     public float smoothLambda = -1.0f;

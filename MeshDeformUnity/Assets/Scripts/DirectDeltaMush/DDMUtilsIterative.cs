@@ -254,7 +254,6 @@ public class DDMUtilsIterative
                     {
                         if (B[vi, k] != 0.0f)
                         {
-                            //omega += B[k, vi] * prevOmegas[k, bi];
                             omega += B[vi, k] * prevOmegas[k, bi];
                         }
                     }

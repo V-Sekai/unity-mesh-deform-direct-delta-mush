@@ -110,7 +110,6 @@ public class TestDDMPrecomputation : MonoBehaviour
             new ComputeBuffer(vCount * DDMSkinnedMeshGPUVar0.maxOmegaCount,
                 (sizeof(int) + sizeof(float)));
 
-        //omegaWithIdxs = new DDMUtilsIterative.OmegaWithIndex[vCount, DDMSkinnedMeshGPU.maxOmegaCount];
         DDMUtilsGPU.isTestingPerformance = true;
     }
 
@@ -193,17 +192,6 @@ public class TestDDMPrecomputation : MonoBehaviour
                 CPU_Precomputation();
             }
         }
-
-        //if (Input.GetKey("c"))
-        //{
-        //    Debug.Log("Test CPU precomputation");
-        //    CPU_Precomputation();
-        //}
-        //if (Input.GetKey("g"))
-        //{
-        //    Debug.Log("Test GPU precomputation.");
-        //    GPU_Precomputation();
-        //}
     }
 
     private void OnDestroy()
