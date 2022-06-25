@@ -119,49 +119,7 @@ void ComputeOmegasPreStep(uint3 groupID : SV_GroupID, uint3 groupThreadID : SV_G
 	{
 		Omegas[vi * BoneCount + boneIndices.w] = MatrixToOmegaStructWithIndex(Pi4 * boneWeights.w, boneIndices.w);
 	}
-
 	/// End whole bones
-
-	//if (boneIndices.x >= 0 && boneWeights.x > 0.0)
-	//{
-	//	Omegas[vi * MAX_OMEGA_COUNT + 0] = MatrixToOmegaStructWithIndex(Pi4 * boneWeights.x, boneIndices.x);
-	//}
-	//else
-	//{
-	//	Omegas[vi * MAX_OMEGA_COUNT + 0] = MatrixToOmegaStructWithIndex(ZERO_MATRIX_4, -1);
-	//}
-
-	//if (boneIndices.y >= 0 && boneWeights.y > 0.0)
-	//{
-	//	Omegas[vi * MAX_OMEGA_COUNT + 1] = MatrixToOmegaStructWithIndex(Pi4 * boneWeights.y, boneIndices.y);
-	//}
-	//else
-	//{
-	//	Omegas[vi * MAX_OMEGA_COUNT + 1] = MatrixToOmegaStructWithIndex(ZERO_MATRIX_4, -1);
-	//}
-
-	//if (boneIndices.z >= 0 && boneWeights.z > 0.0)
-	//{
-	//	Omegas[vi * MAX_OMEGA_COUNT + 2] = MatrixToOmegaStructWithIndex(Pi4 * boneWeights.z, boneIndices.z);
-	//}
-	//else
-	//{
-	//	Omegas[vi * MAX_OMEGA_COUNT + 2] = MatrixToOmegaStructWithIndex(ZERO_MATRIX_4, -1);
-	//}
-
-	//if (boneIndices.w >= 0 && boneWeights.w > 0.0)
-	//{
-	//	Omegas[vi * MAX_OMEGA_COUNT + 3] = MatrixToOmegaStructWithIndex(Pi4 * boneWeights.w, boneIndices.w);
-	//}
-	//else
-	//{
-	//	Omegas[vi * MAX_OMEGA_COUNT + 3] = MatrixToOmegaStructWithIndex(ZERO_MATRIX_4, -1);
-	//}
-
-	//for (int i = 4; i < MAX_OMEGA_COUNT; ++i)
-	//{
-	//	Omegas[vi * MAX_OMEGA_COUNT + i] = MatrixToOmegaStructWithIndex(ZERO_MATRIX_4, -1);
-	//}
 }
 
 [numthreads(THREAD_GROUP_SIZE_X, 1, 1)]
@@ -176,7 +134,6 @@ void ComputeOmegasOneSweep(uint3 groupID : SV_GroupID, uint3 groupThreadID : SV_
 		{
 			break;
 		}
-		//float4x4 omegaMat = ZERO_MATRIX_4;
 		float weight0 = 1.0 - Lambda;
 		OmegaStructWithIndex preOSWI0 = PreOmegas[vi * BoneCount + bi];
 		int counter = 0;
@@ -190,10 +147,6 @@ void ComputeOmegasOneSweep(uint3 groupID : SV_GroupID, uint3 groupThreadID : SV_
 		for (int ai = 0; ai < MAX_OMEGA_COUNT; ++ai)
 		{
 			IndexWeightPair iwp = Laplacian[vi * MAX_OMEGA_COUNT + ai];
-			//if (iwp.weight == 0.0)
-			//{
-			//	break;
-			//}
 			int ki = iwp.index;
 			if (ki < 0)
 			{
