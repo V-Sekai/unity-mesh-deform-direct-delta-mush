@@ -253,12 +253,17 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
             ductTapedMaterial.CopyPropertiesFromMaterial(skin.sharedMaterial);
         }
         else
+        {
             useCompute = false;
+        }
     }
 
     void OnDestroy()
     {
-        if (verticesCB == null) return;
+        if (verticesCB == null)
+        {
+            return;
+        }
 
         verticesCB.Release();
         normalsCB.Release();
@@ -273,14 +278,22 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
         bool compareWithSkinning = debugMode == DebugMode.CompareWithSkinning;
 
         if (actuallyUseCompute)
+        {
             UpdateMeshOnGPU();
+        }
         else
+        {
             UpdateMeshOnCPU();
+        }
 
         if (compareWithSkinning)
+        {
             DrawVerticesVsSkin();
+        }
         else
+        {
             DrawMesh();
+        }
 
         skin.enabled = compareWithSkinning;
     }
@@ -423,7 +436,9 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
 
         Bounds bounds = new Bounds();
         for (int i = 0; i < deformedMesh.vertexCount; i++)
-        bounds.Encapsulate(deformedMesh.vertices[i]);
+        {
+            bounds.Encapsulate(deformedMesh.vertices[i]);
+        }
 
         meshForCPUOutput.vertices = deformedMesh.vertices;
         meshForCPUOutput.normals = deformedMesh.normals;
@@ -473,11 +488,13 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
             Graphics.DrawMesh(mesh, Matrix4x4.identity, ductTapedMaterial, 0);
         }
         else
+        {
             Graphics
                 .DrawMesh(meshForCPUOutput,
                 Matrix4x4.identity,
                 skin.sharedMaterial,
                 0);
+        }
     }
 
     void DrawDeltas()
