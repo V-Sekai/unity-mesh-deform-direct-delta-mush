@@ -1,4 +1,4 @@
-//#define WITH_SCALE_MATRIX
+#define WITH_SCALE_MATRIX
 using System;
 using System.IO;
 using MathNet.Numerics.LinearAlgebra;
@@ -662,41 +662,13 @@ public class DDMSkinnedMeshGPUVar0 : MonoBehaviour
             {
                 for (int col = 0; col < 4; ++col)
                 {
-                    boneMatricesDense[i][row, col] = boneMatrices[i][row, col]; //mesh.bindposes[i][row, col];
+                    boneMatricesDense[i][row, col] = boneMatrices[i][row, col];
                 }
             }
         }
 
         for (int vi = 0; vi < mesh.vertexCount; ++vi)
         {
-#if WITH_SCALE_MATRIX
-            Matrix4x4 scaleMatrix =
-                (bw[vi].boneIndex0 >= 0 && bw[vi].weight0 > 0.0f)
-                    ? scaleMatrices[bw[vi].boneIndex0]
-                    : Matrix4x4.identity;
-            if (bw[vi].boneIndex1 >= 0 && bw[vi].weight1 > 0.0f)
-            {
-                for (int idx = 0; idx < 16; ++idx)
-                {
-                    scaleMatrix[idx] += scaleMatrices[bw[vi].boneIndex1][idx];
-                }
-            }
-            if (bw[vi].boneIndex2 >= 0 && bw[vi].weight2 > 0.0f)
-            {
-                for (int idx = 0; idx < 16; ++idx)
-                {
-                    scaleMatrix[idx] += scaleMatrices[bw[vi].boneIndex2][idx];
-                }
-            }
-            if (bw[vi].boneIndex3 >= 0 && bw[vi].weight3 > 0.0f)
-            {
-                for (int idx = 0; idx < 16; ++idx)
-                {
-                    scaleMatrix[idx] += scaleMatrices[bw[vi].boneIndex3][idx];
-                }
-            }
-#endif // WITH_SCALE_MATRIX
-
             DenseMatrix mat4 = DenseMatrix.CreateIdentity(4);
 
             DDMUtilsIterative.OmegaWithIndex oswi0 = omegaWithIdxs[vi, 0];
@@ -791,10 +763,6 @@ public class DDMSkinnedMeshGPUVar0 : MonoBehaviour
             gamma[1, 3] = ti[1];
             gamma[2, 3] = ti[2];
             gamma[3, 3] = 1.0f;
-
-#if WITH_SCALE_MATRIX
-            gamma *= scaleMatrix;
-#endif // WITH_SCALE_MATRIX
 
             Vector3 vertex = gamma.MultiplyPoint3x4(vs[vi]);
             deformedMesh.vertices[vi] = vertex;
