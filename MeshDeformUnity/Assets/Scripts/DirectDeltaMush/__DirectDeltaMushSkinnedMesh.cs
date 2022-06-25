@@ -1,4 +1,3 @@
-//#define WITH_SCALE_MATRIX
 using System;
 using System.IO;
 using MathNet.Numerics.LinearAlgebra;
@@ -364,34 +363,6 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
 
         for (int vi = 0; vi < mesh.vertexCount; ++vi)
         {
-#if WITH_SCALE_MATRIX
-            Matrix4x4 scaleMatrix =
-                (bw[vi].boneIndex0 >= 0 && bw[vi].weight0 > 0.0f)
-                    ? scaleMatrices[bw[vi].boneIndex0]
-                    : Matrix4x4.identity;
-            if (bw[vi].boneIndex1 >= 0 && bw[vi].weight1 > 0.0f)
-            {
-                for (int idx = 0; idx < 16; ++idx)
-                {
-                    scaleMatrix[idx] += scaleMatrices[bw[vi].boneIndex1][idx];
-                }
-            }
-            if (bw[vi].boneIndex2 >= 0 && bw[vi].weight2 > 0.0f)
-            {
-                for (int idx = 0; idx < 16; ++idx)
-                {
-                    scaleMatrix[idx] += scaleMatrices[bw[vi].boneIndex2][idx];
-                }
-            }
-            if (bw[vi].boneIndex3 >= 0 && bw[vi].weight3 > 0.0f)
-            {
-                for (int idx = 0; idx < 16; ++idx)
-                {
-                    scaleMatrix[idx] += scaleMatrices[bw[vi].boneIndex3][idx];
-                }
-            }
-#endif // WITH_SCALE_MATRIX
-
             DenseMatrix mat4 = new DenseMatrix(4);
             for (int bi = 0; bi < boneMatrices.Length; ++bi)
             {
@@ -423,18 +394,10 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
             // SVD, still need to fix
             Matrix4x4 gamma = Matrix4x4.zero;
 
-            //float detM = M.Determinant();
-            //if(true)//(Math.Abs(detM) >= 1e-4f)
-            //{
             var SVD = M.Svd(true);
             DenseMatrix U = (DenseMatrix) SVD.U;
             DenseMatrix VT = (DenseMatrix) SVD.VT;
             DenseMatrix R = U * VT;
-
-            //for(int i = 0; i < 3; ++i)
-            //{
-            //	R.SetColumn(i, R.Column(i).Normalize(2d));
-            //}
             DenseVector ti = qi - (R * pi);
 
             // Get gamma
@@ -450,26 +413,12 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
             gamma[2, 3] = ti[2];
             gamma[3, 3] = 1.0f;
 
-            //}
-            //         else
-            //         {
-            //	gamma = Matrix4x4.identity;
-            //}
-#if WITH_SCALE_MATRIX
-            gamma *= scaleMatrix;
-#endif // WITH_SCALE_MATRIX
-
             Vector3 vertex = gamma.MultiplyPoint3x4(vs[vi]);
             deformedMesh.vertices[vi] = vertex;
 
             //TODO: Bug
             Vector3 normal = gamma.MultiplyVector(ns[vi]);
-            deformedMesh.normals[vi] = normal; // normal.normalized;
-
-            //if (vi == 49)
-            //{
-            //    Debug.Log(gamma.ToString() + "\n" + vertex.ToString() + "\n" + normal.ToString());
-            //}
+            deformedMesh.normals[vi] = normal;;
         }
 
         Bounds bounds = new Bounds();
@@ -500,33 +449,10 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
     {
         Matrix4x4[] boneMatrices = new Matrix4x4[skin.bones.Length];
 
-
-#if WITH_SCALE_MATRIX
-        Matrix4x4[] scaleMatrices = new Matrix4x4[skin.bones.Length];
-#endif // WITH_SCALE_MATRIX
-
         for (int i = 0; i < boneMatrices.Length; i++)
         {
             Matrix4x4 localToWorld = skin.bones[i].localToWorldMatrix;
             Matrix4x4 bindPose = mesh.bindposes[i];
-
-
-#if WITH_SCALE_MATRIX
-            Vector3 localScale = localToWorld.lossyScale;
-            Vector3 bpScale = bindPose.lossyScale;
-
-            localToWorld.SetColumn(0, localToWorld.GetColumn(0) / localScale.x);
-            localToWorld.SetColumn(1, localToWorld.GetColumn(1) / localScale.y);
-            localToWorld.SetColumn(2, localToWorld.GetColumn(2) / localScale.z);
-            bindPose.SetColumn(0, bindPose.GetColumn(0) / bpScale.x);
-            bindPose.SetColumn(1, bindPose.GetColumn(1) / bpScale.y);
-            bindPose.SetColumn(2, bindPose.GetColumn(2) / bpScale.z);
-
-            //scaleMatrices[i] = Matrix4x4.Scale(localScale) * Matrix4x4.Scale(bindPose.MultiplyVector(bpScale));
-            scaleMatrices[i] =
-                Matrix4x4.Scale(localScale) * Matrix4x4.Scale(bpScale);
-#endif // WITH_SCALE_MATRIX
-
             boneMatrices[i] = localToWorld * bindPose;
         }
         return boneMatrices;
