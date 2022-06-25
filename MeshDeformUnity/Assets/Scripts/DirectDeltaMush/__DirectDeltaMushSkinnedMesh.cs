@@ -340,25 +340,6 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
 #endregion
 
 #region Direct Delta Mush implementation
-    //private Func<Vector3[], int[,], Vector3[]> GetSmoothFilter()
-    //{
-    //	if (weightedSmooth)
-    //		return SmoothFilter.distanceWeightedLaplacianFilter;
-    //	else
-    //		return SmoothFilter.laplacianFilter;
-    //}
-    //private static Vector3[] GetSmoothDeltas(Vector3[] vertices, int[,] adjacencyMatrix, Func<Vector3[], int[,], Vector3[]> filter, int iterations)
-    //{
-    //	var smoothVertices = new Vector3[vertices.Length];
-    //	for (int i = 0; i < vertices.Length; i++)
-    //		smoothVertices[i] = vertices[i];
-    //	for (int i = 0; i < iterations; i++)
-    //		smoothVertices = filter(smoothVertices, adjacencyMatrix);
-    //	var delta = new Vector3[vertices.Length];
-    //	for (int i = 0; i < vertices.Length; i++)
-    //		delta[i] = vertices[i] - smoothVertices[i];
-    //	return delta;
-    //}
     void UpdateMeshOnCPU()
     {
         Matrix4x4[] boneMatrices = GenerateBoneMatrices();
@@ -511,31 +492,8 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
         bonesCB.SetData (boneMatrices);
         computeShader.SetBuffer(deformKernel, "Bones", bonesCB);
 
-        //computeShader.SetBuffer(deformKernel, "Vertices", verticesCB);
-        //computeShader.SetBuffer(deformKernel, "Normals", normalsCB);
-        //computeShader.SetBuffer(deformKernel, "Output", outputCB);
         computeShader.Dispatch(deformKernel, threadGroupsX, 1, 1);
         ductTapedMaterial.SetBuffer("Vertices", outputCB);
-
-        //for (int i = 0; i < iterations; i++)
-        //{
-        //	laplacianKernel = GetSmoothKernel();
-        //	computeShader.SetBuffer(laplacianKernel, "Adjacency", adjacencyCB);
-        //	computeShader.SetInt("AdjacentNeighborCount", adjacencyMatrix.GetLength(1));
-
-        //	bool lastIteration = i == iterations - 1;
-        //	if (lastIteration)
-        //	{
-        //		computeShader.SetBuffer(laplacianKernel, "Delta", outputCB[2]);
-        //		ductTapedMaterial.SetBuffer("Vertices", outputCB[(i + 1) % 2]);
-        //	}
-        //	//computeShader.SetBuffer(laplacianKernel, "Delta", outputCB[2]);
-
-        //	computeShader.SetBool("DeltaPass", lastIteration && !disableDeltaPass);
-        //	computeShader.SetBuffer(laplacianKernel, "Input", outputCB[i % 2]);
-        //	computeShader.SetBuffer(laplacianKernel, "Output", outputCB[(i + 1) % 2]);
-        //	computeShader.Dispatch(laplacianKernel, threadGroupsX, 1, 1);
-        //}
     }
 
     Matrix4x4[] GenerateBoneMatrices()

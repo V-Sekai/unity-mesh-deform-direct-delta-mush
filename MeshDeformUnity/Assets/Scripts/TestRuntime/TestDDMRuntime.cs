@@ -31,23 +31,6 @@ public class TestDDMRuntime : MonoBehaviour
         }
     }
 
-    void UpdateValues(DeltaMushSkinnedMesh script)
-    {
-        if (script != null)
-        {
-            if (iterations >= 0)
-            {
-                script.iterations = iterations;
-            }
-
-            if (adjacencyMatchingVertexTolerance >= 0.0f)
-            {
-                script.adjacencyMatchingVertexTolerance =
-                    adjacencyMatchingVertexTolerance;
-            }
-        }
-    }
-
     void Awake()
     {
         Debug.Log("Test DDM runtime awake.");
@@ -58,19 +41,6 @@ public class TestDDMRuntime : MonoBehaviour
         {
             UpdateValues (script);
         }
-        DeltaMushSkinnedMesh[] scriptsDM =
-            FindObjectsOfType<DeltaMushSkinnedMesh>(false);
-        Debug.Log("Find " + scriptsDM.Length.ToString() + " DM scripts.");
-        foreach (DeltaMushSkinnedMesh script in scriptsDM)
-        {
-            UpdateValues (script);
-        }
-
-        //foreach (GameObject meshObject in meshObjects)
-        //{
-        //    DDMSkinnedMeshGPUVar0 DDMBaseScript = meshObject.GetComponent<DDMSkinnedMeshGPUVar0>();
-        //    UpdateValues(DDMBaseScript);
-        //}
     }
 
     // Start is called before the first frame update
