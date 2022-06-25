@@ -281,20 +281,6 @@ public class DDMSkinnedMeshGPUVar0 : MonoBehaviour
             return adjacencyMatrix;
         }
 
-        //#if UNITY_EDITOR
-        //		if (readCachedADjacencyMatrix)
-        //		{
-        //			//var path = Path.Combine(Application.persistentDataPath, AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(mesh)) + ".adj");
-        //			var path = Path.Combine("", AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(mesh)) + "_" + adjacencyMatchingVertexTolerance.ToString() + ".adj");
-        //			Debug.Log(path);
-        //			if (File.Exists(path))
-        //			{
-        //				string json = File.ReadAllText(path);
-        //				adjacencyMatrix = JsonUtility.FromJson<AdjacencyMatrix>(json).data;
-        //			}
-        //			else
-        //			{
-        //#endif
         adjacencyMatrix =
             MeshUtils
                 .BuildAdjacencyMatrix(mesh.vertices,
@@ -303,23 +289,6 @@ public class DDMSkinnedMeshGPUVar0 : MonoBehaviour
                 adjacencyMatchingVertexTolerance *
                 adjacencyMatchingVertexTolerance);
 
-        //#if UNITY_EDITOR
-        //				var json = JsonUtility.ToJson(new AdjacencyMatrix(adjacencyMatrix));
-        //				Debug.Log(json);
-        //				using (FileStream fs = new FileStream(path, FileMode.Create))
-        //				{
-        //					using (StreamWriter writer = new StreamWriter(fs))
-        //					{
-        //						writer.Write(json);
-        //					}
-        //				}
-        //			}
-        //		}
-        //		else
-        //        {
-        //			adjacencyMatrix = MeshUtils.BuildAdjacencyMatrix(mesh.vertices, mesh.triangles, maxOmegaCount, adjacencyMatchingVertexTolerance * adjacencyMatchingVertexTolerance);
-        //		}
-        //#endif
         adjacencyMatrixMap.Add(mesh, adjacencyMatrix);
         return adjacencyMatrix;
     }
@@ -355,7 +324,6 @@ public class DDMSkinnedMeshGPUVar0 : MonoBehaviour
             scaleMatrices[i] =
                 Matrix4x4.Scale(localScale) * Matrix4x4.Scale(bpScale);
 #endif // WITH_SCALE_MATRIX
-
             boneMatrices[i] = localToWorld * bindPose;
         }
         return boneMatrices;
@@ -375,11 +343,13 @@ public class DDMSkinnedMeshGPUVar0 : MonoBehaviour
             Graphics.DrawMesh(mesh, Matrix4x4.identity, ductTapedMaterial, 0);
         }
         else
+        {
             Graphics
                 .DrawMesh(meshForCPUOutput,
                 Matrix4x4.identity,
                 skin.sharedMaterial,
                 0);
+        }
     }
 
     void DrawDeltas()
