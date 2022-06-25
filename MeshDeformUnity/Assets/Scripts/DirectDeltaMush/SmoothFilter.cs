@@ -26,7 +26,10 @@ SmoothFilter // : MonoBehaviour
             for (int j = 0; j < maxNeighbors; j++)
             {
                 var i = adjacencyMatrix[vi, j];
-                if (i < 0) break;
+                if (i < 0)
+                {
+                    break;
+                }
 
                 dx += sv[i].x - sv[vi].x;
                 dy += sv[i].y - sv[vi].y;
@@ -59,14 +62,25 @@ SmoothFilter // : MonoBehaviour
             for (int j = 0; j < maxNeighbors; j++)
             {
                 var i = adjacencyMatrix[vi, j];
-                if (i == vi) continue;
-                if (i < 0) break;
+                if (i == vi)
+                {
+                    continue;
+                }
+
+                if (i < 0)
+                {
+                    break;
+                }
 
                 float x = sv[i].x - sv[vi].x;
                 float y = sv[i].y - sv[vi].y;
                 float z = sv[i].z - sv[vi].z;
                 float sqr = x * x + y * y + z * z;
-                if (sqr < 1e-8f) continue;
+                if (sqr < 1e-8f)
+                {
+                    continue;
+                }
+
                 float w = 1.0f / Mathf.Sqrt(sqr);
                 dx += x * w;
                 dy += y * w;
@@ -107,21 +121,34 @@ SmoothFilter // : MonoBehaviour
         for (int vi = 0; vi < sv.Length; vi++)
         {
             // C# arrays always initialized to 0
-            for (int ch = 0; ch < maxChannels; ch++) res[vi, ch] = 0.0f;
+            for (int ch = 0; ch < maxChannels; ch++)
+            {
+                res[vi, ch] = 0.0f;
+            }
 
             float totalWeight = 0.0f;
             for (int j = 0; j < maxNeighbors; j++)
             {
                 var i = adjacencyMatrix[vi, j];
-                if (i == vi) continue;
-                if (i < 0) break;
+                if (i == vi)
+                {
+                    continue;
+                }
+
+                if (i < 0)
+                {
+                    break;
+                }
 
                 float x = sv[i].x - sv[vi].x;
                 float y = sv[i].y - sv[vi].y;
                 float z = sv[i].z - sv[vi].z;
                 float w = 1.0f / Mathf.Sqrt(x * x + y * y + z * z);
                 for (int ch = 0; ch < maxChannels; ch++)
-                res[vi, ch] += (interpolants[i, ch] - interpolants[vi, ch]) * w;
+                {
+                    res[vi, ch] += (interpolants[i, ch] - interpolants[vi, ch]) * w;
+                }
+
                 totalWeight += w;
             }
 
@@ -181,14 +208,21 @@ SmoothFilter // : MonoBehaviour
             for (int k = 0; k < maxNeighbors; k++)
             {
                 var i = adjacencyMatrix[j, k];
-                if (i < 0) break;
+                if (i < 0)
+                {
+                    break;
+                }
+
                 dx += bv[i].x;
                 dy += bv[i].y;
                 dz += bv[i].z;
                 ++count;
             }
 
-            if (count == 0) Debug.Log("Empty!");
+            if (count == 0)
+            {
+                Debug.Log("Empty!");
+            }
 
             wv[j].x -= beta * bv[j].x + ((1 - beta) / count) * dx;
             wv[j].y -= beta * bv[j].y + ((1 - beta) / count) * dy;
