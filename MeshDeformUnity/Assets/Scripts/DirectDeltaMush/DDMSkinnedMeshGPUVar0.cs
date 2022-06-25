@@ -669,7 +669,7 @@ public class DDMSkinnedMeshGPUVar0 : MonoBehaviour
             {
                 for (int col = 0; col < 4; ++col)
                 {
-                    boneMatricesDense[i][row, col] = boneMatrices[i][row, col]; //mesh.bindposes[i][row, col];
+                    boneMatricesDense[i][row, col] = boneMatrices[i][row, col];
                 }
             }
         }
