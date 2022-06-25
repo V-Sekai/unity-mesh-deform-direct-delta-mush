@@ -1,4 +1,3 @@
-#define WITH_SCALE_MATRIX
 using System;
 using System.IO;
 using MathNet.Numerics.LinearAlgebra;
@@ -558,29 +557,10 @@ public class DDMSkinnedMeshGPUVar0 : MonoBehaviour
     {
         Matrix4x4[] boneMatrices = new Matrix4x4[skin.bones.Length];
 
-#if WITH_SCALE_MATRIX
-        Matrix4x4[] scaleMatrices = new Matrix4x4[skin.bones.Length];
-#endif // WITH_SCALE_MATRIX
-
         for (int i = 0; i < boneMatrices.Length; i++)
         {
             Matrix4x4 localToWorld = skin.bones[i].localToWorldMatrix;
             Matrix4x4 bindPose = mesh.bindposes[i];
-
-#if WITH_SCALE_MATRIX
-            Vector3 localScale = localToWorld.lossyScale;
-            Vector3 bpScale = bindPose.lossyScale;
-
-            localToWorld.SetColumn(0, localToWorld.GetColumn(0) / localScale.x);
-            localToWorld.SetColumn(1, localToWorld.GetColumn(1) / localScale.y);
-            localToWorld.SetColumn(2, localToWorld.GetColumn(2) / localScale.z);
-            bindPose.SetColumn(0, bindPose.GetColumn(0) / bpScale.x);
-            bindPose.SetColumn(1, bindPose.GetColumn(1) / bpScale.y);
-            bindPose.SetColumn(2, bindPose.GetColumn(2) / bpScale.z);
-
-            scaleMatrices[i] =
-                Matrix4x4.Scale(localScale) * Matrix4x4.Scale(bpScale);
-#endif // WITH_SCALE_MATRIX
             boneMatrices[i] = localToWorld * bindPose;
         }
         return boneMatrices;
@@ -662,7 +642,7 @@ public class DDMSkinnedMeshGPUVar0 : MonoBehaviour
             {
                 for (int col = 0; col < 4; ++col)
                 {
-                    boneMatricesDense[i][row, col] = boneMatrices[i][row, col];
+                    boneMatricesDense[i][row, col] = boneMatrices[i][row, col]; //mesh.bindposes[i][row, col];
                 }
             }
         }
