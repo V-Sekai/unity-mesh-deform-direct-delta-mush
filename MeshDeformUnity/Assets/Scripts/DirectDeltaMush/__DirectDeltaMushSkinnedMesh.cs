@@ -147,11 +147,6 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
 
     internal const int maxOmegaCount = 16;
 
-    // Experiment with blending bone weights
-    internal float[,] prefilteredBoneWeights;
-
-    public bool usePrefilteredBoneWeights = false;
-
     void Start()
     {
         if (computeShader)
@@ -212,7 +207,7 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
         }
 
         SparseMatrix I = SparseMatrix.CreateIdentity(vCount);
-        ddmUtils = new DDMUtilsIterative(); //new DDMUtils();
+        ddmUtils = new DDMUtilsIterative();
         ddmUtils.dm_blend = dm_blend;
         ddmUtils.n = vCount;
         ddmUtils.num_transforms = bCount;
