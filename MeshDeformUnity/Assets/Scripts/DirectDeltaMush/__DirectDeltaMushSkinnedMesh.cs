@@ -303,10 +303,6 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
         {
             UpdateMeshOnGPU();
         }
-        else
-        {
-            UpdateMeshOnCPU();
-        }
 
         if (compareWithSkinning)
         {
@@ -321,7 +317,6 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
     }
 
 
-#region Adjacency matrix cache
     [System.Serializable]
     public struct AdjacencyMatrix
     {
@@ -371,101 +366,6 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
 
         return adjacencyMatrix;
     }
-#endregion
-
-#region Direct Delta Mush implementation
-    void UpdateMeshOnCPU()
-    {
-        Matrix4x4[] boneMatrices = GenerateBoneMatrices();
-
-        //Debug.Log(boneMatrices[1]);
-        BoneWeight[] bw = mesh.boneWeights;
-        Vector3[] vs = mesh.vertices;
-        Vector3[] ns = mesh.normals;
-
-        DenseMatrix[] boneMatricesDense = new DenseMatrix[boneMatrices.Length];
-        for (int i = 0; i < boneMatrices.Length; ++i)
-        {
-            boneMatricesDense[i] = new DenseMatrix(4);
-            for (int row = 0; row < 4; ++row)
-            {
-                for (int col = 0; col < 4; ++col)
-                {
-                    boneMatricesDense[i][row, col] = boneMatrices[i][row, col]; //mesh.bindposes[i][row, col];
-                }
-            }
-        }
-
-        for (int vi = 0; vi < mesh.vertexCount; ++vi)
-        {
-            DenseMatrix mat4 = new DenseMatrix(4);
-            for (int bi = 0; bi < boneMatrices.Length; ++bi)
-            {
-                mat4 += boneMatricesDense[bi] * omegas[vi, bi];
-            }
-            DenseMatrix Qi = new DenseMatrix(3);
-            for (int row = 0; row < 3; ++row)
-            {
-                for (int col = 0; col < 3; ++col)
-                {
-                    Qi[row, col] = mat4[row, col];
-                }
-            }
-
-            DenseVector qi = new DenseVector(3);
-            qi[0] = mat4[0, 3];
-            qi[1] = mat4[1, 3];
-            qi[2] = mat4[2, 3];
-
-            DenseVector pi = new DenseVector(3);
-            pi[0] = mat4[3, 0];
-            pi[1] = mat4[3, 1];
-            pi[2] = mat4[3, 2];
-
-            DenseMatrix qi_piT = new DenseMatrix(3);
-            qi.OuterProduct (pi, qi_piT);
-            DenseMatrix M = Qi - qi_piT;
-
-            // SVD, still need to fix
-            Matrix4x4 gamma = Matrix4x4.zero;
-
-            var SVD = M.Svd(true);
-            DenseMatrix U = (DenseMatrix) SVD.U;
-            DenseMatrix VT = (DenseMatrix) SVD.VT;
-            DenseMatrix R = U * VT;
-            DenseVector ti = qi - (R * pi);
-
-            // Get gamma
-            for (int row = 0; row < 3; ++row)
-            {
-                for (int col = 0; col < 3; ++col)
-                {
-                    gamma[row, col] = R[row, col];
-                }
-            }
-            gamma[0, 3] = ti[0];
-            gamma[1, 3] = ti[1];
-            gamma[2, 3] = ti[2];
-            gamma[3, 3] = 1.0f;
-
-            Vector3 vertex = gamma.MultiplyPoint3x4(vs[vi]);
-            deformedMesh.vertices[vi] = vertex;
-
-            //TODO: Bug
-            Vector3 normal = gamma.MultiplyVector(ns[vi]);
-            deformedMesh.normals[vi] = normal;;
-        }
-
-        Bounds bounds = new Bounds();
-        for (int i = 0; i < deformedMesh.vertexCount; i++)
-        {
-            bounds.Encapsulate(deformedMesh.vertices[i]);
-        }
-
-        meshForCPUOutput.vertices = deformedMesh.vertices;
-        meshForCPUOutput.normals = deformedMesh.normals;
-        meshForCPUOutput.bounds = bounds;
-    }
 
     void UpdateMeshOnGPU()
     {
@@ -494,9 +394,6 @@ public class DirectDeltaMushSkinnedMesh : MonoBehaviour
         }
         return boneMatrices;
     }
-
-
-#endregion
 
 
 
