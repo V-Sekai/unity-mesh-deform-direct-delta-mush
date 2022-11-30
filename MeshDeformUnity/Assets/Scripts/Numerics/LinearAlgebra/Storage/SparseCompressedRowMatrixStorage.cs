@@ -74,8 +74,8 @@ namespace MathNet.Numerics.LinearAlgebra.Storage
             : base(rows, columns)
         {
             RowPointers = new int[rows + 1];
-            ColumnIndices = new int[0];
-            Values = new T[0];
+            ColumnIndices = Array.Empty<int>();
+            Values = Array.Empty<T>();
         }
 
         internal SparseCompressedRowMatrixStorage(int rows, int columns, int[] rowPointers, int[] columnIndices, T[] values)
@@ -302,26 +302,20 @@ namespace MathNet.Numerics.LinearAlgebra.Storage
             var builder = BuilderInstance<T>.Matrix;
 
             int valueCount = 0;
+            int last = 0;
             for (int i = 0; i < RowCount; i++)
             {
-                int index = RowPointers[i];
-                int last = RowPointers[i + 1];
+                int index = last;
+                last = RowPointers[i + 1];
                 while (index < last)
                 {
                     var col = ColumnIndices[index];
                     var val = Values[index];
                     index++;
-                    while (index < last)
+                    while (index < last && ColumnIndices[index] == col)
                     {
-                        if (ColumnIndices[index] == col)
-                        {
-                            val = builder.Add(val, Values[index]);
-                            index++;
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        val = builder.Add(val, Values[index]);
+                        index++;
                     }
                     ColumnIndices[valueCount] = col;
                     Values[valueCount] = val;
@@ -493,7 +487,7 @@ namespace MathNet.Numerics.LinearAlgebra.Storage
             {
                 rows[rowIndices[i]] = true;
             }
-            MapIndexedInplace((i, j, x) => rows[i] ? Zero : x, Zeros.AllowSkip);
+            MapIndexedInplace((i, _, x) => rows[i] ? Zero : x, Zeros.AllowSkip);
         }
 
         internal override void ClearColumnsUnchecked(int[] columnIndices)
@@ -503,7 +497,7 @@ namespace MathNet.Numerics.LinearAlgebra.Storage
             {
                 columns[columnIndices[i]] = true;
             }
-            MapIndexedInplace((i, j, x) => columns[j] ? Zero : x, Zeros.AllowSkip);
+            MapIndexedInplace((_, j, x) => columns[j] ? Zero : x, Zeros.AllowSkip);
         }
 
         // INITIALIZATION
@@ -1143,9 +1137,7 @@ namespace MathNet.Numerics.LinearAlgebra.Storage
 
             for (int i = 0, last = 0; i <= rows; i++)
             {
-                var temp = csrRowPointers[i];
-                csrRowPointers[i] = last;
-                last = temp;
+                (csrRowPointers[i], last) = (last, csrRowPointers[i]);
             }
 
             storage.ColumnIndices = csrColumnIndices;
@@ -1525,6 +1517,7 @@ namespace MathNet.Numerics.LinearAlgebra.Storage
 
             if (ValueCount != 0)
             {
+                var targetData = target.Data;
                 for (int row = 0; row < RowCount; row++)
                 {
                     var targetIndex = row * ColumnCount;
@@ -1532,7 +1525,7 @@ namespace MathNet.Numerics.LinearAlgebra.Storage
                     var endIndex = RowPointers[row + 1];
                     for (var j = startIndex; j < endIndex; j++)
                     {
-                        target.Data[targetIndex + ColumnIndices[j]] = Values[j];
+                        targetData[targetIndex + ColumnIndices[j]] = Values[j];
                     }
                 }
             }

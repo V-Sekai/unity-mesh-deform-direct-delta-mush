@@ -356,7 +356,7 @@ namespace MathNet.Numerics.LinearAlgebra.Double
         public static SparseMatrix CreateDiagonal(int rows, int columns, double value)
         {
             if (value == 0d) return new SparseMatrix(rows, columns);
-            return new SparseMatrix(SparseCompressedRowMatrixStorage<double>.OfDiagonalInit(rows, columns, i => value));
+            return new SparseMatrix(SparseCompressedRowMatrixStorage<double>.OfDiagonalInit(rows, columns, _ => value));
         }
 
         /// <summary>
@@ -372,7 +372,7 @@ namespace MathNet.Numerics.LinearAlgebra.Double
         /// </summary>
         public static SparseMatrix CreateIdentity(int order)
         {
-            return new SparseMatrix(SparseCompressedRowMatrixStorage<double>.OfDiagonalInit(order, order, i => One));
+            return new SparseMatrix(SparseCompressedRowMatrixStorage<double>.OfDiagonalInit(order, order, _ => One));
         }
 
         /// <summary>
@@ -680,11 +680,15 @@ namespace MathNet.Numerics.LinearAlgebra.Double
         public override double FrobeniusNorm()
         {
             var aat = (SparseCompressedRowMatrixStorage<double>) (this*Transpose()).Storage;
+            var aatRowPointers = aat.RowPointers;
+            var aatColumnIndices = aat.ColumnIndices;
+            var aatValues = aat.Values;
+
             var norm = 0d;
             for (var i = 0; i < aat.RowCount; i++)
             {
-                var startIndex = aat.RowPointers[i];
-                var endIndex = aat.RowPointers[i + 1];
+                var startIndex = aatRowPointers[i];
+                var endIndex = aatRowPointers[i + 1];
 
                 if (startIndex == endIndex)
                 {
@@ -694,9 +698,9 @@ namespace MathNet.Numerics.LinearAlgebra.Double
 
                 for (var j = startIndex; j < endIndex; j++)
                 {
-                    if (i == aat.ColumnIndices[j])
+                    if (i == aatColumnIndices[j])
                     {
-                        norm += Math.Abs(aat.Values[j]);
+                        norm += Math.Abs(aatValues[j]);
                     }
                 }
             }
@@ -742,13 +746,17 @@ namespace MathNet.Numerics.LinearAlgebra.Double
                 }
 
                 var leftStorage = left._storage;
+                var leftStorageRowPointers = leftStorage.RowPointers;
+                var leftStorageColumnIndices = leftStorage.ColumnIndices;
+                var leftStorageValues = leftStorage.Values;
+
                 for (var i = 0; i < leftStorage.RowCount; i++)
                 {
-                    var endIndex = leftStorage.RowPointers[i + 1];
-                    for (var j = leftStorage.RowPointers[i]; j < endIndex; j++)
+                    var endIndex = leftStorageRowPointers[i + 1];
+                    for (var j = leftStorageRowPointers[i]; j < endIndex; j++)
                     {
-                        var columnIndex = leftStorage.ColumnIndices[j];
-                        var resVal = leftStorage.Values[j] + result.At(i, columnIndex);
+                        var columnIndex = leftStorageColumnIndices[j];
+                        var resVal = leftStorageValues[j] + result.At(i, columnIndex);
                         result.At(i, columnIndex, resVal);
                     }
                 }
@@ -777,16 +785,19 @@ namespace MathNet.Numerics.LinearAlgebra.Double
                 }
 
                 var otherStorage = sparseOther._storage;
+                var otherStorageRowPointers = otherStorage.RowPointers;
+                var otherStorageColumnIndices = otherStorage.ColumnIndices;
+                var otherStorageValues = otherStorage.Values;
 
                 if (ReferenceEquals(this, sparseResult))
                 {
                     for (var i = 0; i < otherStorage.RowCount; i++)
                     {
-                        var endIndex = otherStorage.RowPointers[i + 1];
-                        for (var j = otherStorage.RowPointers[i]; j < endIndex; j++)
+                        var endIndex = otherStorageRowPointers[i + 1];
+                        for (var j = otherStorageRowPointers[i]; j < endIndex; j++)
                         {
-                            var columnIndex = otherStorage.ColumnIndices[j];
-                            var resVal = sparseResult.At(i, columnIndex) - otherStorage.Values[j];
+                            var columnIndex = otherStorageColumnIndices[j];
+                            var resVal = sparseResult.At(i, columnIndex) - otherStorageValues[j];
                             result.At(i, columnIndex, resVal);
                         }
                     }
@@ -884,9 +895,8 @@ namespace MathNet.Numerics.LinearAlgebra.Double
         /// <param name="result">The result of the multiplication.</param>
         protected override void DoMultiply(Matrix<double> other, Matrix<double> result)
         {
-            var sparseOther = other as SparseMatrix;
             var sparseResult = result as SparseMatrix;
-            if (sparseOther != null && sparseResult != null)
+            if (other is SparseMatrix sparseOther && sparseResult != null)
             {
                 DoMultiplySparse(sparseOther, sparseResult);
                 return;
@@ -897,12 +907,12 @@ namespace MathNet.Numerics.LinearAlgebra.Double
                 var diagonal = diagonalOther.Data;
                 if (other.ColumnCount == other.RowCount)
                 {
-                    Storage.MapIndexedTo(result.Storage, (i, j, x) => x*diagonal[j], Zeros.AllowSkip, ExistingData.Clear);
+                    Storage.MapIndexedTo(result.Storage, (_, j, x) => x*diagonal[j], Zeros.AllowSkip, ExistingData.Clear);
                 }
                 else
                 {
                     result.Storage.Clear();
-                    Storage.MapSubMatrixIndexedTo(result.Storage, (i, j, x) => x*diagonal[j], 0, 0, RowCount, 0, 0, Math.Min(ColumnCount, other.ColumnCount), Zeros.AllowSkip, ExistingData.AssumeZeros);
+                    Storage.MapSubMatrixIndexedTo(result.Storage, (_, j, x) => x*diagonal[j], 0, 0, RowCount, 0, 0, Math.Min(ColumnCount, other.ColumnCount), Zeros.AllowSkip, ExistingData.AssumeZeros);
                 }
                 return;
             }
@@ -914,6 +924,8 @@ namespace MathNet.Numerics.LinearAlgebra.Double
 
             if (other.Storage is DenseColumnMajorMatrixStorage<double> denseOther)
             {
+                var denseOtherData = denseOther.Data;
+
                 // in this case we can directly address the underlying data-array
                 for (var row = 0; row < RowCount; row++)
                 {
@@ -931,7 +943,7 @@ namespace MathNet.Numerics.LinearAlgebra.Double
                         var sum = 0d;
                         for (var index = startIndex; index < endIndex; index++)
                         {
-                            sum += values[index] * denseOther.Data[otherColumnStartPosition + columnIndices[index]];
+                            sum += values[index] * denseOtherData[otherColumnStartPosition + columnIndices[index]];
                         }
 
                         result.At(row, column, sum);
@@ -1099,11 +1111,14 @@ namespace MathNet.Numerics.LinearAlgebra.Double
                 var values = _storage.Values;
 
                 var otherStorage = otherSparse._storage;
+                var otherStorageRowPointers = otherStorage.RowPointers;
+                var otherStorageColumnIndices = otherStorage.ColumnIndices;
+                var otherStorageValues = otherStorage.Values;
 
                 for (var j = 0; j < RowCount; j++)
                 {
-                    var startIndexOther = otherStorage.RowPointers[j];
-                    var endIndexOther = otherStorage.RowPointers[j + 1];
+                    var startIndexOther = otherStorageRowPointers[j];
+                    var endIndexOther = otherStorageRowPointers[j + 1];
 
                     if (startIndexOther == endIndexOther)
                     {
@@ -1123,10 +1138,10 @@ namespace MathNet.Numerics.LinearAlgebra.Double
                         var sum = 0d;
                         for (var index = startIndexOther; index < endIndexOther; index++)
                         {
-                            var ind = _storage.FindItem(i, otherStorage.ColumnIndices[index]);
+                            var ind = _storage.FindItem(i, otherStorageColumnIndices[index]);
                             if (ind >= 0)
                             {
-                                sum += otherStorage.Values[index] * values[ind];
+                                sum += otherStorageValues[index] * values[ind];
                             }
                         }
 
@@ -1176,7 +1191,10 @@ namespace MathNet.Numerics.LinearAlgebra.Double
         /// <param name="result">The matrix to store the result of the pointwise multiplication.</param>
         protected override void DoPointwiseMultiply(Matrix<double> other, Matrix<double> result)
         {
-            result.Clear();
+            if (!ReferenceEquals(this, result))
+            {
+                result.Clear();
+            }
 
             var rowPointers = _storage.RowPointers;
             var columnIndices = _storage.ColumnIndices;
@@ -1203,7 +1221,10 @@ namespace MathNet.Numerics.LinearAlgebra.Double
         /// <param name="result">The matrix to store the result of the pointwise division.</param>
         protected override void DoPointwiseDivide(Matrix<double> divisor, Matrix<double> result)
         {
-            result.Clear();
+            if (!ReferenceEquals(this, result))
+            {
+                result.Clear();
+            }
 
             var rowPointers = _storage.RowPointers;
             var columnIndices = _storage.ColumnIndices;
@@ -1272,9 +1293,11 @@ namespace MathNet.Numerics.LinearAlgebra.Double
                 }
 
                 var resultStorage = sparseResult._storage;
+                var resultStorageValues = resultStorage.Values;
+
                 for (var index = 0; index < resultStorage.Values.Length; index++)
                 {
-                    resultStorage.Values[index] = Euclid.Modulus(resultStorage.Values[index], divisor);
+                    resultStorageValues[index] = Euclid.Modulus(resultStorageValues[index], divisor);
                 }
             }
             else
@@ -1299,9 +1322,11 @@ namespace MathNet.Numerics.LinearAlgebra.Double
                 }
 
                 var resultStorage = sparseResult._storage;
+                var resultStorageValues = resultStorage.Values;
+
                 for (var index = 0; index < resultStorage.Values.Length; index++)
                 {
-                    resultStorage.Values[index] %= divisor;
+                    resultStorageValues[index] %= divisor;
                 }
             }
             else

@@ -47,9 +47,7 @@ namespace MathNet.Numerics.Providers.FourierTransform
             {
                 if (i < j)
                 {
-                    var temp = samples[i];
-                    samples[i] = samples[j];
-                    samples[j] = temp;
+                    (samples[i], samples[j]) = (samples[j], samples[i]);
                 }
 
                 var m = samples.Length;
@@ -70,9 +68,7 @@ namespace MathNet.Numerics.Providers.FourierTransform
         /// <param name="exponentSign">Fourier series exponent sign.</param>
         /// <param name="levelSize">Level Group Size.</param>
         /// <param name="k">Index inside of the level.</param>
-#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         static void Radix2Step(Complex32[] samples, int exponentSign, int levelSize, int k)
         {
             // Twiddle Factor
@@ -96,9 +92,7 @@ namespace MathNet.Numerics.Providers.FourierTransform
         /// <param name="exponentSign">Fourier series exponent sign.</param>
         /// <param name="levelSize">Level Group Size.</param>
         /// <param name="k">Index inside of the level.</param>
-#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         static void Radix2Step(Complex[] samples, int exponentSign, int levelSize, int k)
         {
             // Twiddle Factor

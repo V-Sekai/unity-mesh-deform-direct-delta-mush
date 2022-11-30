@@ -88,15 +88,11 @@ namespace MathNet.Numerics.LinearAlgebra
         /// to get and set values without range checking.</remarks>
         public T this[int row, int column]
         {
-#if !NET40
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
             [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
             get { return Storage[row, column]; }
 
-#if !NET40
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
             [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
             set { Storage[row, column] = value; }
         }
@@ -113,9 +109,7 @@ namespace MathNet.Numerics.LinearAlgebra
         /// <returns>
         /// The requested element.
         /// </returns>
-#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
         public T At(int row, int column)
         {
@@ -134,9 +128,7 @@ namespace MathNet.Numerics.LinearAlgebra
         /// <param name="value">
         /// The value to set the element to.
         /// </param>
-#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
         public void At(int row, int column, T value)
         {
@@ -1452,7 +1444,7 @@ namespace MathNet.Numerics.LinearAlgebra
         /// The enumerator will include all values, even if they are zero.
         /// The ordering of the values is unspecified (not necessarily column-wise or row-wise).
         /// </remarks>
-        public IEnumerable<T> Enumerate(Zeros zeros = Zeros.Include)
+        public IEnumerable<T> Enumerate(Zeros zeros)
         {
             switch (zeros)
             {
@@ -1484,7 +1476,7 @@ namespace MathNet.Numerics.LinearAlgebra
         /// and the third value being the value of the element at that index.
         /// The enumerator will include all values, even if they are zero.
         /// </remarks>
-        public IEnumerable<(int, int, T)> EnumerateIndexed(Zeros zeros = Zeros.Include)
+        public IEnumerable<(int, int, T)> EnumerateIndexed(Zeros zeros)
         {
             switch (zeros)
             {
@@ -1734,7 +1726,7 @@ namespace MathNet.Numerics.LinearAlgebra
                     }
                 });
             }
-            Storage.FoldByRowUnchecked(result, f, (x, c) => x, result, zeros);
+            Storage.FoldByRowUnchecked(result, f, (x, _) => x, result, zeros);
             return result;
         }
 
@@ -1755,7 +1747,7 @@ namespace MathNet.Numerics.LinearAlgebra
                     }
                 });
             }
-            Storage.FoldByColumnUnchecked(result, f, (x, c) => x, result, zeros);
+            Storage.FoldByColumnUnchecked(result, f, (x, _) => x, result, zeros);
             return result;
         }
 

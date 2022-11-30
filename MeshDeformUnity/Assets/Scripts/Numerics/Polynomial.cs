@@ -64,11 +64,7 @@ namespace MathNet.Numerics
         /// </summary>
         public Polynomial()
         {
-#if NET40
-            Coefficients = new double[0];
-#else
             Coefficients = Array.Empty<double>();
-#endif
         }
 
         /// <summary>
@@ -80,11 +76,7 @@ namespace MathNet.Numerics
         {
             if (coefficient == 0.0)
             {
-#if NET40
-                Coefficients = new double[0];
-#else
                 Coefficients = Array.Empty<double>();
-#endif
             }
             else
             {
@@ -348,7 +340,7 @@ namespace MathNet.Numerics
             {
                 case -1: // Zero-polynomial
                 case 0: // Non-zero constant: y = a0
-                    return new Complex[0];
+                    return Array.Empty<Complex>();
                 case 1: // Linear: y = a0 + a1*x
                     return new[] { new Complex(-Coefficients[0] / Coefficients[1], 0) };
             }

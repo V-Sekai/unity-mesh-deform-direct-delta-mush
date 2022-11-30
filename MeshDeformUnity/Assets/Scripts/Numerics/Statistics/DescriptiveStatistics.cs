@@ -221,17 +221,17 @@ namespace MathNet.Numerics.Statistics
             foreach (var xi in data)
             {
                 double delta = xi - mean;
-                double scaleDelta = delta/++n;
-                double scaleDeltaSqr = scaleDelta*scaleDelta;
-                double tmpDelta = delta*(n - 1);
+                double scaleDelta = delta / ++n;
+                double scaleDeltaSqr = scaleDelta * scaleDelta;
+                double tmpDelta = delta * (n - 1);
 
                 mean += scaleDelta;
 
-                kurtosis += tmpDelta*scaleDelta*scaleDeltaSqr*(n*n - 3*n + 3)
-                            + 6*scaleDeltaSqr*variance - 4*scaleDelta*skewness;
+                kurtosis += tmpDelta * scaleDelta * scaleDeltaSqr * (n * n - 3 * n + 3)
+                            + 6 * scaleDeltaSqr * variance - 4 * scaleDelta * skewness;
 
-                skewness += tmpDelta*scaleDeltaSqr*(n - 2) - 3*scaleDelta*variance;
-                variance += tmpDelta*scaleDelta;
+                skewness += tmpDelta * scaleDeltaSqr * (n - 2) - 3 * scaleDelta * variance;
+                variance += tmpDelta * scaleDelta;
 
                 if (minimum > xi)
                 {
@@ -266,17 +266,17 @@ namespace MathNet.Numerics.Statistics
                 if (xi.HasValue)
                 {
                     double delta = xi.Value - mean;
-                    double scaleDelta = delta/++n;
-                    double scaleDeltaSqr = scaleDelta*scaleDelta;
-                    double tmpDelta = delta*(n - 1);
+                    double scaleDelta = delta / ++n;
+                    double scaleDeltaSqr = scaleDelta * scaleDelta;
+                    double tmpDelta = delta * (n - 1);
 
                     mean += scaleDelta;
 
-                    kurtosis += tmpDelta*scaleDelta*scaleDeltaSqr*(n*n - 3*n + 3)
-                                + 6*scaleDeltaSqr*variance - 4*scaleDelta*skewness;
+                    kurtosis += tmpDelta * scaleDelta * scaleDeltaSqr * (n * n - 3 * n + 3)
+                                + 6 * scaleDeltaSqr * variance - 4 * scaleDelta * skewness;
 
-                    skewness += tmpDelta*scaleDeltaSqr*(n - 2) - 3*scaleDelta*variance;
-                    variance += tmpDelta*scaleDelta;
+                    skewness += tmpDelta * scaleDeltaSqr * (n - 2) - 3 * scaleDelta * variance;
+                    variance += tmpDelta * scaleDelta;
 
                     if (minimum > xi)
                     {
@@ -311,17 +311,17 @@ namespace MathNet.Numerics.Statistics
             {
                 decimal xi = (decimal)x;
                 decimal delta = xi - mean;
-                decimal scaleDelta = delta/++n;
-                decimal scaleDelta2 = scaleDelta*scaleDelta;
-                decimal tmpDelta = delta*(n - 1);
+                decimal scaleDelta = delta / ++n;
+                decimal scaleDelta2 = scaleDelta * scaleDelta;
+                decimal tmpDelta = delta * (n - 1);
 
                 mean += scaleDelta;
 
-                kurtosis += tmpDelta*scaleDelta*scaleDelta2*(n*n - 3*n + 3)
-                            + 6*scaleDelta2*variance - 4*scaleDelta*skewness;
+                kurtosis += tmpDelta * scaleDelta * scaleDelta2 * (n * n - 3 * n + 3)
+                            + 6 * scaleDelta2 * variance - 4 * scaleDelta * skewness;
 
-                skewness += tmpDelta*scaleDelta2*(n - 2) - 3*scaleDelta*variance;
-                variance += tmpDelta*scaleDelta;
+                skewness += tmpDelta * scaleDelta2 * (n - 2) - 3 * scaleDelta * variance;
+                variance += tmpDelta * scaleDelta;
 
                 if (minimum > xi)
                 {
@@ -357,17 +357,17 @@ namespace MathNet.Numerics.Statistics
                 {
                     decimal xi = (decimal)x.Value;
                     decimal delta = xi - mean;
-                    decimal scaleDelta = delta/++n;
-                    decimal scaleDeltaSquared = scaleDelta*scaleDelta;
-                    decimal tmpDelta = delta*(n - 1);
+                    decimal scaleDelta = delta / ++n;
+                    decimal scaleDeltaSquared = scaleDelta * scaleDelta;
+                    decimal tmpDelta = delta * (n - 1);
 
                     mean += scaleDelta;
 
-                    kurtosis += tmpDelta*scaleDelta*scaleDeltaSquared*(n*n - 3*n + 3)
-                                + 6*scaleDeltaSquared*variance - 4*scaleDelta*skewness;
+                    kurtosis += tmpDelta * scaleDelta * scaleDeltaSquared * (n * n - 3 * n + 3)
+                                + 6 * scaleDeltaSquared * variance - 4 * scaleDelta * skewness;
 
-                    skewness += tmpDelta*scaleDeltaSquared*(n - 2) - 3*scaleDelta*variance;
-                    variance += tmpDelta*scaleDelta;
+                    skewness += tmpDelta * scaleDeltaSquared * (n - 2) - 3 * scaleDelta * variance;
+                    variance += tmpDelta * scaleDelta;
 
                     if (minimum > xi)
                     {
@@ -413,7 +413,7 @@ namespace MathNet.Numerics.Statistics
 
                 if (n > 1)
                 {
-                    Variance = variance/(n - 1);
+                    Variance = variance / (n - 1);
                     StandardDeviation = Math.Sqrt(Variance);
                 }
 
@@ -421,13 +421,13 @@ namespace MathNet.Numerics.Statistics
                 {
                     if (n > 2)
                     {
-                        Skewness = (double)n/((n - 1)*(n - 2))*(skewness/(Variance*StandardDeviation));
+                        Skewness = (double)n / ((n - 1) * (n - 2)) * (skewness / (Variance * StandardDeviation));
                     }
 
                     if (n > 3)
                     {
-                        Kurtosis = ((double)n*n - 1)/((n - 2)*(n - 3))
-                                   *(n*kurtosis/(variance*variance) - 3 + 6.0/(n + 1));
+                        Kurtosis = ((double)n * n - 1) / ((n - 2) * (n - 3))
+                                   * (n * kurtosis / (variance * variance) - 3 + 6.0 / (n + 1));
                     }
                 }
             }

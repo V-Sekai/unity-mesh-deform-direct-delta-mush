@@ -111,9 +111,10 @@ namespace MathNet.Numerics.Optimization.LineSearch
                 if (!double.IsInfinity(upperBound))
                 {
                     double maxRelChange = 0.0;
+                    var objectivePoint = objective.Point;
                     for (int jj = 0; jj < objective.Point.Count; ++jj)
                     {
-                        double tmp = Math.Abs(searchDirection[jj] * (upperBound - lowerBound)) / Math.Max(Math.Abs(objective.Point[jj]), 1.0);
+                        double tmp = Math.Abs(searchDirection[jj] * (upperBound - lowerBound)) / Math.Max(Math.Abs(objectivePoint[jj]), 1.0);
                         maxRelChange = Math.Max(maxRelChange, tmp);
                     }
                     if (maxRelChange < ParameterTolerance)
@@ -124,7 +125,7 @@ namespace MathNet.Numerics.Optimization.LineSearch
                 }
             }
 
-            if (ii == MaximumIterations && Double.IsPositiveInfinity(upperBound))
+            if (ii == MaximumIterations && double.IsPositiveInfinity(upperBound))
             {
                 throw new MaximumIterationsException(Invariant($"Maximum iterations ({MaximumIterations}) reached. Function appears to be unbounded in search direction."));
             }

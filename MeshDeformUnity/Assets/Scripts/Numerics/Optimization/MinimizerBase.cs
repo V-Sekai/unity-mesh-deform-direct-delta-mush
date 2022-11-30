@@ -28,8 +28,6 @@
 // </copyright>
 
 using System;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace MathNet.Numerics.Optimization
 {
@@ -59,15 +57,15 @@ namespace MathNet.Numerics.Optimization
 
         protected ExitCondition ExitCriteriaSatisfied(IObjectiveFunctionEvaluation candidatePoint, IObjectiveFunctionEvaluation lastPoint, int iterations)
         {
-            Vector<double> relGrad = new DenseVector(candidatePoint.Point.Count);
+            var candidatePointPoint = candidatePoint.Point;
             double relativeGradient = 0.0;
             double normalizer = Math.Max(Math.Abs(candidatePoint.Value), 1.0);
-            for (int ii = 0; ii < relGrad.Count; ++ii)
+            for (int ii = 0; ii < candidatePointPoint.Count; ++ii)
             {
                 double projectedGradient = GetProjectedGradient(candidatePoint, ii);
 
                 double tmp = projectedGradient *
-                    Math.Max(Math.Abs(candidatePoint.Point[ii]), 1.0) / normalizer;
+                    Math.Max(Math.Abs(candidatePointPoint[ii]), 1.0) / normalizer;
                 relativeGradient = Math.Max(relativeGradient, Math.Abs(tmp));
             }
             if (relativeGradient < GradientTolerance)
@@ -77,11 +75,12 @@ namespace MathNet.Numerics.Optimization
 
             if (lastPoint != null)
             {
+                var lastPointPoint = lastPoint.Point;
                 double mostProgress = 0.0;
-                for (int ii = 0; ii < candidatePoint.Point.Count; ++ii)
+                for (int ii = 0; ii < candidatePointPoint.Count; ++ii)
                 {
-                    var tmp = Math.Abs(candidatePoint.Point[ii] - lastPoint.Point[ii]) /
-                        Math.Max(Math.Abs(lastPoint.Point[ii]), 1.0);
+                    var tmp = Math.Abs(candidatePointPoint[ii] - lastPointPoint[ii]) /
+                              Math.Max(Math.Abs(lastPointPoint[ii]), 1.0);
                     mostProgress = Math.Max(mostProgress, tmp);
                 }
                 if (mostProgress < ParameterTolerance)
@@ -106,10 +105,10 @@ namespace MathNet.Numerics.Optimization
         {
             foreach (var x in eval.Gradient)
             {
-                if (Double.IsNaN(x) || Double.IsInfinity(x))
+                if (double.IsNaN(x) || double.IsInfinity(x))
                     throw new EvaluationException("Non-finite gradient returned.", eval);
             }
-            if (Double.IsNaN(eval.Value) || Double.IsInfinity(eval.Value))
+            if (double.IsNaN(eval.Value) || double.IsInfinity(eval.Value))
                 throw new EvaluationException("Non-finite objective function returned.", eval);
         }
     }

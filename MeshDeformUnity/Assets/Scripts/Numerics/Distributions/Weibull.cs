@@ -252,7 +252,7 @@ namespace MathNet.Numerics.Distributions
                 return 0.0;
             }
 
-            return -SpecialFunctions.ExponentialMinusOne(-Math.Pow(x, _shape)*_scalePowShapeInv);
+            return -SpecialFunctions.Expm1(-Math.Pow(x, _shape)*_scalePowShapeInv);
         }
 
         /// <summary>
@@ -388,7 +388,7 @@ namespace MathNet.Numerics.Distributions
                 return 0.0;
             }
 
-            return -SpecialFunctions.ExponentialMinusOne(-Math.Pow(x, shape)*Math.Pow(scale, -shape));
+            return -SpecialFunctions.Expm1(-Math.Pow(x, shape)*Math.Pow(scale, -shape));
         }
 
         /// <summary>
@@ -400,7 +400,7 @@ namespace MathNet.Numerics.Distributions
         public static Weibull Estimate(IEnumerable<double> samples, System.Random randomSource = null)
         {
             var samp = samples as double[] ?? samples.ToArray();
-            double n = samp.Length, s1 = 0, s2 = 0, s3 = 0, previousC = Int32.MinValue, QofC = 0;
+            double n = samp.Length, s1, s2, s3, previousC = int.MinValue, QofC;
 
             if (n <= 1) throw new Exception("Observations not sufficient");
 

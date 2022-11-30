@@ -35,11 +35,7 @@ using MathNet.Numerics.Providers.SparseSolver;
 using MathNet.Numerics.Providers.FourierTransform;
 using MathNet.Numerics.Providers.LinearAlgebra;
 
-#if NET40
-using System.Linq;
-#endif
-
-#if !NET40 && !NET461
+#if !NET461
 using System.Runtime.InteropServices;
 #endif
 
@@ -310,28 +306,21 @@ namespace MathNet.Numerics
 
         public static string Describe()
         {
-#if NET40
-            var versionAttribute = typeof(Control).Assembly
-                .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false)
-                .OfType<AssemblyInformationalVersionAttribute>()
-                .FirstOrDefault();
-#else
             var versionAttribute = typeof(Control).GetTypeInfo().Assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute;
-#endif
 
             var sb = new StringBuilder();
             sb.AppendLine("Math.NET Numerics Configuration:");
             sb.AppendLine($"Version {versionAttribute?.InformationalVersion}");
 #if NET5_0
-            sb.AppendLine("Built for .Net 5.0");
+            sb.AppendLine("Built for .NET 5.0");
 #elif NET5_0_OR_GREATER
-            sb.AppendLine("Built for .Net 5.0+");
+            sb.AppendLine("Built for .NET 5.0+");
 #elif NETSTANDARD2_0
-            sb.AppendLine("Built for .Net Standard 2.0");
+            sb.AppendLine("Built for .NET Standard 2.0");
+#elif NET48
+            sb.AppendLine("Built for .NET Framework 4.8");
 #elif NET461
-            sb.AppendLine("Built for .Net Framework 4.6.1");
-#elif NET40
-            sb.AppendLine("Built for .Net Framework 4.0");
+            sb.AppendLine("Built for .NET Framework 4.6.1");
 #endif
 
             sb.AppendLine($"Linear Algebra Provider: {LinearAlgebraControl.Provider}");
@@ -342,23 +331,23 @@ namespace MathNet.Numerics
             sb.AppendLine($"Parallelize Order: {ParallelizeOrder}");
             sb.AppendLine($"Check Distribution Parameters: {CheckDistributionParameters}");
             sb.AppendLine($"Thread-Safe RNGs: {ThreadSafeRandomNumberGenerators}");
-#if NET40 || NET461
+#if NET461
             sb.AppendLine($"Operating System: {Environment.OSVersion}");
             sb.AppendLine($"Framework: {Environment.Version}");
 #else
-            // This would also work in .Net 4.0, but we don't want the dependency just for that.
+            // This would also work in .NET 4.0, but we don't want the dependency just for that.
             sb.AppendLine($"Operating System: {RuntimeInformation.OSDescription}");
             sb.AppendLine($"Operating System Architecture: {RuntimeInformation.OSArchitecture}");
             sb.AppendLine($"Framework: {RuntimeInformation.FrameworkDescription}");
             sb.AppendLine($"Process Architecture: {RuntimeInformation.ProcessArchitecture}");
 #endif
             var processorArchitecture = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
-            if (!String.IsNullOrEmpty(processorArchitecture))
+            if (!string.IsNullOrEmpty(processorArchitecture))
             {
                 sb.AppendLine($"Processor Architecture: {processorArchitecture}");
             }
             var processorId = Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER");
-            if (!String.IsNullOrEmpty(processorId))
+            if (!string.IsNullOrEmpty(processorId))
             {
                 sb.AppendLine($"Processor Identifier: {processorId}");
             }

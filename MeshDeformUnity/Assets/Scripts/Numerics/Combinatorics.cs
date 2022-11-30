@@ -31,6 +31,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MathNet.Numerics.Random;
+using System.Numerics;
 
 namespace MathNet.Numerics
 {
@@ -159,9 +160,7 @@ namespace MathNet.Numerics
             for (int i = data.Length - 1; i > 0; i--)
             {
                 int swapIndex = random.Next(i + 1);
-                T swap = data[i];
-                data[i] = data[swapIndex];
-                data[swapIndex] = swap;
+                (data[i], data[swapIndex]) = (data[swapIndex], data[i]);
             }
         }
 
@@ -349,6 +348,56 @@ namespace MathNet.Numerics
                 int swapIndex = random.Next(j + 1);
                 selection[i] = indices[swapIndex];
                 indices[swapIndex] = indices[j];
+            }
+
+            return selection;
+        }
+
+        /// <summary>
+        /// Generate a random variation, without repetition, by randomly selecting k of n elements with order. This is an O(k) space-complexity implementation optimized for very large N.<br/>
+        /// The space complexity of Fisher-Yates Shuffling is O(n+k). When N is very large, the algorithm will be unexecutable in limited memory, and a more memory-efficient algorithm is needed.<br/>
+        /// You can explicitly cast N to <see cref="BigInteger"/> if N is out of range of <see cref="int"/> or memory, so that this special implementation is called. However, this implementation is slower than Fisher-Yates Shuffling: don't call it if time is more critical than space.<br/>
+        /// The K of type <see cref="BigInteger"/> seems impossible, because the returned array is of size K and must all be stored in memory.
+        /// </summary>
+        /// <param name="n">Number of elements in the set.</param>
+        /// <param name="k">Number of elements to choose from the set. Each element is chosen at most once.</param>
+        /// <param name="randomSource">The random number generator to use. Optional; the default random source will be used if null.</param>
+        /// <returns>An array of length <c>K</c> that contains the indices of the selections as integers of the interval <c>[0, N)</c>.</returns>
+        public static BigInteger[] GenerateVariation(BigInteger n, int k, System.Random randomSource = null)
+        {
+            if (n < 0) throw new ArgumentOutOfRangeException(nameof(n), "Value must not be negative (zero is ok).");
+            if (k < 0) throw new ArgumentOutOfRangeException(nameof(k), "Value must not be negative (zero is ok).");
+            if (k > n) throw new ArgumentOutOfRangeException(nameof(k), $"k must be smaller than or equal to n.");
+
+            var random = randomSource ?? SystemRandomSource.Default;
+
+            BigInteger[] selection = new BigInteger[k];
+            if (n == 0 || k == 0)
+            {
+                return selection;
+            }
+
+            selection[0] = random.NextBigIntegerSequence(BigInteger.Zero, n).First();
+            bool[] compareCache;
+            bool keepLooping;
+            BigInteger randomNumber;
+
+            for (int a = 1; a < k; a++)
+            {
+                randomNumber = random.NextBigIntegerSequence(BigInteger.Zero, n - a).First();
+                compareCache = Generate.Repeat(a, true);
+                do
+                {
+                    keepLooping = false;
+                    for (int b = 0; b < a; ++b)
+                        if (compareCache[b] && randomNumber >= selection[b])
+                        {
+                            compareCache[b] = false;
+                            keepLooping = true;
+                            randomNumber++;
+                        }
+                } while (keepLooping);
+                selection[a] = randomNumber;
             }
 
             return selection;
