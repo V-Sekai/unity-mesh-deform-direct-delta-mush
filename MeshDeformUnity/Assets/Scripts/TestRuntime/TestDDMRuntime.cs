@@ -61,7 +61,7 @@ public class TestDDMRuntime : MonoBehaviour
     {
         Debug.Log("Test DDM runtime awake.");
         DDMSkinnedMeshGPUVar0[] scriptsDDM =
-            FindObjectsOfType<DDMSkinnedMeshGPUVar0>(false);
+            FindObjectsOfType<DDMSkinnedMeshGPUVar0>();
         Debug.Log("Find " + scriptsDDM.Length.ToString() + " DDM scripts.");
         foreach (DDMSkinnedMeshGPUVar0 script in scriptsDDM)
         {
