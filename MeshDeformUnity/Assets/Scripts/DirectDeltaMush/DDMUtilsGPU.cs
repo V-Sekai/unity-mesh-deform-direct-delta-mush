@@ -26,8 +26,6 @@
 //OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //#define DEBUG_GPU_OUTPUT
-using System;
-using MathNet.Numerics.LinearAlgebra.Single;
 using UnityEngine;
 
 public class DDMUtilsGPU
@@ -43,7 +41,7 @@ public class DDMUtilsGPU
 
     public static bool isTestingPerformance = false;
 
-    static void SynchronizeCompute()
+    private static void SynchronizeCompute()
     {
     }
 
@@ -112,7 +110,7 @@ public class DDMUtilsGPU
 
         IndexWeightPair[,] indexWeightPairsCPU =
             ComputeLaplacianWithIndexFromAdjacency(adjacencyMatrix);
-        laplacianCB.SetData (indexWeightPairsCPU);
+        laplacianCB.SetData(indexWeightPairsCPU);
 
         UnityEngine.Profiling.Profiler.EndSample();
         return true;
@@ -139,7 +137,7 @@ public class DDMUtilsGPU
 
         ComputeBuffer AdjacencyCB =
             new ComputeBuffer(vCount * aCount, sizeof(int));
-        AdjacencyCB.SetData (adjacencyMatrix);
+        AdjacencyCB.SetData(adjacencyMatrix);
 
         Debug
             .Assert(laplacianCB.count == vCount * omegaCount &&
@@ -160,7 +158,7 @@ public class DDMUtilsGPU
             out threadGroupSizeY,
             out threadGroupSizeZ);
         int threadGroupsX =
-            (vCount + (int) threadGroupSizeX - 1) / (int) threadGroupSizeX;
+            (vCount + (int)threadGroupSizeX - 1) / (int)threadGroupSizeX;
         precomputeShader
             .SetBuffer(kernelBuildLaplacian, "Adjacency", AdjacencyCB);
         precomputeShader
@@ -439,13 +437,12 @@ public class DDMUtilsGPU
             out threadGroupSizeY,
             out threadGroupSizeZ);
         int threadGroupsX =
-            (vCount * boneCount + (int) threadGroupSizeX - 1) /
-            (int) threadGroupSizeX;
+            (vCount * boneCount + (int)threadGroupSizeX - 1) /
+            (int)threadGroupSizeX;
         precomputeShader.SetBuffer(kernelInitOmegas, "Omegas", tmpOmegasCB0);
         precomputeShader.Dispatch(kernelInitOmegas, threadGroupsX, 1, 1);
         precomputeShader.SetBuffer(kernelInitOmegas, "Omegas", tmpOmegasCB1);
         precomputeShader.Dispatch(kernelInitOmegas, threadGroupsX, 1, 1);
-
 
 #if DEBUG_GPU_OUTPUT
         DDMUtilsIterative.OmegaWithIndex[,] tmpOmegas =
@@ -461,7 +458,7 @@ public class DDMUtilsGPU
 
         int kernelPreStep = precomputeShader.FindKernel("ComputeOmegasPreStep");
         threadGroupsX =
-            (vCount + (int) threadGroupSizeX - 1) / (int) threadGroupSizeX;
+            (vCount + (int)threadGroupSizeX - 1) / (int)threadGroupSizeX;
 
         precomputeShader.SetBuffer(kernelPreStep, "Vertices", verticesCB);
         precomputeShader.SetBuffer(kernelPreStep, "Weights", weightsCB);
@@ -470,10 +467,8 @@ public class DDMUtilsGPU
 
         precomputeShader.Dispatch(kernelPreStep, threadGroupsX, 1, 1);
 
-
 #if DEBUG_GPU_OUTPUT
         tmpOmegasCB0.GetData (tmpOmegas);
-
 
 #endif // DEBUG_GPU_OUTPUT
 
@@ -497,7 +492,6 @@ public class DDMUtilsGPU
                     (it % 2 == 0) ? tmpOmegasCB1 : tmpOmegasCB0);
                 precomputeShader.Dispatch(kernelOneSweep, threadGroupsX, 1, 1);
 
-
 #if DEBUG_GPU_OUTPUT
                 DDMUtilsIterative.OmegaWithIndex[,] tmpOmegas1 =
                     new DDMUtilsIterative.OmegaWithIndex[vCount, boneCount];
@@ -519,7 +513,6 @@ public class DDMUtilsGPU
         precomputeShader.SetBuffer(kernelCompressOmegas, "Omegas", omegasCB);
 
         precomputeShader.Dispatch(kernelCompressOmegas, threadGroupsX, 1, 1);
-
 
 #if DEBUG_GPU_OUTPUT
         DDMUtilsIterative.OmegaWithIndex[,] outOmegas =
@@ -568,7 +561,7 @@ public class DDMUtilsGPU
             out threadGroupSizeY,
             out threadGroupSizeZ);
         int threadGroupsX =
-            (vCount + (int) threadGroupSizeX - 1) / (int) threadGroupSizeX;
+            (vCount + (int)threadGroupSizeX - 1) / (int)threadGroupSizeX;
         precomputeShader.SetBuffer(kernelComputePpps, "PreOmegas", omegasCB);
         precomputeShader.SetBuffer(kernelComputePpps, "Ppps", pppsCB);
         precomputeShader.Dispatch(kernelComputePpps, threadGroupsX, 1, 1);
@@ -607,7 +600,7 @@ public class DDMUtilsGPU
             out threadGroupSizeY,
             out threadGroupSizeZ);
         int threadGroupsX =
-            (vCount + (int) threadGroupSizeX - 1) / (int) threadGroupSizeX;
+            (vCount + (int)threadGroupSizeX - 1) / (int)threadGroupSizeX;
         precomputeShader
             .SetBuffer(kernelComputeLastcolsPs, "PreOmegas", omegasCB);
         precomputeShader
@@ -649,7 +642,7 @@ public class DDMUtilsGPU
             out threadGroupSizeY,
             out threadGroupSizeZ);
         int threadGroupsX =
-            (vCount + (int) threadGroupSizeX - 1) / (int) threadGroupSizeX;
+            (vCount + (int)threadGroupSizeX - 1) / (int)threadGroupSizeX;
         precomputeShader
             .SetBuffer(kernelComputeLastomegasPs, "PreOmegas", omegasCB);
         precomputeShader

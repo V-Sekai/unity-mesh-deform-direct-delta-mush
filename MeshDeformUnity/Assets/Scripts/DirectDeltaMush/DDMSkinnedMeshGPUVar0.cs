@@ -25,25 +25,19 @@
 //OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.IO;
-using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Single;
-using MathNet.Numerics.LinearAlgebra.Solvers;
-using UnityEditor;
+using System;
 using UnityEngine;
-
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.Profiling;
 
 /*
 	Vertex adjacency functions
 */
+
 public class
 MeshUtils // : MonoBehaviour
 {
-    const float EPSILON = 1e-8f;
+    private const float EPSILON = 1e-8f;
 
     // Collect information about vertex adjacency into matrix
     public static int[,]
@@ -289,11 +283,9 @@ MeshUtils // : MonoBehaviour
     }
 }
 
-
 //[ExecuteInEditMode]
 public class DDMSkinnedMeshGPUVar0 : MonoBehaviour
 {
-
     public int iterations = 30;
 
     public float smoothLambda = 0.9f;
@@ -511,8 +503,8 @@ public class DDMSkinnedMeshGPUVar0 : MonoBehaviour
         skin.enabled = compareWithSkinning;
     }
 
-
     #region Adjacency matrix cache
+
     [System.Serializable]
     public struct AdjacencyMatrix
     {
@@ -575,11 +567,11 @@ public class DDMSkinnedMeshGPUVar0 : MonoBehaviour
         adjacencyMatrixMap.Add(mesh, adjacencyMatrix);
         return adjacencyMatrix;
     }
-    #endregion
 
-
+    #endregion Adjacency matrix cache
 
     #region Direct Delta Mush implementation
+
     protected Matrix4x4[] GenerateBoneMatrices()
     {
         Matrix4x4[] boneMatrices = new Matrix4x4[skin.bones.Length];
@@ -593,13 +585,11 @@ public class DDMSkinnedMeshGPUVar0 : MonoBehaviour
         return boneMatrices;
     }
 
-
-    #endregion
-
-
+    #endregion Direct Delta Mush implementation
 
     #region Helpers
-    void DrawMesh()
+
+    private void DrawMesh()
     {
         if (actuallyUseCompute)
         {
@@ -616,18 +606,19 @@ public class DDMSkinnedMeshGPUVar0 : MonoBehaviour
         }
     }
 
-    void DrawDeltas()
+    private void DrawDeltas()
     {
     }
 
-    void DrawVerticesVsSkin()
+    private void DrawVerticesVsSkin()
     {
     }
-    #endregion
+
+    #endregion Helpers
 
     internal DDMUtilsIterative.OmegaWithIndex[,] omegaWithIdxs;
 
-    void Start()
+    private void Start()
     {
         InitBase();
         if (computeShader && ductTapedShader)
@@ -642,18 +633,18 @@ public class DDMSkinnedMeshGPUVar0 : MonoBehaviour
         }
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         ReleaseBase();
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
         UpdateBase();
     }
 
-
     #region Direct Delta Mush implementation
+
     protected void UpdateMeshOnCPU()
     {
         Matrix4x4[] boneMatrices = GenerateBoneMatrices();
@@ -799,7 +790,5 @@ public class DDMSkinnedMeshGPUVar0 : MonoBehaviour
         ductTapedMaterial.SetBuffer("Vertices", outputCB);
     }
 
-
-    #endregion
-
+    #endregion Direct Delta Mush implementation
 }

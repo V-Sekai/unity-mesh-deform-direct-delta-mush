@@ -25,15 +25,14 @@
 //OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /*
 	Laplacian Smooth Filter, HC-Smooth Filter
- 
+
 	Based on MarkGX SmoothFilter.cs (Jan 2011)
 */
+
 public class
 SmoothFilter // : MonoBehaviour
 {
@@ -191,12 +190,13 @@ SmoothFilter // : MonoBehaviour
 
     /*
 		HC (Humphrey’s Classes) Smooth Algorithm - Reduces Shrinkage of Laplacian Smoother
- 
+
 		Where sv - original points
 				pv - previous points,
 				alpha [0..1] influences previous points pv, e.g. 0
 				beta  [0..1] e.g. > 0.5
 	*/
+
     public static Vector3[]
     hcFilter(
         Vector3[] sv,

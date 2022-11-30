@@ -25,8 +25,8 @@
 //OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
 using MathNet.Numerics.LinearAlgebra.Single;
+using System;
 using UnityEngine;
 
 public class DDMUtilsIterative
@@ -140,7 +140,7 @@ public class DDMUtilsIterative
                 float[] v = new float[] { V[k, 0], V[k, 1], V[k, 2], 1.0f };
                 DenseVector rw = new DenseVector(v);
                 DenseMatrix hh = new DenseMatrix(4);
-                rw.OuterProduct (rw, hh);
+                rw.OuterProduct(rw, hh);
                 hh *= (b * w);
                 res += hh;
             }
@@ -195,7 +195,7 @@ public class DDMUtilsIterative
     {
         DenseVector p_i = compute_pi(i);
         DenseMatrix p_i_mat = new DenseMatrix(3);
-        p_i.OuterProduct (p_i, p_i_mat);
+        p_i.OuterProduct(p_i, p_i_mat);
 
         DenseMatrix p_i_mat_4 = new DenseMatrix(4);
         p_i_mat_4.SetSubMatrix(0, 0, p_i_mat);
@@ -210,7 +210,7 @@ public class DDMUtilsIterative
     {
         DenseVector p_i = compute_pi(i);
         DenseMatrix p_i_mat = new DenseMatrix(3);
-        p_i.OuterProduct (p_i, p_i_mat);
+        p_i.OuterProduct(p_i, p_i_mat);
         DenseMatrix p_i_mat_4 = new DenseMatrix(4);
         p_i_mat_4.SetSubMatrix(0, 0, p_i_mat);
         return compute_w_prime(i, j) * p_i_mat_4;
@@ -228,7 +228,7 @@ public class DDMUtilsIterative
             vertex[1] = V[vi, 1];
             vertex[2] = V[vi, 2];
             vertex[3] = 1.0f;
-            vertex.OuterProduct (vertex, tmpOmega);
+            vertex.OuterProduct(vertex, tmpOmega);
             for (int bi = 0; bi < bCount; ++bi)
             {
                 DenseMatrix omega = new DenseMatrix(4);
