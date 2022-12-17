@@ -1030,6 +1030,26 @@ MonoBehaviour:
   precomputeShader: {fileID: 7200000, guid: 680b7cfc9b80cf442a97b69b11685165, type: 3}
   ductTapedShader: {fileID: 4800000, guid: 943eb20414209bd42aad0509708d1766, type: 3}
   computeShader: {fileID: 7200000, guid: 4b734e0ff4eb64b4290319e21101b8d5, type: 3}
+--- !u!114 &1583914278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1583914274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2f347b7d3cc1ac40aa02b76dc1bf1e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iterations: 30
+  smoothLambda: 0.9
+  useCompute: 1
+  adjacencyMatchingVertexTolerance: 0.0001
+  debugMode: 0
+  precomputeShader: {fileID: 7200000, guid: 680b7cfc9b80cf442a97b69b11685165, type: 3}
+  ductTapedShader: {fileID: 4800000, guid: 943eb20414209bd42aad0509708d1766, type: 3}
+  computeShader: {fileID: 7200000, guid: 4b734e0ff4eb64b4290319e21101b8d5, type: 3}
 --- !u!1 &1949423530 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6964311229977154457, guid: a68c2848b41cbbf4b8f105308a38e7a6,
