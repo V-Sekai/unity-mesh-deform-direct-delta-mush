@@ -75,7 +75,7 @@ void InitOmegas(uint3 groupID : SV_GroupID, uint3 groupThreadID : SV_GroupThread
 	int idx = THREAD_GROUP_SIZE_X * groupID.x + groupThreadID.x;
 	if (idx >= VertexCount * BoneCount)
 		return;
-	
+
 	//Omegas[idx] = MatrixToOmegaStructWithIndex(ZERO_MATRIX_4, -1);
 	Omegas[idx].boneIndex = -1;
 }
@@ -247,12 +247,12 @@ void ComputePpps(uint3 groupID : SV_GroupID, uint3 groupThreadID : SV_GroupThrea
             mat += omega;
         }
     }
-	
+
     float3x3 Pi = ZERO_MATRIX_3;
     float3 pi = ZERO_VECTOR_3;
     float3 qi = ZERO_VECTOR_3;
     DecomposeMat(mat, Pi, pi, qi);
-	
+
     float3x3 Pi_pipi = Pi - Math_OutProduct(qi, pi);
     float det = determinant(Pi_pipi);
     Pi_pipi /= det;
@@ -283,9 +283,9 @@ void ComputeLastcolsPs(uint3 groupID : SV_GroupID, uint3 groupThreadID : SV_Grou
             }
             float4x4 omega = OmegaStructWithIndexToMatrix(oswi);
             float3 X = float3(omega[0][3], omega[1][3], omega[2][3]);
-			
+
             Lastcols[idx * MAX_OMEGA_COUNT + i] = VectorToOmegaLastColumnStructWithIndex(X, omega[3][3], oswi.boneIndex);
-			
+
             sum_X += X;
         }
     }
@@ -316,9 +316,9 @@ void ComputeLastomegasPs(uint3 groupID : SV_GroupID, uint3 groupThreadID : SV_Gr
             }
             float4x4 omega = OmegaStructWithIndexToMatrix(oswi);
             float3 X = float3(omega[0][3], omega[1][3], omega[2][3]);
-			
+
             Lastomegas[idx * MAX_OMEGA_COUNT + i] = FloatToIndexWeightPair(omega[3][3], oswi.boneIndex);
-			
+
             sum_X += X;
         }
     }

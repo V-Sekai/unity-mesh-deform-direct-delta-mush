@@ -53,7 +53,7 @@ namespace MathNet.Numerics.Providers.SparseSolver
         /// <summary>
         /// The operation was successful.
         /// </summary>
-        MKL_DSS_SUCCESS = 0, 
+        MKL_DSS_SUCCESS = 0,
         MKL_DSS_ZERO_PIVOT = -1,
         MKL_DSS_OUT_OF_MEMORY = -2,
         MKL_DSS_FAILURE = -3,
@@ -112,4 +112,3 @@ namespace MathNet.Numerics.Providers.SparseSolver
         DssStatus Solve(DssMatrixStructure matrixStructure, DssMatrixType matrixType, DssSystemType systemType, int rows, int cols, int nnz, int[] rowIdx, int[] colPtr, T[] values, int nRhs, T[] rhs, T[] solution);
     }
 }
-

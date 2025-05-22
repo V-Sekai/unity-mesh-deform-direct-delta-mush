@@ -72,7 +72,7 @@ namespace MathNet.Numerics
             {
                 return f(x);
             }
-            else if (order > 0 && Math.Abs(order - (int)order) < double.Epsilon) 
+            else if (order > 0 && Math.Abs(order - (int)order) < double.Epsilon)
             {
                 return Differentiate.Derivative(f, x, (int)order);
             }
@@ -115,7 +115,7 @@ namespace MathNet.Numerics
             {
                 return f(x);
             }
-            else if (order > 0 && Math.Abs(order - (int)order) < double.Epsilon) 
+            else if (order > 0 && Math.Abs(order - (int)order) < double.Epsilon)
             {
                 return Differentiate.Derivative(f, x, (int)order);
             }

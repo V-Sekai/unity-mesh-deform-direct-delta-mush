@@ -1,16 +1,41 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+**Table of Contents** _generated with
+[DocToc](https://github.com/thlorenz/doctoc)_
+
+- [Real-Time Mesh Skinning with Direct Delta Mush (Unity) (Fire Edition)](#real-time-mesh-skinning-with-direct-delta-mush-unity-fire-edition)
+  - [Problem Solved](#problem-solved)
+  - [Project Description](#project-description)
+  - [How to Build](#how-to-build)
+    - [Requirements](#requirements)
+    - [Build Instructions](#build-instructions)
+  - [Features Overview](#features-overview)
+    - [Variants of Direct Delta Mush](#variants-of-direct-delta-mush)
+  - [How to Use](#how-to-use)
+  - [Credit & References](#credit--references)
+  - [Presentations](#presentations)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Real-Time Mesh Skinning with Direct Delta Mush (Unity) (Fire Edition)
 
 ## Problem Solved
 
-Efficient and high-quality skinning and animations for simply authored skinned meshes.
+Efficient and high-quality skinning and animations for simply authored skinned
+meshes.
 
 ## Project Description
 
-A Unity project implementing real-time mesh skinning using the GPU-based Direct Delta Mush algorithm. This algorithm and its variants enable efficient and high-quality computation of mesh skinning and animations, even for simply authored skinned meshes.
+A Unity project implementing real-time mesh skinning using the GPU-based Direct
+Delta Mush algorithm. This algorithm and its variants enable efficient and
+high-quality computation of mesh skinning and animations, even for simply
+authored skinned meshes.
 
 ![Overview1](Readme/Overview1.gif)
 
-With Direct Delta Mush (left), we get less bulging effect than what we get with built-in skinning (right).
+With Direct Delta Mush (left), we get less bulging effect than what we get with
+built-in skinning (right).
 
 ## How to Build
 
@@ -21,24 +46,29 @@ With Direct Delta Mush (left), we get less bulging effect than what we get with 
 
 ### Build Instructions
 
-Add `MeshDeformUnity` to Unity Hub and select the Unity version to open this project.
+Add `MeshDeformUnity` to Unity Hub and select the Unity version to open this
+project.
 
 ## Features Overview
 
 - Direct Delta Mush with GPU variant 0.
 - Precomputation of Direct Delta Mush with GPU.
 
-| Iterations | Visual Effect |
-| ---------- | ------------- |
-| 0 (LBS)    | ![img](Readme/VisualEffect_Iter0.png) |
-| 2          | ![img](Readme/VisualEffect_Iter2.png) |
+| Iterations | Visual Effect                          |
+| ---------- | -------------------------------------- |
+| 0 (LBS)    | ![img](Readme/VisualEffect_Iter0.png)  |
+| 2          | ![img](Readme/VisualEffect_Iter2.png)  |
 | 16         | ![img](Readme/VisualEffect_Iter16.png) |
 
-The table above shows how the number of iterations affect the visual effect of skinning. With more iterations, the elbow appears smoother and has a reduced bulging effect.
+The table above shows how the number of iterations affect the visual effect of
+skinning. With more iterations, the elbow appears smoother and has a reduced
+bulging effect.
 
 ### Variants of Direct Delta Mush
 
-The [paper](https://www.ea.com/seed/news/siggraph2019-direct-delta-mush) also presents some variants equivalent to special cases of several previous skinning algorithms.
+The [paper](https://www.ea.com/seed/news/siggraph2019-direct-delta-mush) also
+presents some variants equivalent to special cases of several previous skinning
+algorithms.
 
 - Variant 0 is the full DDM model.
 
@@ -52,28 +82,43 @@ See [technical notes](notes.md) for technical details.
 
 1. Load models and toggle `Read/Write Enabled`.
    ![Load Model](Readme/HowToUse_1Load_Label.png)
-2. Drag the model into the scene or select the object with this model in the scene.
-   ![Drag to Scene](Readme/HowToUse_2Select.png)
-3. Expand and find the mesh object of the model. Add a component to the mesh object. Ensure that there is a `Skinned Mesh Render` component in this object.
-   ![Add Component](Readme/HowToUse_3AddComponent_Label.png)
-4. Examine the component `DDM skinned Mesh GPU Var 0`. It has several attributes:
+2. Drag the model into the scene or select the object with this model in the
+   scene. ![Drag to Scene](Readme/HowToUse_2Select.png)
+3. Expand and find the mesh object of the model. Add a component to the mesh
+   object. Ensure that there is a `Skinned Mesh Render` component in this
+   object. ![Add Component](Readme/HowToUse_3AddComponent_Label.png)
+4. Examine the component `DDM skinned Mesh GPU Var 0`. It has several
+   attributes:
+
    - `Iterations`: The iteration count of the precomputation.
    - `Smooth Lambda`: Determines the smoothing result for each step.
-   - `Use Compute`: Determines whether you use GPU skinning or CPU skinning, but currently, we only implemented GPU skinning for most of the variants.
-   - `Adjacency Matching Vertex Tolerance`: Set with a small positive float number if you need to merge the adjacency data of the vertices close to each other, but enabling this process may cause longer precomputations.
-   - `Debug Mode`: For comparison to the visual effect of built-in skinning if you assign `Compare With Linear Blend` to this attribute.
-   
-   Modify `Iterations` and `Smooth Lambda` to change the visual effect of runtime skinning.
-   ![Add Component](Readme/HowToUse_4Script.png)
-5. Set `Iterations` to 30, for example. For this model, set the `Adjacency Matching Vertex Tolerance` to a positive number to enable vertex matching. Then click the `Play` button and switch to the `Scene` view. Expand the skeleton in the `Hierarchy` window, and you can select which joint to edit.
-   ![Select Joint](Readme/HowToUse_5SelectJoint_Label.png)
-6. Press E to rotate the joints to deform the mesh. Press W to translate the joints.
-   ![Deform Mesh](Readme/HowToUse_6Deform_Label.png)
-7. To play animation on the mesh, create an `Animator Controller` and set the animation as shown below. You can also set the speed as desired. Then choose the root of the model, add the component `Animator`, and set the animator controller mentioned before to the `Controller` attribute.
+   - `Use Compute`: Determines whether you use GPU skinning or CPU skinning, but
+     currently, we only implemented GPU skinning for most of the variants.
+   - `Adjacency Matching Vertex Tolerance`: Set with a small positive float
+     number if you need to merge the adjacency data of the vertices close to
+     each other, but enabling this process may cause longer precomputations.
+   - `Debug Mode`: For comparison to the visual effect of built-in skinning if
+     you assign `Compare With Linear Blend` to this attribute.
+
+   Modify `Iterations` and `Smooth Lambda` to change the visual effect of
+   runtime skinning. ![Add Component](Readme/HowToUse_4Script.png)
+
+5. Set `Iterations` to 30, for example. For this model, set the
+   `Adjacency Matching Vertex Tolerance` to a positive number to enable vertex
+   matching. Then click the `Play` button and switch to the `Scene` view. Expand
+   the skeleton in the `Hierarchy` window, and you can select which joint to
+   edit. ![Select Joint](Readme/HowToUse_5SelectJoint_Label.png)
+6. Press E to rotate the joints to deform the mesh. Press W to translate the
+   joints. ![Deform Mesh](Readme/HowToUse_6Deform_Label.png)
+7. To play animation on the mesh, create an `Animator Controller` and set the
+   animation as shown below. You can also set the speed as desired. Then choose
+   the root of the model, add the component `Animator`, and set the animator
+   controller mentioned before to the `Controller` attribute.
    ![Animator Controller](Readme/HowToUse_7Animator_Label.png)
    ![Animator](Readme/HowToUse_8Animator_Label.png)
 
-After playing, you can see the animation. Some models can be found at [mixamo](https://www.mixamo.com/).
+After playing, you can see the animation. Some models can be found at
+[mixamo](https://www.mixamo.com/).
 
 ## Credit & References
 

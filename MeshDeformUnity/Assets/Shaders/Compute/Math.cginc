@@ -395,7 +395,7 @@ void PostProcess(float3x3 B, inout float3x3 U, inout float3x3 V, float3 alpha, f
 		//checked
 	}
 	else if (abs(beta[0]) <= tao)
-	{		
+	{
 		SolveReducedBotRight(B, U, sigma, V);
 		SortWithBotRightSub(U, sigma, V);
 		//checked once
@@ -524,7 +524,7 @@ inline float GetBSplineHelper(const float value)
 			return 0;
 		}
 
-	//if (ret < 1e-4f) 
+	//if (ret < 1e-4f)
 	//	return 0;
 
 	return ret;

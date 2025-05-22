@@ -1562,4 +1562,3 @@ namespace MathNet.Numerics.LinearAlgebra.Complex
         }
     }
  }
-
