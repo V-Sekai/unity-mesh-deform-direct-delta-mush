@@ -99,9 +99,4 @@ After playing, you can see the animation. Some models can be found at [mixamo](h
 
 ## Presentations
 
-1. [Pitch](https://docs.google.com/presentation/d/1vwb5RJlEHCoQyWLS116C5mvTnZ4lScZMC8LQFr1BcJU/)
-2. [Milestone 1](https://docs.google.com/presentation/d/1DddtqMYNPFK_de73_3AZ3dXIFQ1iPYBxOBAKMeCrQ8A/)
-3. [Milestone 2](https://docs.google.com/presentation/d/14nwoKlDBEHcIAdbmpu_0bEEPnFItTixbUZDCPtQ1mfM/)
-4. [Milestone 3](https://docs.google.com/presentation/d/1FIu6bGBnXOtndSAxtpXztczM1mbGk7st8uuC3rlGfBQ/)
-5. [Final Presentation](https://docs.google.com/presentation/d/1wim-hyjRPX4jIR6AkHR4tgXh2nGj3MpmaegtT0uUxrw/)
-6. [Sample Video](https://vimeo.com/655985843)
+6. [Sample Video](thirdparty/Direct%20Delta%20Mush%20Skinning%20in%20Unity%20Demo%20Video%20[655985843].mp4)
